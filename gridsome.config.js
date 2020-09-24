@@ -5,6 +5,8 @@
 // To restart press CTRL + C in terminal and run `gridsome develop`
 
 module.exports = {
-  siteName: 'Gridsome',
+  siteName: 'Daily Mood Log',
+  siteUrl: 'https://paul-louyot.github.io',
+  pathPrefix: '/daily-mood-log',
   plugins: []
 }
