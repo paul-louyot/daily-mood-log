@@ -20,7 +20,10 @@
       >
         <b-row class="my-1" v-for="emotion in emotions" :key="emotion.name">
           <b-col cols="10" offset="1" offset-sm="0" sm="4">
-            {{ emotion.name }} : {{ emotion.valueBefore }}
+            <div class="d-flex justify-content-between">
+              <div>{{ emotion.name }} :</div>
+              <div>{{ emotion.valueBefore }}</div>
+            </div>
           </b-col>
           <b-col cols="10" offset="1" offset-sm="0" sm="8">
           <b-form-input id="range-1" v-model="emotion.valueBefore" type="range" min="0" max="100" step="10"></b-form-input>
@@ -73,23 +76,37 @@
       >
         <template v-for="emotion in emotions" >
           <b-row class="my-1" v-if="emotion.valueBefore !== 0" :key="emotion.name">
-            <b-col sm="4">
-              {{ emotion.name }} : {{ emotion.valueAfter }}
+            <b-col cols="10" offset="1" offset-sm="0" sm="4">
+              <div class="d-flex justify-content-between">
+                <div>{{ emotion.name }} :</div>
+                <div>{{ emotion.valueAfter }}</div>
+              </div>
             </b-col>
-            <b-col sm="8">
+            <b-col cols="10" offset="1" offset-sm="0" sm="8">
               <b-form-input id="range-1" v-model="emotion.valueAfter" type="range" min="0" max="100" step="10"></b-form-input>
             </b-col>
           </b-row>
         </template>
       </b-form-group>
+      <div class="d-flex align-items-center justify-content-center mb-4">
+        <b-button variant="primary" v-on:click="download('compte-rendu.txt', fileContent)">
+          Télécharger le compte-rendu
+        </b-button>
+      </div>
+      <!-- <div class="d-flex align-items-center justify-content-center mb-4"> -->
+      <!--   <b-button -->
+      <!--     variant="secondary" -->
+      <!--     v-bind:href="emailLink()" -->
+      <!--     target="_blank" -->
+      <!--     > -->
+      <!--     M'envoyer le compte-rendu par email -->
+      <!--   </b-button> -->
+      <!-- </div> -->
       <b-form-group>
       <div class="d-flex align-items-center justify-content-between mb-2">
         <b>
           Compte-rendu
         </b>
-        <b-button variant="primary" v-on:click="download('test.txt', fileContent)">
-          Télécharger
-        </b-button>
       </div>
         <div class="border border-primary p-2 rounded-lg shadow bg-light" id="file-content">
           Événement contrariant : {{ upsettingEvent }}
@@ -156,7 +173,7 @@ export default {
       ],
       emotions: [
         { name: 'Triste', valueBefore: 0, valueAfter: 0 },
-        { name: 'Embarassé', valueBefore: 0, valueAfter: 0 },
+        { name: 'Embarrassé', valueBefore: 0, valueAfter: 0 },
         { name: 'Frustré', valueBefore: 0, valueAfter: 0 },
         { name: 'En colère', valueBefore: 0, valueAfter: 0 },
         { name: 'Coupable', valueBefore: 0, valueAfter: 0 },
@@ -205,6 +222,9 @@ export default {
       element.click();
 
       //document.body.removeChild(element);
+    },
+    emailLink(){
+      return `mailto:pa.louyot@gmail.com?body=${this.fileContent}`
     },
     formattedEmotions(emotions){
       return emotions
