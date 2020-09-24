@@ -20,10 +20,10 @@
       >
         <b-row class="my-1" v-for="emotion in emotions" :key="emotion.name">
           <b-col sm="4">
-            {{ emotion.name }} : {{ emotion.value }}
+            {{ emotion.name }} : {{ emotion.valueBefore }}
           </b-col>
           <b-col sm="8">
-          <b-form-input id="range-1" v-model="emotion.value" type="range" min="0" max="100" step="10"></b-form-input>
+          <b-form-input id="range-1" v-model="emotion.valueBefore" type="range" min="0" max="100" step="10"></b-form-input>
           </b-col>
         </b-row>
       </b-form-group>
@@ -32,23 +32,28 @@
         label="Pensée automatique"
       >
         <b-form-input
-          v-model="automaticThought"
+          v-model="automaticThought.value"
           placeholder="Pensée automatique"
         ></b-form-input>
       </b-form-group>
       <b-form-group
-        label="Estimez votre croyance dans cette pensée"
+        label="Estimez votre degré de croyance dans cette pensée"
       >
-        {{ automaticThoughtCredence }}
-        <b-form-input v-model="automaticThoughtCredence" type="range" min="0" max="100" step="10"></b-form-input>
+        <b-row class="my-1">
+          <b-col sm="4">
+            {{ automaticThought.credenceBefore }}
+          </b-col>
+          <b-col sm="8">
+            <b-form-input v-model="automaticThought.credenceBefore" type="range" min="0" max="100" step="10"></b-form-input>
+          </b-col>
+        </b-row>
       </b-form-group>
       <b-form-group
         label="Distorsions"
       >
         <b-form-checkbox-group
-          v-model="selected"
+          v-model="selectedDistorsions"
           :options="distorsions"
-          name="flavour-1"
           stacked
         ></b-form-checkbox-group>
       </b-form-group>
@@ -63,10 +68,43 @@
         ></b-form-checkbox-group>
       </b-form-group>
       <b-form-group
+        id="upsetting-event"
+        label="Re-notez vos émotions"
+      >
+        <template v-for="emotion in emotions" >
+          <b-row class="my-1" v-if="emotion.valueBefore !== 0" :key="emotion.name">
+            <b-col sm="4">
+              {{ emotion.name }} : {{ emotion.valueAfter }}
+            </b-col>
+            <b-col sm="8">
+              <b-form-input id="range-1" v-model="emotion.valueAfter" type="range" min="0" max="100" step="10"></b-form-input>
+            </b-col>
+          </b-row>
+        </template>
+      </b-form-group>
+      <b-form-group
         label="Compte-rendu"
       >
-        <div class="border border-primary p-2 rounded-lg shadow">
-          Événement contrariant: {{ upsettingEvent }}
+        <div class="border border-primary p-2 rounded-lg shadow bg-light">
+          Événement contrariant : {{ upsettingEvent }}
+          <br>
+          <br>
+          Émotions négatives :
+          <br>
+          <template v-for="emotion in emotions">
+            <span v-if="emotion.valueBefore !== 0" :key="emotion.name">
+              {{ emotion.name }} : de {{ emotion.valueBefore }}% à {{ emotion.valueAfter }}%<br>
+            </span>
+          </template>
+          <br>
+          Pensée automatique :
+          {{ automaticThought.value }}
+          <br>
+          Degré de croyance passé de {{ automaticThought.credenceBefore }} % à {{ automaticThought.credenceAfter }} %
+          <br>
+          Distorsions identifiées :
+          <br>
+          {{ selectedDistorsions.join(', ') }}
         </div>
       </b-form-group>
     </b-container>
@@ -77,42 +115,46 @@
 export default {
   data() {
     return {
+      automaticThought: {
+        value: '',
+        credenceBefore: 0,
+        credenceAfter: 0,
+      },
       upsettingEvent: '',
       report: '',
       value: 0,
       value2: 0,
-      automaticThought: '',
       automaticThoughtCredence: 0,
-      selected: [],
+      selectedDistorsions: [],
       selectedTechniques: [],
-      emotions: [
-        { name: 'Triste', value: 0 },
-        { name: 'Embarassé', value: 0 },
-        { name: 'Frustré', value: 0 },
-        { name: 'En colère', value: 0 },
-        { name: 'Coupable', value: 0 },
-        { name: 'Esseulé', value: 0 },
-        { name: 'Sans espoir', value: 0 },
-        { name: 'Honteux', value: 0 },
-        { name: 'Inférieur', value: 0 },
-        { name: 'Inadéquat', value: 0 },
-        { name: 'Défectueux', value: 0 },
-        { name: 'Anxieux', value: 0 },
-        { name: 'Déprimé', value: 0 },
-        { name: 'Désespéré', value: 0 },
-      ],
       distorsions: [
-        { text: 'All-or-nothing thinking', value: 'orange' },
-        { text: 'Overgeneralization', value: 'apple' },
-        { text: 'Mental Filter', value: 'pineapple' },
-        { text: 'Disqualifying the positive', value: 'grape' },
-        { text: 'Mind Reading', value: 'grape' },
-        { text: 'Fortune Telling', value: 'grape' },
-        { text: 'Magnification or Minimization', value: 'grape' },
-        { text: 'Emotional Reasoning', value: 'grape' },
-        { text: 'Should statements', value: 'grape' },
-        { text: 'Labeling', value: 'grape' },
-        { text: 'Personalization or Blame', value: 'grape' },
+        'All-or-nothing thinking',
+        'Overgeneralization',
+        'Mental Filter',
+        'Disqualifying the positive',
+        'Mind Reading',
+        'Fortune Telling',
+        'Magnification or Minimization',
+        'Emotional Reasoning',
+        'Should statements',
+        'Labeling',
+        'Personalization or Blame',
+      ],
+      emotions: [
+        { name: 'Triste', valueBefore: 0, valueAfter: 0 },
+        { name: 'Embarassé', valueBefore: 0, valueAfter: 0 },
+        { name: 'Frustré', valueBefore: 0, valueAfter: 0 },
+        { name: 'En colère', valueBefore: 0, valueAfter: 0 },
+        { name: 'Coupable', valueBefore: 0, valueAfter: 0 },
+        { name: 'Esseulé', valueBefore: 0, valueAfter: 0 },
+        { name: 'Sans espoir', valueBefore: 0, valueAfter: 0 },
+        { name: 'Honteux', valueBefore: 0, valueAfter: 0 },
+        { name: 'Inférieur', valueBefore: 0, valueAfter: 0 },
+        { name: 'Inadéquat', valueBefore: 0, valueAfter: 0 },
+        { name: 'Défectueux', valueBefore: 0, valueAfter: 0 },
+        { name: 'Anxieux', valueBefore: 0, valueAfter: 0 },
+        { name: 'Déprimé', valueBefore: 0, valueAfter: 0 },
+        { name: 'Désespéré', valueBefore: 0, valueAfter: 0 },
       ],
       techniques: [
         { text: 'Réponse rationelle', value: 'orange' },
