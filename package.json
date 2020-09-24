@@ -1,0 +1,16 @@
+{
+  "name": "tct",
+  "private": true,
+  "scripts": {
+    "build": "gridsome build",
+    "develop": "gridsome develop",
+    "explore": "gridsome explore"
+  },
+  "dependencies": {
+    "bootstrap": "^4.5.2",
+    "bootstrap-vue": "^2.17.3",
+    "gridsome": "^0.7.0",
+    "jspdf": "^2.1.1",
+    "vue": "^2.6.12"
+  }
+}
