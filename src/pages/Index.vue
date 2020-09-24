@@ -40,10 +40,10 @@
         label="Estimez votre degré de croyance dans cette pensée"
       >
         <b-row class="my-1">
-          <b-col sm="4">
-            {{ automaticThought.credenceBefore }}
+          <b-col cols="10" offset="1" offset-sm="0" sm="4">
+            {{ automaticThought.credenceBefore }} %
           </b-col>
-          <b-col sm="8">
+          <b-col cols="10" offset="1" offset-sm="0" sm="8">
             <b-form-input v-model="automaticThought.credenceBefore" type="range" min="0" max="100" step="10"></b-form-input>
           </b-col>
         </b-row>
@@ -60,12 +60,12 @@
       <b-form-group
         label="Technique"
       >
-        <b-form-checkbox-group
-          v-model="selectedTechniques"
+        <b-form-radio-group
+          v-model="selectedTechnique"
           :options="techniques"
           name="flavour-1"
           stacked
-        ></b-form-checkbox-group>
+        ></b-form-radio-group>
       </b-form-group>
       <b-form-group
         id="upsetting-event"
@@ -82,10 +82,11 @@
           </b-row>
         </template>
       </b-form-group>
-      <b-form-group
-        label="Compte-rendu"
-      >
-      <div class="d-flex flex-row-reverse mb-2">
+      <b-form-group>
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <b>
+          Compte-rendu
+        </b>
         <b-button variant="primary" v-on:click="download('test.txt', fileContent)">
           Télécharger
         </b-button>
@@ -117,7 +118,7 @@
           <br>
           Technique utilisée :
           <br>
-          {{ selectedTechniques.join(', ') }}
+          {{ selectedTechnique }}
         </div>
       </b-form-group>
     </b-container>
@@ -139,7 +140,7 @@ export default {
       value2: 0,
       automaticThoughtCredence: 0,
       selectedDistorsions: [],
-      selectedTechniques: [],
+      selectedTechnique: '',
       distorsions: [
         'All-or-nothing thinking',
         'Overgeneralization',
@@ -170,7 +171,7 @@ export default {
         { name: 'Désespéré', valueBefore: 0, valueAfter: 0 },
       ],
       techniques: [
-        'Réponse rationelle',
+        'Réponse rationnelle',
         'Technique de la preuve',
         'Tarte au blâme',
         'Écoute active',
@@ -179,24 +180,18 @@ export default {
   },
   computed: {
     fileContent(){
-      return `
-        Événement contrariant: ${this.upsettingEvent}
-
-        Émotions :
-        ${this.formattedEmotions(this.emotions)}
-
-        Pensée automatique : ${this.automaticThought.value}
-
-        Évolution du degré de croyance : de ${this.automaticThought.credenceBefore} % à ${this.automaticThought.credenceAfter} %
-
-        Distorsions identifiées : ${this.selectedDistorsions.join(', ')}
-
-        Technique utilisée : ${this.selectedTechniques.join(', ')}
-      `
+      return [
+        `Événement contrariant: ${this.upsettingEvent}`,
+        `Émotions :\n${this.formattedEmotions(this.emotions)}`,
+        `Pensée automatique : ${this.automaticThought.value}`,
+        `Évolution du degré de croyance : de ${this.automaticThought.credenceBefore} % à ${this.automaticThought.credenceAfter} %`,
+        `Distorsions identifiées : ${this.selectedDistorsions.join(', ')}`,
+        `Technique utilisée : ${this.selectedTechnique}`
+      ].join('\n\n')
     },
   },
   metaInfo: {
-    title: 'TCT'
+    title: 'Accueil'
   },
   methods: {
     download(filename, text){
