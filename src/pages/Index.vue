@@ -120,7 +120,6 @@
           {{ selectedTechniques.join(', ') }}
         </div>
       </b-form-group>
-      {{ fileContent }}
     </b-container>
   </Layout>
 </template>
