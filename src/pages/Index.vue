@@ -1,7 +1,7 @@
 <template>
   <Layout>
     <b-container>
-      <h1>Triple column technique</h1>
+      <h1>Daily mood log</h1>
       <b-form-group
         id="upsetting-event"
         label="Événement contrariant"
@@ -19,10 +19,10 @@
         label="Notez vos émotions"
       >
         <b-row class="my-1" v-for="emotion in emotions" :key="emotion.name">
-          <b-col sm="4">
+          <b-col cols="10" offset="1" offset-sm="0" sm="4">
             {{ emotion.name }} : {{ emotion.valueBefore }}
           </b-col>
-          <b-col sm="8">
+          <b-col cols="10" offset="1" offset-sm="0" sm="8">
           <b-form-input id="range-1" v-model="emotion.valueBefore" type="range" min="0" max="100" step="10"></b-form-input>
           </b-col>
         </b-row>
@@ -85,28 +85,42 @@
       <b-form-group
         label="Compte-rendu"
       >
-        <div class="border border-primary p-2 rounded-lg shadow bg-light">
+      <div class="d-flex flex-row-reverse mb-2">
+        <b-button variant="primary" v-on:click="download('test.txt', fileContent)">
+          Télécharger
+        </b-button>
+      </div>
+        <div class="border border-primary p-2 rounded-lg shadow bg-light" id="file-content">
           Événement contrariant : {{ upsettingEvent }}
           <br>
           <br>
-          Émotions négatives :
+          Émotions :
           <br>
           <template v-for="emotion in emotions">
             <span v-if="emotion.valueBefore !== 0" :key="emotion.name">
-              {{ emotion.name }} : de {{ emotion.valueBefore }}% à {{ emotion.valueAfter }}%<br>
+              {{ emotion.name }} : de {{ emotion.valueBefore }}&nbsp;% à {{ emotion.valueAfter }}&nbsp;%<br>
             </span>
           </template>
           <br>
           Pensée automatique :
           {{ automaticThought.value }}
           <br>
-          Degré de croyance passé de {{ automaticThought.credenceBefore }} % à {{ automaticThought.credenceAfter }} %
+          <br>
+          Évolution du degré de croyance&nbsp;:
+          <template v-if="automaticThought.credenceBefore != 0">
+            de {{ automaticThought.credenceBefore }}&nbsp;% à {{ automaticThought.credenceAfter }}&nbsp;%
+          </template>
           <br>
           Distorsions identifiées :
           <br>
           {{ selectedDistorsions.join(', ') }}
+          <br>
+          Technique utilisée :
+          <br>
+          {{ selectedTechniques.join(', ') }}
         </div>
       </b-form-group>
+      {{ fileContent }}
     </b-container>
   </Layout>
 </template>
@@ -157,12 +171,30 @@ export default {
         { name: 'Désespéré', valueBefore: 0, valueAfter: 0 },
       ],
       techniques: [
-        { text: 'Réponse rationelle', value: 'orange' },
-        { text: 'Technique de la preuve', value: 'apple' },
-        { text: 'Tarte au blâme', value: 'pineapple' },
-        { text: 'Écoute active', value: 'grape' },
+        'Réponse rationelle',
+        'Technique de la preuve',
+        'Tarte au blâme',
+        'Écoute active',
       ],
     }
+  },
+  computed: {
+    fileContent(){
+      return `
+        Événement contrariant: ${this.upsettingEvent}
+
+        Émotions :
+        ${this.formattedEmotions(this.emotions)}
+
+        Pensée automatique : ${this.automaticThought.value}
+
+        Évolution du degré de croyance : de ${this.automaticThought.credenceBefore} % à ${this.automaticThought.credenceAfter} %
+
+        Distorsions identifiées : ${this.selectedDistorsions.join(', ')}
+
+        Technique utilisée : ${this.selectedTechniques.join(', ')}
+      `
+    },
   },
   metaInfo: {
     title: 'TCT'
@@ -178,12 +210,18 @@ export default {
 
       element.click();
 
-      document.body.removeChild(element);
+      //document.body.removeChild(element);
+    },
+    formattedEmotions(emotions){
+      return emotions
+        .filter( e => e.valueBefore != 0 )
+        .map( e => this.formattedEmotion(e) ).join('\n')
+    },
+    formattedEmotion(emotion){
+      return `${emotion.name} : de ${emotion.valueBefore} % à ${emotion.valueAfter} %`
     }
   },
   mounted() {
   },
 }
 </script>
-<style>
-</style>
