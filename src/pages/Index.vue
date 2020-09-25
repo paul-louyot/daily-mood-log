@@ -1,19 +1,26 @@
 <template>
   <Layout>
     <b-container>
-      <h1>Daily mood log</h1>
-      <b-button
-        variant="primary"
-        v-on:click="fillWithMockupData()"
-        >
-        Simuler
-      </b-button>
-      <b-button
-        variant="secondary"
-        v-on:click="resetForm()"
-        >
-        Réinitialiser
-      </b-button>
+      <b-row class="mb-5">
+        <b-col md="6" class="mb-2">
+          <h1>Daily mood log</h1>
+        </b-col>
+        <b-col md="6" class="d-flex justify-content-between">
+          <b-button
+            variant="primary"
+            v-on:click="fillWithMockupData()"
+            >
+            Simuler
+          </b-button>
+            <b-button
+              variant="secondary"
+              v-on:click="resetForm()"
+              >
+              Réinitialiser
+            </b-button>
+        </b-col>
+      </b-row>
+
       <b-form-group
         label="Événement contrariant"
       >
@@ -98,7 +105,6 @@
             label="Indices contre"
             >
             <b-form-textarea
-              v-if="selectedTechnique == 'evidence_technique'"
               v-model="evidenceAgainst"
               placeholder=""
               rows="3"
@@ -120,15 +126,32 @@
           </b-form-group>
         </b-col>
       </b-row>
+
       <b-form-group
-        label="Re-notez votre niveau de croyance dans votre pensée automatique"
+        v-if="selectedTechnique == 'blame_pie'"
+        label="Tarte au blâme"
+      >
+        <div class="d-flex justify-content-center my-4">
+          ... Fonctionnalité en cours de préparation ...
+        </div>
+      </b-form-group>
+
+      <b-form-group
+        label="Re-notez votre degré de croyance dans votre pensée automatique"
       >
         <b-row class="my-1">
           <b-col cols="8" offset="2" offset-sm="0" sm="4">
             {{ automaticThought.credenceAfter }} %
           </b-col>
           <b-col cols="8" offset="2" offset-sm="0" sm="8">
-            <b-form-input v-model="automaticThought.credenceAfter" type="range" min="0" max="100" step="10"></b-form-input>
+            <b-form-input
+              v-model="automaticThought.credenceAfter"
+              v-bind:disabled="automaticThought.credenceBefore == 0"
+              type="range"
+              min="0"
+              max="100"
+              step="10"
+            ></b-form-input>
           </b-col>
         </b-row>
       </b-form-group>
@@ -137,21 +160,31 @@
         id="upsetting-event"
         label="Re-notez vos émotions"
       >
-        <template v-for="emotion in emotions" >
-          <b-row class="my-1" v-if="emotion.valueBefore != 0" :key="emotion.name">
-            <b-col cols="8" offset="2" offset-sm="0" sm="4">
-              <div class="d-flex justify-content-between">
-                <div>{{ emotion.name }} :</div>
-                <div>{{ emotion.valueAfter }}</div>
-              </div>
-            </b-col>
-            <b-col cols="8" offset="2" offset-sm="0" sm="8">
-              <b-form-input v-model="emotion.valueAfter" type="range" min="0" max="100" step="10"></b-form-input>
+        <template v-if="noEmotionsFilled">
+          <b-row class="my-1">
+            <b-col cols="8" offset="2" offset-sm="4">
+              <b-form-input v-model="voidModel" type="range" min="0" max="100" step="10" disabled=true>
+              </b-form-input>
             </b-col>
           </b-row>
         </template>
+        <template v-else>
+          <template v-for="emotion in emotions" >
+            <b-row class="my-1" v-if="emotion.valueBefore != 0" :key="emotion.name">
+              <b-col cols="8" offset="2" offset-sm="0" sm="4">
+                <div class="d-flex justify-content-between">
+                  <div>{{ emotion.name }} :</div>
+                  <div>{{ emotion.valueAfter }}</div>
+                </div>
+              </b-col>
+              <b-col cols="8" offset="2" offset-sm="0">
+                <b-form-input v-model="emotion.valueAfter" type="range" min="0" max="100" step="10"></b-form-input>
+              </b-col>
+            </b-row>
+          </template>
+        </template>
       </b-form-group>
-      <div class="d-flex align-items-center justify-content-center mb-4">
+      <div class="d-flex align-items-center justify-content-center mt-4 mb-3">
         <b-button
           variant="primary"
           v-on:click="downloadPDF(fileContent)"
@@ -221,23 +254,35 @@ export default {
       },
       upsettingEvent: '',
       report: '',
+      voidModel: "0",
       rationalResponse: '',
       evidenceAgainst: '',
       evidenceInFavor: '',
       selectedDistorsions: [],
       selectedTechnique: '',
       distorsions: [
-        'All-or-nothing thinking',
-        'Overgeneralization',
-        'Mental Filter',
-        'Disqualifying the positive',
-        'Mind Reading',
-        'Fortune Telling',
-        'Magnification or Minimization',
-        'Emotional Reasoning',
-        'Should statements',
-        'Labeling',
-        'Personalization or Blame',
+        //'All-or-nothing thinking',
+        //'Overgeneralization',
+        //'Mental Filter',
+        //'Disqualifying the positive',
+        //'Mind Reading',
+        //'Fortune Telling',
+        //'Magnification or Minimization',
+        //'Emotional Reasoning',
+        //'Should statements',
+        //'Labeling',
+        //'Personalization or Blame',
+        'Pensée en tout ou rien',
+        'Généralisation à outrance',
+        'Filtre mental',
+        'Rejet du positif',
+        'Lecture de pensée',
+        'Erreur de prévision',
+        'Exagération ou minimisation',
+        'Raisonnement émotif',
+        '"Je dois/devrais"',
+        'Erreur d\'étiquetage',
+        'Personalisation ou blâme'
       ],
       emotions: [
         { name: 'Triste', valueBefore: "0", valueAfter: "0" },
@@ -280,6 +325,9 @@ export default {
       } else {
         return '';
       }
+    },
+    noEmotionsFilled(){
+      return this.emotions.map(emotion => emotion.valueBefore === "0").every(x => x === true);
     }
   },
   metaInfo: {
@@ -322,9 +370,10 @@ export default {
         credenceBefore: 80,
         credenceAfter: 0,
       };
-      this.upsettingEvent = 'Plus de peanut butter';
-      this.selectedDistorsions = ['Labeling'];
+      this.upsettingEvent = 'Il n\'y a plus de beurre de cacahuète en réserve';
+      this.selectedDistorsions = ['Erreur d\'étiquetage'];
       this.selectedTechnique = 'rational_response';
+      this.rationalResponse = 'J\'ai le droit d\'oublier des choses';
       this.emotions = [
         { name: 'Triste', valueBefore: "0", valueAfter: "0" },
         { name: 'Embarrassé', valueBefore: "0", valueAfter: "0" },
@@ -350,6 +399,7 @@ export default {
       this.upsettingEvent = '';
       this.selectedDistorsions = [];
       this.selectedTechnique = '';
+      this.rationalResponse = '';
       this.emotions = [
         { name: 'Triste', valueBefore: "0", valueAfter: "0" },
         { name: 'Embarrassé', valueBefore: "0", valueAfter: "0" },
