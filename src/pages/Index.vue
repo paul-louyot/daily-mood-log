@@ -2,6 +2,18 @@
   <Layout>
     <b-container>
       <h1>Daily mood log</h1>
+      <b-button
+        variant="primary"
+        v-on:click="fillWithMockupData()"
+        >
+        Simuler
+      </b-button>
+      <b-button
+        variant="secondary"
+        v-on:click="resetForm()"
+        >
+        Réinitialiser
+      </b-button>
       <b-form-group
         label="Événement contrariant"
       >
@@ -64,10 +76,63 @@
         <b-form-radio-group
           v-model="selectedTechnique"
           :options="techniques"
-          name="flavour-1"
-          stacked
         ></b-form-radio-group>
       </b-form-group>
+
+
+      <b-form-group
+        v-if="selectedTechnique == 'rational_response'"
+        label="Réponse rationnelle"
+      >
+        <b-form-textarea
+          v-model="rationalResponse"
+          placeholder=""
+          rows="3"
+          max-rows="6"
+        ></b-form-textarea>
+      </b-form-group>
+
+      <b-row v-if="selectedTechnique == 'evidence_technique'">
+        <b-col sm="6">
+          <b-form-group
+            label="Indices contre"
+            >
+            <b-form-textarea
+              v-if="selectedTechnique == 'evidence_technique'"
+              v-model="evidenceAgainst"
+              placeholder=""
+              rows="3"
+              max-rows="6"
+              ></b-form-textarea>
+          </b-form-group>
+        </b-col>
+
+        <b-col sm="6">
+          <b-form-group
+            label="Indices pour"
+            >
+            <b-form-textarea
+              v-model="evidenceInFavor"
+              placeholder=""
+              rows="3"
+              max-rows="6"
+              ></b-form-textarea>
+          </b-form-group>
+        </b-col>
+      </b-row>
+      <b-form-group
+        label="Re-notez votre niveau de croyance dans votre pensée automatique"
+      >
+        <b-row class="my-1">
+          <b-col cols="8" offset="2" offset-sm="0" sm="4">
+            {{ automaticThought.credenceAfter }} %
+          </b-col>
+          <b-col cols="8" offset="2" offset-sm="0" sm="8">
+            <b-form-input v-model="automaticThought.credenceAfter" type="range" min="0" max="100" step="10"></b-form-input>
+          </b-col>
+        </b-row>
+      </b-form-group>
+
       <b-form-group
         id="upsetting-event"
         label="Re-notez vos émotions"
@@ -103,16 +168,17 @@
         </b-button>
       </div>
       <b-form-group>
-      <div class="d-flex align-items-center justify-content-between mb-2">
-        <b>
-          Compte-rendu
-        </b>
-      </div>
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <b>
+            Compte-rendu
+          </b>
+        </div>
         <div class="border border-primary p-2 rounded-lg shadow bg-light">
-          Événement contrariant : {{ upsettingEvent }}
+          <b>Événement contrariant :</b>
+          {{ upsettingEvent }}
           <br>
           <br>
-          Émotions :
+          <b>Évolution des émotions :</b>
           <br>
           <template v-for="emotion in emotions">
             <span v-if="emotion.valueBefore != 0" :key="emotion.name">
@@ -120,22 +186,23 @@
             </span>
           </template>
           <br>
-          Pensée automatique :
+          <b>Pensée automatique :</b>
           {{ automaticThought.value }}
           <br>
           <br>
-          Évolution du degré de croyance&nbsp;:
+          <b>Évolution du degré de croyance&nbsp;:</b>
           <template v-if="automaticThought.credenceBefore !== 0">
             de {{ automaticThought.credenceBefore }}&nbsp;% à {{ automaticThought.credenceAfter }}&nbsp;%
           </template>
           <br>
-          Distorsions identifiées :
+          <br>
+          <b>Distorsions identifiées :</b>
           <br>
           {{ selectedDistorsions.join(', ') }}
           <br>
-          Technique utilisée :
           <br>
-          {{ selectedTechnique }}
+          <b>Technique utilisée :</b>
+          {{ selectedTechniqueToString }}
         </div>
       </b-form-group>
     </b-container>
@@ -154,9 +221,9 @@ export default {
       },
       upsettingEvent: '',
       report: '',
-      value: 0,
-      value2: 0,
-      automaticThoughtCredence: 0,
+      rationalResponse: '',
+      evidenceAgainst: '',
+      evidenceInFavor: '',
       selectedDistorsions: [],
       selectedTechnique: '',
       distorsions: [
@@ -179,7 +246,6 @@ export default {
         { name: 'En colère', valueBefore: "0", valueAfter: "0" },
         { name: 'Coupable', valueBefore: "0", valueAfter: "0" },
         { name: 'Esseulé', valueBefore: "0", valueAfter: "0" },
-        { name: 'Sans espoir', valueBefore: "0", valueAfter: "0" },
         { name: 'Honteux', valueBefore: "0", valueAfter: "0" },
         { name: 'Inférieur', valueBefore: "0", valueAfter: "0" },
         { name: 'Inadéquat', valueBefore: "0", valueAfter: "0" },
@@ -189,10 +255,10 @@ export default {
         { name: 'Désespéré', valueBefore: "0", valueAfter: "0" },
       ],
       techniques: [
-        'Réponse rationnelle',
-        'Technique de la preuve',
-        'Tarte au blâme',
-        'Écoute active',
+        { text: 'Réponse rationnelle', value: 'rational_response' },
+        { text: 'Technique de la preuve', value: 'evidence_technique' },
+        { text: 'Tarte au blâme', value: 'blame_pie' },
+        { text: 'Écoute active', value: 'active_listening' },
       ],
     }
   },
@@ -204,9 +270,17 @@ export default {
         `Pensée automatique : ${this.automaticThought.value}`,
         `Évolution du degré de croyance : de ${this.automaticThought.credenceBefore} % à ${this.automaticThought.credenceAfter} %`,
         `Distorsions identifiées : ${this.selectedDistorsions.join(', ')}`,
-        `Technique utilisée : ${this.selectedTechnique}`
+        `Technique utilisée : ${this.selectedTechniqueToString}`
       ].join('\n\n')
     },
+    selectedTechniqueToString(){
+      var technique = this.techniques.find(x => x.value == this.selectedTechnique)
+      if (technique){
+        return technique.text;
+      } else {
+        return '';
+      }
+    }
   },
   metaInfo: {
     title: 'Accueil'
@@ -241,7 +315,57 @@ export default {
     },
     formattedEmotion(emotion){
       return `${emotion.name} : de ${emotion.valueBefore} % à ${emotion.valueAfter} %`
-    }
+    },
+    fillWithMockupData(){
+      this.automaticThought = {
+        value: 'Je suis nul',
+        credenceBefore: 80,
+        credenceAfter: 0,
+      };
+      this.upsettingEvent = 'Plus de peanut butter';
+      this.selectedDistorsions = ['Labeling'];
+      this.selectedTechnique = 'rational_response';
+      this.emotions = [
+        { name: 'Triste', valueBefore: "0", valueAfter: "0" },
+        { name: 'Embarrassé', valueBefore: "0", valueAfter: "0" },
+        { name: 'Frustré', valueBefore: "0", valueAfter: "0" },
+        { name: 'En colère', valueBefore: "80", valueAfter: "0" },
+        { name: 'Coupable', valueBefore: "0", valueAfter: "0" },
+        { name: 'Esseulé', valueBefore: "0", valueAfter: "0" },
+        { name: 'Honteux', valueBefore: "0", valueAfter: "0" },
+        { name: 'Inférieur', valueBefore: "0", valueAfter: "0" },
+        { name: 'Inadéquat', valueBefore: "0", valueAfter: "0" },
+        { name: 'Défectueux', valueBefore: "0", valueAfter: "0" },
+        { name: 'Anxieux', valueBefore: "0", valueAfter: "0" },
+        { name: 'Déprimé', valueBefore: "80", valueAfter: "0" },
+        { name: 'Désespéré', valueBefore: "60", valueAfter: "0" },
+      ];
+    },
+    resetForm(){
+      this.automaticThought = {
+        value: '',
+        credenceBefore: 0,
+        credenceAfter: 0,
+      };
+      this.upsettingEvent = '';
+      this.selectedDistorsions = [];
+      this.selectedTechnique = '';
+      this.emotions = [
+        { name: 'Triste', valueBefore: "0", valueAfter: "0" },
+        { name: 'Embarrassé', valueBefore: "0", valueAfter: "0" },
+        { name: 'Frustré', valueBefore: "0", valueAfter: "0" },
+        { name: 'En colère', valueBefore: "0", valueAfter: "0" },
+        { name: 'Coupable', valueBefore: "0", valueAfter: "0" },
+        { name: 'Esseulé', valueBefore: "0", valueAfter: "0" },
+        { name: 'Honteux', valueBefore: "0", valueAfter: "0" },
+        { name: 'Inférieur', valueBefore: "0", valueAfter: "0" },
+        { name: 'Inadéquat', valueBefore: "0", valueAfter: "0" },
+        { name: 'Défectueux', valueBefore: "0", valueAfter: "0" },
+        { name: 'Anxieux', valueBefore: "0", valueAfter: "0" },
+        { name: 'Déprimé', valueBefore: "0", valueAfter: "0" },
+        { name: 'Désespéré', valueBefore: "0", valueAfter: "0" },
+      ];
+    },
   },
   mounted() {
   },
