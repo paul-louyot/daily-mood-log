@@ -3,11 +3,9 @@
     <b-container>
       <h1>Daily mood log</h1>
       <b-form-group
-        id="upsetting-event"
         label="Événement contrariant"
       >
         <b-form-textarea
-          id="textarea"
           v-model="upsettingEvent"
           placeholder="Décrivez l'événement qui vous a troublé"
           rows="3"
@@ -15,18 +13,18 @@
         ></b-form-textarea>
       </b-form-group>
       <b-form-group
-        id="upsetting-event"
+        id="emotions-before"
         label="Notez vos émotions"
       >
         <b-row class="my-1" v-for="emotion in emotions" :key="emotion.name">
-          <b-col cols="10" offset="1" offset-sm="0" sm="4">
+          <b-col cols="8" offset="2" offset-sm="0" sm="4">
             <div class="d-flex justify-content-between">
               <div>{{ emotion.name }} :</div>
               <div>{{ emotion.valueBefore }}</div>
             </div>
           </b-col>
-          <b-col cols="10" offset="1" offset-sm="0" sm="8">
-          <b-form-input id="range-1" v-model="emotion.valueBefore" type="range" min="0" max="100" step="10"></b-form-input>
+          <b-col cols="8" offset="2" offset-sm="0" sm="8">
+          <b-form-input v-model="emotion.valueBefore" type="range" min="0" max="100" step="10"></b-form-input>
           </b-col>
         </b-row>
       </b-form-group>
@@ -43,10 +41,10 @@
         label="Estimez votre degré de croyance dans cette pensée"
       >
         <b-row class="my-1">
-          <b-col cols="10" offset="1" offset-sm="0" sm="4">
+          <b-col cols="8" offset="2" offset-sm="0" sm="4">
             {{ automaticThought.credenceBefore }} %
           </b-col>
-          <b-col cols="10" offset="1" offset-sm="0" sm="8">
+          <b-col cols="8" offset="2" offset-sm="0" sm="8">
             <b-form-input v-model="automaticThought.credenceBefore" type="range" min="0" max="100" step="10"></b-form-input>
           </b-col>
         </b-row>
@@ -75,47 +73,49 @@
         label="Re-notez vos émotions"
       >
         <template v-for="emotion in emotions" >
-          <b-row class="my-1" v-if="emotion.valueBefore !== 0" :key="emotion.name">
-            <b-col cols="10" offset="1" offset-sm="0" sm="4">
+          <b-row class="my-1" v-if="emotion.valueBefore != 0" :key="emotion.name">
+            <b-col cols="8" offset="2" offset-sm="0" sm="4">
               <div class="d-flex justify-content-between">
                 <div>{{ emotion.name }} :</div>
                 <div>{{ emotion.valueAfter }}</div>
               </div>
             </b-col>
-            <b-col cols="10" offset="1" offset-sm="0" sm="8">
-              <b-form-input id="range-1" v-model="emotion.valueAfter" type="range" min="0" max="100" step="10"></b-form-input>
+            <b-col cols="8" offset="2" offset-sm="0" sm="8">
+              <b-form-input v-model="emotion.valueAfter" type="range" min="0" max="100" step="10"></b-form-input>
             </b-col>
           </b-row>
         </template>
       </b-form-group>
       <div class="d-flex align-items-center justify-content-center mb-4">
-        <b-button variant="primary" v-on:click="download('compte-rendu.txt', fileContent)">
-          Télécharger le compte-rendu
+        <b-button
+          variant="primary"
+          v-on:click="downloadPDF(fileContent)"
+        >
+          Télécharger le compte-rendu (PDF)
         </b-button>
       </div>
-      <!-- <div class="d-flex align-items-center justify-content-center mb-4"> -->
-      <!--   <b-button -->
-      <!--     variant="secondary" -->
-      <!--     v-bind:href="emailLink()" -->
-      <!--     target="_blank" -->
-      <!--     > -->
-      <!--     M'envoyer le compte-rendu par email -->
-      <!--   </b-button> -->
-      <!-- </div> -->
+      <div class="d-flex align-items-center justify-content-center mb-4">
+        <b-button
+          variant="secondary"
+          v-on:click="download('compte-rendu.txt', fileContent)"
+        >
+          Télécharger le compte-rendu (texte)
+        </b-button>
+      </div>
       <b-form-group>
       <div class="d-flex align-items-center justify-content-between mb-2">
         <b>
           Compte-rendu
         </b>
       </div>
-        <div class="border border-primary p-2 rounded-lg shadow bg-light" id="file-content">
+        <div class="border border-primary p-2 rounded-lg shadow bg-light">
           Événement contrariant : {{ upsettingEvent }}
           <br>
           <br>
           Émotions :
           <br>
           <template v-for="emotion in emotions">
-            <span v-if="emotion.valueBefore !== 0" :key="emotion.name">
+            <span v-if="emotion.valueBefore != 0" :key="emotion.name">
               {{ emotion.name }} : de {{ emotion.valueBefore }}&nbsp;% à {{ emotion.valueAfter }}&nbsp;%<br>
             </span>
           </template>
@@ -125,7 +125,7 @@
           <br>
           <br>
           Évolution du degré de croyance&nbsp;:
-          <template v-if="automaticThought.credenceBefore != 0">
+          <template v-if="automaticThought.credenceBefore !== 0">
             de {{ automaticThought.credenceBefore }}&nbsp;% à {{ automaticThought.credenceAfter }}&nbsp;%
           </template>
           <br>
@@ -143,6 +143,7 @@
 </template>
 
 <script>
+import { jsPDF } from "jspdf";
 export default {
   data() {
     return {
@@ -172,20 +173,20 @@ export default {
         'Personalization or Blame',
       ],
       emotions: [
-        { name: 'Triste', valueBefore: 0, valueAfter: 0 },
-        { name: 'Embarrassé', valueBefore: 0, valueAfter: 0 },
-        { name: 'Frustré', valueBefore: 0, valueAfter: 0 },
-        { name: 'En colère', valueBefore: 0, valueAfter: 0 },
-        { name: 'Coupable', valueBefore: 0, valueAfter: 0 },
-        { name: 'Esseulé', valueBefore: 0, valueAfter: 0 },
-        { name: 'Sans espoir', valueBefore: 0, valueAfter: 0 },
-        { name: 'Honteux', valueBefore: 0, valueAfter: 0 },
-        { name: 'Inférieur', valueBefore: 0, valueAfter: 0 },
-        { name: 'Inadéquat', valueBefore: 0, valueAfter: 0 },
-        { name: 'Défectueux', valueBefore: 0, valueAfter: 0 },
-        { name: 'Anxieux', valueBefore: 0, valueAfter: 0 },
-        { name: 'Déprimé', valueBefore: 0, valueAfter: 0 },
-        { name: 'Désespéré', valueBefore: 0, valueAfter: 0 },
+        { name: 'Triste', valueBefore: "0", valueAfter: "0" },
+        { name: 'Embarrassé', valueBefore: "0", valueAfter: "0" },
+        { name: 'Frustré', valueBefore: "0", valueAfter: "0" },
+        { name: 'En colère', valueBefore: "0", valueAfter: "0" },
+        { name: 'Coupable', valueBefore: "0", valueAfter: "0" },
+        { name: 'Esseulé', valueBefore: "0", valueAfter: "0" },
+        { name: 'Sans espoir', valueBefore: "0", valueAfter: "0" },
+        { name: 'Honteux', valueBefore: "0", valueAfter: "0" },
+        { name: 'Inférieur', valueBefore: "0", valueAfter: "0" },
+        { name: 'Inadéquat', valueBefore: "0", valueAfter: "0" },
+        { name: 'Défectueux', valueBefore: "0", valueAfter: "0" },
+        { name: 'Anxieux', valueBefore: "0", valueAfter: "0" },
+        { name: 'Déprimé', valueBefore: "0", valueAfter: "0" },
+        { name: 'Désespéré', valueBefore: "0", valueAfter: "0" },
       ],
       techniques: [
         'Réponse rationnelle',
@@ -198,7 +199,7 @@ export default {
   computed: {
     fileContent(){
       return [
-        `Événement contrariant: ${this.upsettingEvent}`,
+        `Événement contrariant : ${this.upsettingEvent}`,
         `Émotions :\n${this.formattedEmotions(this.emotions)}`,
         `Pensée automatique : ${this.automaticThought.value}`,
         `Évolution du degré de croyance : de ${this.automaticThought.credenceBefore} % à ${this.automaticThought.credenceAfter} %`,
@@ -221,7 +222,14 @@ export default {
 
       element.click();
 
-      //document.body.removeChild(element);
+      document.body.removeChild(element);
+    },
+    downloadPDF(text){
+      const doc = new jsPDF();
+      doc.text(text, 10, 20);
+      var today = new Date();
+      var date = [today.getFullYear(), (today.getMonth() + 1), today.getDate()].join('-');
+      doc.save("compte-rendu-" + date);
     },
     emailLink(){
       return `mailto:pa.louyot@gmail.com?body=${this.fileContent}`
