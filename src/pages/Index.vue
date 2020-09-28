@@ -21,128 +21,133 @@
         </b-col>
       </b-row>
 
-      <b-form-group
-        label="Événement contrariant"
-      >
-        <b-form-textarea
-          v-model="upsettingEvent"
-          placeholder="Décrivez l'événement qui vous a troublé"
-          rows="3"
-          max-rows="6"
-        ></b-form-textarea>
-      </b-form-group>
-      <b-form-group
-        id="emotions-before"
-        label="Notez vos émotions"
-      >
-        <b-row class="my-1" v-for="emotion in emotions" :key="emotion.name">
-          <b-col cols="8" offset="2" offset-sm="0" sm="4">
-            <div class="d-flex justify-content-between">
-              <div>{{ emotion.name }} :</div>
-              <div>{{ emotion.valueBefore }}</div>
-            </div>
+      <div class="p-4 mb-4 bg-light rounded-lg shadow">
+        <b-form-group
+          label="Événement contrariant"
+        >
+          <b-form-textarea
+            v-model="upsettingEvent"
+            placeholder="Décrivez l'événement qui vous a troublé"
+            rows="3"
+            max-rows="6"
+            ></b-form-textarea>
+        </b-form-group>
+        <b-form-group
+          id="emotions-before"
+          label="Notez vos émotions"
+          >
+          <b-row class="my-1" v-for="emotion in emotions" :key="emotion.name">
+            <b-col cols="8" offset="2" offset-sm="0" sm="4">
+              <div class="d-flex justify-content-between">
+                <div>{{ emotion.name }} :</div>
+                <div>{{ emotion.valueBefore }}</div>
+              </div>
+            </b-col>
+            <b-col cols="8" offset="2" offset-sm="0" sm="8">
+              <b-form-input v-model="emotion.valueBefore" type="range" min="0" max="100" step="10"></b-form-input>
+            </b-col>
+          </b-row>
+        </b-form-group>
+      </div>
+
+      <div class="p-4 mb-4 bg-light rounded-lg shadow">
+        <b-form-group
+          id="automatic-thought"
+          label="Pensée automatique"
+          >
+          <b-form-input
+            v-model="automaticThought.value"
+            placeholder="Pensée automatique"
+            ></b-form-input>
+        </b-form-group>
+          <b-form-group
+            label="Estimez votre degré de croyance dans cette pensée"
+            >
+            <b-row class="my-1">
+              <b-col cols="8" offset="2" offset-sm="0" sm="4">
+                {{ automaticThought.credenceBefore }} %
+              </b-col>
+            <b-col cols="8" offset="2" offset-sm="0" sm="8">
+              <b-form-input v-model="automaticThought.credenceBefore" type="range" min="0" max="100" step="10"></b-form-input>
+            </b-col>
+            </b-row>
+          </b-form-group>
+          <b-form-group
+            label="Distorsions"
+            >
+            <b-form-checkbox-group
+              v-model="selectedDistorsions"
+              :options="distorsions"
+              stacked
+              ></b-form-checkbox-group>
+          </b-form-group>
+      </div>
+      <div class="p-4 mb-4 bg-light rounded-lg shadow">
+        <b-form-group label="Technique">
+          <b-form-radio-group
+            v-model="selectedTechnique"
+            :options="techniques"
+            >
+          </b-form-radio-group>
+        </b-form-group>
+
+        <b-form-group
+          v-if="selectedTechnique == 'rational_response'"
+        >
+          <b-form-textarea
+            v-model="rationalResponse"
+            placeholder=""
+            rows="3"
+            max-rows="6"
+            >
+          </b-form-textarea>
+        </b-form-group>
+
+        <b-row v-if="selectedTechnique == 'evidence_technique'">
+          <b-col sm="6">
+            <b-form-group
+              label="Indices contre"
+              >
+              <b-form-textarea
+                v-model="evidenceAgainst"
+                placeholder=""
+                rows="3"
+                max-rows="6"
+                ></b-form-textarea>
+            </b-form-group>
           </b-col>
-          <b-col cols="8" offset="2" offset-sm="0" sm="8">
-          <b-form-input v-model="emotion.valueBefore" type="range" min="0" max="100" step="10"></b-form-input>
+
+          <b-col sm="6">
+            <b-form-group
+              label="Indices pour"
+              >
+              <b-form-textarea
+                v-model="evidenceInFavor"
+                placeholder=""
+                rows="3"
+                max-rows="6"
+                ></b-form-textarea>
+            </b-form-group>
           </b-col>
         </b-row>
-      </b-form-group>
-      <b-form-group
-        id="automatic-thought"
-        label="Pensée automatique"
-      >
-        <b-form-input
-          v-model="automaticThought.value"
-          placeholder="Pensée automatique"
-        ></b-form-input>
-      </b-form-group>
-      <b-form-group
-        label="Estimez votre degré de croyance dans cette pensée"
-      >
-        <b-row class="my-1">
-          <b-col cols="8" offset="2" offset-sm="0" sm="4">
-            {{ automaticThought.credenceBefore }} %
-          </b-col>
-          <b-col cols="8" offset="2" offset-sm="0" sm="8">
-            <b-form-input v-model="automaticThought.credenceBefore" type="range" min="0" max="100" step="10"></b-form-input>
-          </b-col>
-        </b-row>
-      </b-form-group>
-      <b-form-group
-        label="Distorsions"
-      >
-        <b-form-checkbox-group
-          v-model="selectedDistorsions"
-          :options="distorsions"
-          stacked
-        ></b-form-checkbox-group>
-      </b-form-group>
-      <b-form-group
-        label="Technique"
-      >
-        <b-form-radio-group
-          v-model="selectedTechnique"
-          :options="techniques"
-        ></b-form-radio-group>
-      </b-form-group>
 
+        <b-form-group
+          v-if="selectedTechnique == 'blame_pie'"
+        >
+          <div class="d-flex justify-content-center my-4">
+            Fonctionnalité en cours de développement
+          </div>
+        </b-form-group>
+      </div>
 
-      <b-form-group
-        v-if="selectedTechnique == 'rational_response'"
-        label="Réponse rationnelle"
-      >
-        <b-form-textarea
-          v-model="rationalResponse"
-          placeholder=""
-          rows="3"
-          max-rows="6"
-        ></b-form-textarea>
-      </b-form-group>
-
-      <b-row v-if="selectedTechnique == 'evidence_technique'">
-        <b-col sm="6">
-          <b-form-group
-            label="Indices contre"
-            >
-            <b-form-textarea
-              v-model="evidenceAgainst"
-              placeholder=""
-              rows="3"
-              max-rows="6"
-              ></b-form-textarea>
-          </b-form-group>
-        </b-col>
-
-        <b-col sm="6">
-          <b-form-group
-            label="Indices pour"
-            >
-            <b-form-textarea
-              v-model="evidenceInFavor"
-              placeholder=""
-              rows="3"
-              max-rows="6"
-              ></b-form-textarea>
-          </b-form-group>
-        </b-col>
-      </b-row>
-
-      <b-form-group
-        v-if="selectedTechnique == 'blame_pie'"
-        label="Tarte au blâme"
-      >
-        <div class="d-flex justify-content-center my-4">
-          ... Fonctionnalité en cours de préparation ...
-        </div>
-      </b-form-group>
-
-      <b-form-group
-        label="Re-notez votre degré de croyance dans votre pensée automatique"
-      >
-        <b-row class="my-1">
-          <b-col cols="8" offset="2" offset-sm="0" sm="4">
-            {{ automaticThought.credenceAfter }} %
-          </b-col>
+      <div class="p-4 mb-4 bg-light rounded-lg shadow">
+        <b-form-group
+          label="Re-notez votre degré de croyance dans votre pensée automatique"
+          >
+          <b-row class="my-1">
+            <b-col cols="8" offset="2" offset-sm="0" sm="4">
+              {{ automaticThought.credenceAfter }} %
+            </b-col>
           <b-col cols="8" offset="2" offset-sm="0" sm="8">
             <b-form-input
               v-model="automaticThought.credenceAfter"
@@ -151,39 +156,40 @@
               min="0"
               max="100"
               step="10"
-            ></b-form-input>
+              ></b-form-input>
           </b-col>
-        </b-row>
-      </b-form-group>
-
-      <b-form-group
-        id="upsetting-event"
-        label="Re-notez vos émotions"
-      >
-        <template v-if="noEmotionsFilled">
-          <b-row class="my-1">
-            <b-col cols="8" offset="2" offset-sm="4">
-              <b-form-input v-model="voidModel" type="range" min="0" max="100" step="10" disabled=true>
-              </b-form-input>
-            </b-col>
           </b-row>
-        </template>
-        <template v-else>
-          <template v-for="emotion in emotions" >
-            <b-row class="my-1" v-if="emotion.valueBefore != 0" :key="emotion.name">
-              <b-col cols="8" offset="2" offset-sm="0" sm="4">
-                <div class="d-flex justify-content-between">
-                  <div>{{ emotion.name }} :</div>
-                  <div>{{ emotion.valueAfter }}</div>
-                </div>
-              </b-col>
-              <b-col cols="8" offset="2" offset-sm="0">
-                <b-form-input v-model="emotion.valueAfter" type="range" min="0" max="100" step="10"></b-form-input>
+        </b-form-group>
+
+        <b-form-group
+          id="upsetting-event"
+          label="Re-notez vos émotions"
+          >
+          <template v-if="noEmotionsFilled">
+            <b-row class="my-1">
+              <b-col cols="8" offset="2" offset-sm="4">
+                <b-form-input v-model="voidModel" type="range" min="0" max="100" step="10" disabled>
+                </b-form-input>
               </b-col>
             </b-row>
           </template>
-        </template>
-      </b-form-group>
+          <template v-else>
+            <template v-for="emotion in emotions" >
+              <b-row class="my-1" v-if="emotion.valueBefore != 0" :key="emotion.name">
+                <b-col cols="8" offset="2" offset-sm="0" sm="4">
+                  <div class="d-flex justify-content-between">
+                    <div>{{ emotion.name }} :</div>
+                    <div>{{ emotion.valueAfter }}</div>
+                  </div>
+                </b-col>
+                <b-col cols="8" offset="2" offset-sm="0">
+                  <b-form-input v-model="emotion.valueAfter" type="range" min="0" max="100" step="10"></b-form-input>
+                </b-col>
+              </b-row>
+            </template>
+          </template>
+        </b-form-group>
+      </div>
       <div class="d-flex align-items-center justify-content-center mt-4 mb-3">
         <b-button
           variant="primary"
@@ -315,7 +321,8 @@ export default {
         `Pensée automatique : ${this.automaticThought.value}`,
         `Évolution du degré de croyance : de ${this.automaticThought.credenceBefore} % à ${this.automaticThought.credenceAfter} %`,
         `Distorsions identifiées : ${this.selectedDistorsions.join(', ')}`,
-        `Technique utilisée : ${this.selectedTechniqueToString}`
+        `Technique utilisée : ${this.selectedTechniqueToString}`,
+        `Réponse : ${(this.rationalResponse)}`
       ].join('\n\n')
     },
     selectedTechniqueToString(){
