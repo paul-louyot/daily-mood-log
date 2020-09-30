@@ -198,14 +198,14 @@
           Télécharger le compte-rendu (PDF)
         </b-button>
       </div>
-      <div class="d-flex align-items-center justify-content-center mb-4">
-        <b-button
-          variant="secondary"
-          v-on:click="download('compte-rendu.txt', fileContent)"
-        >
-          Télécharger le compte-rendu (texte)
-        </b-button>
-      </div>
+      <!-- <div class="d-flex align-items-center justify-content-center mb-4"> -->
+        <!-- <b-button -->
+          <!-- variant="secondary" -->
+          <!-- v-on:click="download('compte-rendu.txt', fileContent)" -->
+        <!-- > -->
+          <!-- Télécharger le compte-rendu (texte) -->
+        <!-- </b-button> -->
+      <!-- </div> -->
       <b-form-group>
         <div class="d-flex align-items-center justify-content-between mb-2">
           <b>
@@ -243,6 +243,13 @@
             <br>
             <b>Technique utilisée :</b>
             {{ selectedTechniqueToString }}
+            <br>
+            <br>
+            <template v-if="selectedTechnique === 'rational_response'">
+              <b>{{ selectedTechniqueToString }} :</b>
+              <br>
+              {{ rationalResponse }}
+            </template>
           </div>
         </div>
       </b-form-group>
