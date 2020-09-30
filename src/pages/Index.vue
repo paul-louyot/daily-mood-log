@@ -193,7 +193,7 @@
       <div class="d-flex align-items-center justify-content-center mt-4 mb-3">
         <b-button
           variant="primary"
-          v-on:click="downloadPDF(fileContent)"
+          v-on:click="downloadPDF()"
         >
           Télécharger le compte-rendu (PDF)
         </b-button>
@@ -212,36 +212,38 @@
             Compte-rendu
           </b>
         </div>
-        <div class="border border-primary p-2 rounded-lg shadow bg-light">
-          <b>Événement contrariant :</b>
-          {{ upsettingEvent }}
-          <br>
-          <br>
-          <b>Évolution des émotions :</b>
-          <br>
-          <template v-for="emotion in emotions">
-            <span v-if="emotion.valueBefore != 0" :key="emotion.name">
-              {{ emotion.name }} : de {{ emotion.valueBefore }}&nbsp;% à {{ emotion.valueAfter }}&nbsp;%<br>
-            </span>
-          </template>
-          <br>
-          <b>Pensée automatique :</b>
-          {{ automaticThought.value }}
-          <br>
-          <br>
-          <b>Évolution du degré de croyance&nbsp;:</b>
-          <template v-if="automaticThought.credenceBefore !== 0">
-            de {{ automaticThought.credenceBefore }}&nbsp;% à {{ automaticThought.credenceAfter }}&nbsp;%
-          </template>
-          <br>
-          <br>
-          <b>Distorsions identifiées :</b>
-          <br>
-          {{ selectedDistorsions.join(', ') }}
-          <br>
-          <br>
-          <b>Technique utilisée :</b>
-          {{ selectedTechniqueToString }}
+        <div class="border border-primary rounded-lg shadow">
+          <div class="p-4" ref="report">
+            <b>Événement contrariant :</b>
+            {{ upsettingEvent }}
+            <br>
+            <br>
+            <b>Évolution des émotions :</b>
+            <br>
+            <template v-for="emotion in emotions">
+              <span v-if="emotion.valueBefore != 0" :key="emotion.name">
+                {{ emotion.name }} : de {{ emotion.valueBefore }}&nbsp;% à {{ emotion.valueAfter }}&nbsp;%<br>
+              </span>
+            </template>
+            <br>
+            <b>Pensée automatique :</b>
+            {{ automaticThought.value }}
+            <br>
+            <br>
+            <b>Évolution du degré de croyance&nbsp;:</b>
+            <template v-if="automaticThought.credenceBefore !== 0">
+              de {{ automaticThought.credenceBefore }}&nbsp;% à {{ automaticThought.credenceAfter }}&nbsp;%
+            </template>
+            <br>
+            <br>
+            <b>Distorsions identifiées :</b>
+            <br>
+            {{ selectedDistorsions.join(', ') }}
+            <br>
+            <br>
+            <b>Technique utilisée :</b>
+            {{ selectedTechniqueToString }}
+          </div>
         </div>
       </b-form-group>
     </b-container>
@@ -249,7 +251,6 @@
 </template>
 
 <script>
-import { jsPDF } from "jspdf";
 export default {
   data() {
     return {
@@ -341,6 +342,12 @@ export default {
     title: 'Accueil'
   },
   methods: {
+    addScript(url){
+      var script = document.createElement('script');
+      script.type = 'application/javascript';
+      script.src = url;
+      document.head.appendChild(script);
+    },
     download(filename, text){
       var element = document.createElement('a');
       element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -354,11 +361,15 @@ export default {
       document.body.removeChild(element);
     },
     downloadPDF(text){
-      const doc = new jsPDF();
-      doc.text(text, 10, 20);
       var today = new Date();
       var date = [today.getFullYear(), (today.getMonth() + 1), today.getDate()].join('-');
-      doc.save("compte-rendu-" + date);
+      var fileName = "compte-rendu_" + date;
+
+      var element = this.$refs.report
+      var opt = {
+        filename: fileName,
+      };
+      html2pdf().set(opt).from(element).save();
     },
     emailLink(){
       return `mailto:pa.louyot@gmail.com?body=${this.fileContent}`
@@ -425,6 +436,7 @@ export default {
     },
   },
   mounted() {
+    this.addScript('https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js');
   },
 }
 </script>
