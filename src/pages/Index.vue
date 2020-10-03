@@ -87,6 +87,7 @@
           <b-form-radio-group
             v-model="selectedTechnique"
             :options="techniques"
+            stacked
             >
           </b-form-radio-group>
         </b-form-group>
@@ -144,6 +145,19 @@
             🔧 Fonctionnalité en cours de développement 🔧
           </div>
         </b-form-group>
+        <b-form-group
+          v-if="selectedTechnique == 'inquiry_technique'"
+          label="Compte-rendu"
+        >
+          <b-form-textarea
+            v-model="inquiryReport"
+            placeholder=""
+            rows="3"
+            max-rows="6"
+            >
+          </b-form-textarea>
+        </b-form-group>
+
       </div>
 
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
@@ -212,41 +226,63 @@
         </div>
         <div class="border border-primary rounded-lg shadow">
           <div class="p-4" ref="report">
-            <b>Événement contrariant :</b>
-            {{ upsettingEvent }}
-            <br>
-            <br>
-            <b>Évolution des émotions :</b>
-            <br>
-            <template v-for="emotion in emotions">
-              <span v-if="emotion.valueBefore != 0" :key="emotion.name">
-                {{ emotion.name }} : de {{ emotion.valueBefore }}&nbsp;% à {{ emotion.valueAfter }}&nbsp;%<br>
-              </span>
-            </template>
-            <br>
-            <b>Pensée automatique :</b>
-            {{ automaticThought.value }}
-            <br>
-            <br>
-            <b>Évolution du degré de croyance&nbsp;:</b>
-            <template v-if="automaticThought.credenceBefore !== 0">
-              de {{ automaticThought.credenceBefore }}&nbsp;% à {{ automaticThought.credenceAfter }}&nbsp;%
-            </template>
-            <br>
-            <br>
-            <b>Distorsions identifiées :</b>
-            <br>
-            {{ selectedDistorsions.join(', ') }}
-            <br>
-            <br>
-            <b>Technique utilisée :</b>
-            {{ selectedTechniqueToString }}
-            <br>
-            <br>
+            <div class="mb-3">
+              <div>
+                <b>Événement contrariant :</b>
+              </div>
+              <div>
+                {{ upsettingEvent }}
+              </div>
+            </div>
+            <div class="mb-3">
+              <div>
+                <b>Évolution des émotions :</b>
+              </div>
+              <template v-for="emotion in emotions">
+                <div v-if="emotion.valueBefore != 0" :key="emotion.name">
+                  {{ emotion.name }} : de {{ emotion.valueBefore }}&nbsp;% à {{ emotion.valueAfter }}&nbsp;%
+                </div>
+              </template>
+            </div>
+            <div class="mb-3">
+              <b>Pensée automatique :</b>
+              {{ automaticThought.value }}
+            </div>
+            <div class="mb-3">
+              <b>Évolution du degré de croyance&nbsp;:</b>
+              <template v-if="automaticThought.credenceBefore !== 0">
+                de {{ automaticThought.credenceBefore }}&nbsp;% à {{ automaticThought.credenceAfter }}&nbsp;%
+              </template>
+            </div>
+            <div class="mb-3">
+              <div>
+                <b>Distorsions identifiées :</b>
+              </div>
+              <div>
+                {{ selectedDistorsions.join(', ') }}
+              </div>
+            </div>
+            <div class="mb-3">
+              <b>Technique utilisée :</b>
+              {{ selectedTechniqueToString }}
+            </div>
+
             <template v-if="selectedTechnique === 'rational_response'">
-              <b>{{ selectedTechniqueToString }} :</b>
-              <br>
+              <div>
+                <b>{{ selectedTechniqueToString }} :</b>
+              </div>
               <div v-html="stringToHTML(rationalResponse)"></div>
+            </template>
+            <template v-if="selectedTechnique === 'evidence_technique'">
+              <div class="font-weight-bold">Indices pour :</div>
+              <div class="mb-2" v-html="stringToHTML(evidenceInFavor)"></div>
+              <div class="font-weight-bold">Indices contre :</div>
+              <div class="mb-1" v-html="stringToHTML(evidenceAgainst)"></div>
+            </template>
+
+            <template v-if="selectedTechnique === 'inquiry_technique'">
+              <div class="font-weight-bold">Résultat :</div>
+              <div v-html="stringToHTML(inquiryReport)"></div>
             </template>
           </div>
         </div>
@@ -268,6 +304,7 @@ export default {
       report: '',
       voidModel: "0",
       rationalResponse: '',
+      inquiryReport: '',
       evidenceAgainst: '',
       evidenceInFavor: '',
       selectedDistorsions: [],
@@ -316,6 +353,7 @@ export default {
         { text: 'Technique de la preuve', value: 'evidence_technique' },
         { text: 'Tarte au blâme', value: 'blame_pie' },
         { text: 'Écoute active', value: 'active_listening' },
+        { text: 'Technique de l\'enquête', value: 'inquiry_technique' },
       ],
     }
   },
@@ -423,6 +461,7 @@ export default {
       this.selectedDistorsions = [];
       this.selectedTechnique = '';
       this.rationalResponse = '';
+      this.inquiryReport = '';
       this.emotions = [
         { name: 'Triste', valueBefore: "0", valueAfter: "0" },
         { name: 'Embarrassé', valueBefore: "0", valueAfter: "0" },
