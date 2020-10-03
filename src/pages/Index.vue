@@ -103,39 +103,45 @@
           </b-form-textarea>
         </b-form-group>
 
-        <b-row v-if="selectedTechnique == 'evidence_technique'">
-          <b-col sm="6">
-            <b-form-group
-              label="Indices contre"
-              >
-              <b-form-textarea
-                v-model="evidenceAgainst"
-                placeholder=""
-                rows="3"
-                max-rows="6"
-                ></b-form-textarea>
-            </b-form-group>
-          </b-col>
-
-          <b-col sm="6">
-            <b-form-group
-              label="Indices pour"
-              >
-              <b-form-textarea
-                v-model="evidenceInFavor"
-                placeholder=""
-                rows="3"
-                max-rows="6"
-                ></b-form-textarea>
-            </b-form-group>
-          </b-col>
-        </b-row>
+        <template v-if="selectedTechnique == 'evidence_technique'">
+          <b-row class="mb-2">
+            <b-col>
+              Pensée : {{ automaticThought.value }}
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col sm="6">
+              <b-form-group
+                label="Indices pour"
+                >
+                <b-form-textarea
+                  v-model="evidenceInFavor"
+                  placeholder=""
+                  rows="3"
+                  max-rows="6"
+                  ></b-form-textarea>
+              </b-form-group>
+            </b-col>
+            <b-col sm="6">
+              <b-form-group
+                label="Indices contre"
+                >
+                <b-form-textarea
+                  v-model="evidenceAgainst"
+                  placeholder=""
+                  rows="3"
+                  max-rows="6"
+                  ></b-form-textarea>
+              </b-form-group>
+            </b-col>
+          </b-row>
+        </template>
 
         <b-form-group
           v-if="selectedTechnique == 'blame_pie'"
         >
           <div class="d-flex justify-content-center my-4">
-            Fonctionnalité en cours de développement
+            🔧 Fonctionnalité en cours de développement 🔧
           </div>
         </b-form-group>
       </div>
@@ -198,14 +204,6 @@
           Télécharger le compte-rendu (PDF)
         </b-button>
       </div>
-      <!-- <div class="d-flex align-items-center justify-content-center mb-4"> -->
-        <!-- <b-button -->
-          <!-- variant="secondary" -->
-          <!-- v-on:click="download('compte-rendu.txt', fileContent)" -->
-        <!-- > -->
-          <!-- Télécharger le compte-rendu (texte) -->
-        <!-- </b-button> -->
-      <!-- </div> -->
       <b-form-group>
         <div class="d-flex align-items-center justify-content-between mb-2">
           <b>
@@ -248,7 +246,7 @@
             <template v-if="selectedTechnique === 'rational_response'">
               <b>{{ selectedTechniqueToString }} :</b>
               <br>
-              {{ rationalResponse }}
+              <div v-html="stringToHTML(rationalResponse)"></div>
             </template>
           </div>
         </div>
@@ -343,7 +341,7 @@ export default {
     },
     noEmotionsFilled(){
       return this.emotions.map(emotion => emotion.valueBefore === "0").every(x => x === true);
-    }
+    },
   },
   metaInfo: {
     title: 'Accueil'
@@ -440,6 +438,9 @@ export default {
         { name: 'Déprimé', valueBefore: "0", valueAfter: "0" },
         { name: 'Désespéré', valueBefore: "0", valueAfter: "0" },
       ];
+    },
+    stringToHTML(string){
+      return string.replace(/\n/g, '<br>')
     },
   },
   mounted() {
