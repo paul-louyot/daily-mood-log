@@ -8,5 +8,9 @@ module.exports = {
   siteName: 'Daily Mood Log',
   siteUrl: 'https://paul-louyot.github.io',
   pathPrefix: '/daily-mood-log',
+  icon: {
+    favicon: './src/android-chrome-512x512.png',
+    touchicon: './src/apple-touch-icon.png',
+  },
   plugins: []
 }
