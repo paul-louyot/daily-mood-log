@@ -284,6 +284,7 @@
               <div class="font-weight-bold">Résultat :</div>
               <div v-html="stringToHTML(inquiryReport)"></div>
             </template>
+            <PieChart/>
           </div>
         </div>
       </b-form-group>
@@ -292,7 +293,11 @@
 </template>
 
 <script>
+import PieChart from '~/components/PieChart.vue'
 export default {
+  components: {
+    PieChart
+  },
   data() {
     return {
       automaticThought: {
