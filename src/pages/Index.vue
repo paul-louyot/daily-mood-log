@@ -141,7 +141,13 @@
         <b-form-group
           v-if="selectedTechnique == 'blame_pie'"
         >
+          <b-form-input
+            v-model="automaticThought.value"
+            placeholder="Pensée automatique"
+            >
+          </b-form-input>
           <div class="d-flex justify-content-center my-4">
+
             🔧 Fonctionnalité en cours de développement 🔧
           </div>
         </b-form-group>
@@ -284,7 +290,10 @@
               <div class="font-weight-bold">Résultat :</div>
               <div v-html="stringToHTML(inquiryReport)"></div>
             </template>
-            <PieChart/>
+            <template v-if="selectedTechnique === 'blame_pie'">
+            </template>
+            <PieChart v-bind:data="chartData" v-bind:options="chartOptions"/>
+
           </div>
         </div>
       </b-form-group>
@@ -305,6 +314,41 @@ export default {
         credenceBefore: 0,
         credenceAfter: 0,
       },
+      blameList: [
+        { blameValue: 'les autres dev',
+          blameStrength: 1},
+        { blameValue: 'ma connaissance du code',
+          blameStrength: 1},
+        { blameValue: 'mon état de fatigue',
+          blameStrength: 1},
+        { blameValue: 'l\'inconnu en début de projet',
+          blameStrength: 2},
+        { blameValue: 'd\'autres trucs',
+          blameStrength: 2},
+      ],
+      //chartData: {
+      //  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      //  datasets: [{
+      //    data: [12, 19, 3, 5, 2, 3],
+      //    backgroundColor: [
+      //      'rgba(255, 99, 132, 0.2)',
+      //      'rgba(54, 162, 235, 0.2)',
+      //      'rgba(255, 206, 86, 0.2)',
+      //      'rgba(75, 192, 192, 0.2)',
+      //      'rgba(153, 102, 255, 0.2)',
+      //      'rgba(255, 159, 64, 0.2)'
+      //    ],
+      //    borderColor: [
+      //      'rgba(255, 99, 132, 1)',
+      //      'rgba(54, 162, 235, 1)',
+      //      'rgba(255, 206, 86, 1)',
+      //      'rgba(75, 192, 192, 1)',
+      //      'rgba(153, 102, 255, 1)',
+      //      'rgba(255, 159, 64, 1)'
+      //    ],
+      //  }]
+      //},
+      chartOptions: {},
       upsettingEvent: '',
       report: '',
       voidModel: "0",
@@ -363,6 +407,15 @@ export default {
     }
   },
   computed: {
+    chartData(){
+      return {
+        labels: this.blameList.map(x => x.blameValue),
+        datasets: [{
+          data: this.blameList.map(x => x.blameStrength),
+          backgroundColor: this.chartColors(211, 100, 50, this.blameList),
+        }]
+      }
+    },
     fileContent(){
       return [
         `Événement contrariant : ${this.upsettingEvent}`,
@@ -390,11 +443,19 @@ export default {
     title: 'Accueil'
   },
   methods: {
+    addData(){
+      this.blameList.push({blameValue: 'test', blameStrength: 1});
+    },
     addScript(url){
       var script = document.createElement('script');
       script.type = 'application/javascript';
       script.src = url;
       document.head.appendChild(script);
+    },
+    chartColors(hue, saturation, light, array){
+      return array.map((x, index) => {
+        return `hsl(${hue}, ${saturation}%, ${light + 5 * index}%)`
+      });
     },
     download(filename, text){
       var element = document.createElement('a');
