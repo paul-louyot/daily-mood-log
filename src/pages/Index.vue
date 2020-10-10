@@ -138,19 +138,30 @@
           </b-row>
         </template>
 
-        <b-form-group
-          v-if="selectedTechnique == 'blame_pie'"
-        >
-          <b-form-input
-            v-model="automaticThought.value"
-            placeholder="Pensée automatique"
-            >
-          </b-form-input>
+        <template v-if="selectedTechnique == 'blame_pie'">
           <div class="d-flex justify-content-center my-4">
-
             🔧 Fonctionnalité en cours de développement 🔧
           </div>
-        </b-form-group>
+          <b-form-group
+            label="Problème"
+            >
+            <b-form-textarea
+              v-model="blameOrigin"
+              placeholder="Décrivez ce pour quoi vous vous blâmez"
+              rows="2"
+              max-rows="6"
+              ></b-form-textarea>
+          </b-form-group>
+          <b-form-group label="Causes de ce problème">
+            <template v-for="blame in blameList">
+              <b-form-input
+                v-model="blame.blameValue"
+              >
+              </b-form-input>
+            </template>
+          </b-form-group>
+          <PieChart v-bind:data="chartData" v-bind:options="chartOptions"/>
+        </template>
         <b-form-group
           v-if="selectedTechnique == 'inquiry_technique'"
           label="Compte-rendu"
@@ -163,7 +174,6 @@
             >
           </b-form-textarea>
         </b-form-group>
-
       </div>
 
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
@@ -292,7 +302,6 @@
             </template>
             <template v-if="selectedTechnique === 'blame_pie'">
             </template>
-            <PieChart v-bind:data="chartData" v-bind:options="chartOptions"/>
 
           </div>
         </div>
@@ -314,16 +323,17 @@ export default {
         credenceBefore: 0,
         credenceAfter: 0,
       },
+      blameOrigin: '',
       blameList: [
-        { blameValue: 'les autres dev',
+        { blameValue: 'Cause 1',
           blameStrength: 1},
-        { blameValue: 'ma connaissance du code',
+        { blameValue: 'Cause 2',
           blameStrength: 1},
-        { blameValue: 'mon état de fatigue',
+        { blameValue: 'Cause 3',
           blameStrength: 1},
-        { blameValue: 'l\'inconnu en début de projet',
+        { blameValue: 'Cause 4',
           blameStrength: 2},
-        { blameValue: 'd\'autres trucs',
+        { blameValue: 'Cause 5',
           blameStrength: 2},
       ],
       //chartData: {
