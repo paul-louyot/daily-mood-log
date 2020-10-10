@@ -19,7 +19,7 @@ export default {
   },
   watch: {
     data: function(){
-      //this.renderChart(this.data, this.options);
+      this.renderChart(this.data, this.options);
     }
   }
 }

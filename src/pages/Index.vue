@@ -325,16 +325,16 @@ export default {
       },
       blameOrigin: '',
       blameList: [
-        { blameValue: 'Cause 1',
+        { blameValue: '',
           blameStrength: 1},
-        { blameValue: 'Cause 2',
+        { blameValue: '',
           blameStrength: 1},
-        { blameValue: 'Cause 3',
+        { blameValue: '',
           blameStrength: 1},
-        { blameValue: 'Cause 4',
-          blameStrength: 2},
-        { blameValue: 'Cause 5',
-          blameStrength: 2},
+        { blameValue: '',
+          blameStrength: 1},
+        { blameValue: '',
+          blameStrength: 1},
       ],
       //chartData: {
       //  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
@@ -358,7 +358,14 @@ export default {
       //    ],
       //  }]
       //},
-      chartOptions: {},
+      chartOptions: {
+        animation: {
+          duration: 0,
+        },
+        legend: {
+          display: true
+        }
+      },
       upsettingEvent: '',
       report: '',
       voidModel: "0",
@@ -422,7 +429,7 @@ export default {
         labels: this.blameList.map(x => x.blameValue),
         datasets: [{
           data: this.blameList.map(x => x.blameStrength),
-          backgroundColor: this.chartColors(211, 100, 50, this.blameList),
+          backgroundColor: this.chartColors(211, 100, 30, this.blameList),
         }]
       }
     },
@@ -464,7 +471,7 @@ export default {
     },
     chartColors(hue, saturation, light, array){
       return array.map((x, index) => {
-        return `hsl(${hue}, ${saturation}%, ${light + 5 * index}%)`
+        return `hsl(${hue}, ${saturation}%, ${light + 10 * index}%)`
       });
     },
     download(filename, text){
