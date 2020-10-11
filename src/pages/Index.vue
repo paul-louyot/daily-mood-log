@@ -162,7 +162,7 @@
           </b-form-group>
           <b-row>
             <b-col>
-              <PieChart v-bind:data="chartData" v-bind:options="chartOptions"/>
+              <PieChart v-bind:data="chartData" v-bind:options="chartOptions" class="p-sm-5"/>
             </b-col>
           </b-row>
         </template>
