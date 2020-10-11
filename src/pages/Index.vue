@@ -155,12 +155,16 @@
           <b-form-group label="Causes de ce problème">
             <template v-for="blame in blameList">
               <b-form-input
-                v-model="blame.blameValue"
+                v-model="blame.value"
               >
               </b-form-input>
             </template>
           </b-form-group>
-          <PieChart v-bind:data="chartData" v-bind:options="chartOptions"/>
+          <b-row>
+            <b-col>
+              <PieChart v-bind:data="chartData" v-bind:options="chartOptions"/>
+            </b-col>
+          </b-row>
         </template>
         <b-form-group
           v-if="selectedTechnique == 'inquiry_technique'"
@@ -301,8 +305,8 @@
               <div v-html="stringToHTML(inquiryReport)"></div>
             </template>
             <template v-if="selectedTechnique === 'blame_pie'">
+              <!-- TODO -->
             </template>
-
           </div>
         </div>
       </b-form-group>
@@ -325,16 +329,11 @@ export default {
       },
       blameOrigin: '',
       blameList: [
-        { blameValue: '',
-          blameStrength: 1},
-        { blameValue: '',
-          blameStrength: 1},
-        { blameValue: '',
-          blameStrength: 1},
-        { blameValue: '',
-          blameStrength: 1},
-        { blameValue: '',
-          blameStrength: 1},
+        { value: '', strength: 1},
+        { value: '', strength: 1},
+        { value: '', strength: 1},
+        { value: '', strength: 1},
+        { value: '', strength: 1},
       ],
       //chartData: {
       //  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
@@ -426,9 +425,9 @@ export default {
   computed: {
     chartData(){
       return {
-        labels: this.blameList.map(x => x.blameValue),
+        labels: this.blameList.map(blame => blame.value),
         datasets: [{
-          data: this.blameList.map(x => x.blameStrength),
+          data: this.blameList.map(blame => blame.strength),
           backgroundColor: this.chartColors(211, 100, 30, this.blameList),
         }]
       }
@@ -461,7 +460,7 @@ export default {
   },
   methods: {
     addData(){
-      this.blameList.push({blameValue: 'test', blameStrength: 1});
+      this.blameList.push({value: 'test', strength: 1});
     },
     addScript(url){
       var script = document.createElement('script');
