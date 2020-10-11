@@ -138,13 +138,34 @@
           </b-row>
         </template>
 
-        <b-form-group
-          v-if="selectedTechnique == 'blame_pie'"
-        >
+        <template v-if="selectedTechnique == 'blame_pie'">
           <div class="d-flex justify-content-center my-4">
             🔧 Fonctionnalité en cours de développement 🔧
           </div>
-        </b-form-group>
+          <b-form-group
+            label="Problème"
+            >
+            <b-form-textarea
+              v-model="blameOrigin"
+              placeholder="Décrivez ce pour quoi vous vous blâmez"
+              rows="2"
+              max-rows="6"
+              ></b-form-textarea>
+          </b-form-group>
+          <b-form-group label="Causes de ce problème">
+            <template v-for="blame in blameList">
+              <b-form-input
+                v-model="blame.value"
+              >
+              </b-form-input>
+            </template>
+          </b-form-group>
+          <b-row>
+            <b-col>
+              <PieChart v-bind:data="chartData" v-bind:options="chartOptions"/>
+            </b-col>
+          </b-row>
+        </template>
         <b-form-group
           v-if="selectedTechnique == 'inquiry_technique'"
           label="Compte-rendu"
@@ -157,7 +178,6 @@
             >
           </b-form-textarea>
         </b-form-group>
-
       </div>
 
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
@@ -284,6 +304,9 @@
               <div class="font-weight-bold">Résultat :</div>
               <div v-html="stringToHTML(inquiryReport)"></div>
             </template>
+            <template v-if="selectedTechnique === 'blame_pie'">
+              <!-- TODO -->
+            </template>
           </div>
         </div>
       </b-form-group>
@@ -292,13 +315,55 @@
 </template>
 
 <script>
+import PieChart from '~/components/PieChart.vue'
 export default {
+  components: {
+    PieChart
+  },
   data() {
     return {
       automaticThought: {
         value: '',
         credenceBefore: 0,
         credenceAfter: 0,
+      },
+      blameOrigin: '',
+      blameList: [
+        { value: '', strength: 1},
+        { value: '', strength: 1},
+        { value: '', strength: 1},
+        { value: '', strength: 1},
+        { value: '', strength: 1},
+      ],
+      //chartData: {
+      //  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      //  datasets: [{
+      //    data: [12, 19, 3, 5, 2, 3],
+      //    backgroundColor: [
+      //      'rgba(255, 99, 132, 0.2)',
+      //      'rgba(54, 162, 235, 0.2)',
+      //      'rgba(255, 206, 86, 0.2)',
+      //      'rgba(75, 192, 192, 0.2)',
+      //      'rgba(153, 102, 255, 0.2)',
+      //      'rgba(255, 159, 64, 0.2)'
+      //    ],
+      //    borderColor: [
+      //      'rgba(255, 99, 132, 1)',
+      //      'rgba(54, 162, 235, 1)',
+      //      'rgba(255, 206, 86, 1)',
+      //      'rgba(75, 192, 192, 1)',
+      //      'rgba(153, 102, 255, 1)',
+      //      'rgba(255, 159, 64, 1)'
+      //    ],
+      //  }]
+      //},
+      chartOptions: {
+        animation: {
+          duration: 0,
+        },
+        legend: {
+          display: true
+        }
       },
       upsettingEvent: '',
       report: '',
@@ -358,6 +423,15 @@ export default {
     }
   },
   computed: {
+    chartData(){
+      return {
+        labels: this.blameList.map(blame => blame.value),
+        datasets: [{
+          data: this.blameList.map(blame => blame.strength),
+          backgroundColor: this.chartColors(211, 100, 30, this.blameList),
+        }]
+      }
+    },
     fileContent(){
       return [
         `Événement contrariant : ${this.upsettingEvent}`,
@@ -385,11 +459,19 @@ export default {
     title: 'Accueil'
   },
   methods: {
+    addData(){
+      this.blameList.push({value: 'test', strength: 1});
+    },
     addScript(url){
       var script = document.createElement('script');
       script.type = 'application/javascript';
       script.src = url;
       document.head.appendChild(script);
+    },
+    chartColors(hue, saturation, light, array){
+      return array.map((x, index) => {
+        return `hsl(${hue}, ${saturation}%, ${light + 10 * index}%)`
+      });
     },
     download(filename, text){
       var element = document.createElement('a');
