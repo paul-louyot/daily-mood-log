@@ -152,12 +152,44 @@
               max-rows="6"
               ></b-form-textarea>
           </b-form-group>
-          <b-form-group label="Causes de ce problème">
+          <b-form-group>
+            <b-row>
+              <b-col cols=8>
+                Causes de ce problème
+                </b-form-input>
+              </b-col>
+              <b-col cols=2>
+                Importance,
+                de 1 à 5
+              </b-col>
+              <b-col cols=2>
+                Vous êtes responsable
+              </b-col>
+            </b-row>
             <template v-for="blame in blameList">
-              <b-form-input
-                v-model="blame.value"
-              >
-              </b-form-input>
+              <b-row>
+                <b-col cols=8>
+                  <b-form-input
+                    v-model="blame.value"
+                    >
+                  </b-form-input>
+                </b-col>
+                <b-col cols=2>
+                  <b-form-select
+                    v-model="blame.strength"
+                    v-bind:options="strengthOptions"
+                    >
+                  </b-form-select>
+                </b-col>
+                <b-col cols=2>
+                  <b-form-checkbox
+                    v-model="blame.isLegit"
+                    value="true"
+                    unchecked-value="false"
+                    >
+                  </b-form-checkbox>
+                </b-col>
+              </b-row>
             </template>
           </b-form-group>
           <b-row>
@@ -322,6 +354,12 @@ export default {
   },
   data() {
     return {
+      mockupBlames: [
+        {str: 'aaa', bool: true},
+        {str: 'bbb', bool: false},
+        {str: 'aaa', bool: true},
+        {str: 'bbb', bool: false},
+      ],
       automaticThought: {
         value: '',
         credenceBefore: 0,
@@ -329,12 +367,13 @@ export default {
       },
       blameOrigin: '',
       blameList: [
-        { value: '', strength: 1},
-        { value: '', strength: 1},
-        { value: '', strength: 1},
-        { value: '', strength: 1},
-        { value: '', strength: 1},
+        { value: '', strength: 1, isLegit: false },
+        { value: '', strength: 1, isLegit: false },
+        { value: '', strength: 1, isLegit: false },
+        { value: '', strength: 1, isLegit: false },
+        { value: '', strength: 1, isLegit: false },
       ],
+      strengthOptions: [1, 2, 3, 4, 5],
       //chartData: {
       //  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
       //  datasets: [{
@@ -373,7 +412,7 @@ export default {
       evidenceAgainst: '',
       evidenceInFavor: '',
       selectedDistorsions: [],
-      selectedTechnique: '',
+      selectedTechnique: 'blame_pie',
       distorsions: [
         //'All-or-nothing thinking',
         //'Overgeneralization',
@@ -423,6 +462,9 @@ export default {
     }
   },
   computed: {
+    sortedMockupBlames(){
+      return this.sortedMocup(this.mockupBlames);
+    },
     chartData(){
       return {
         labels: this.blameList.map(blame => blame.value),
@@ -468,8 +510,8 @@ export default {
       script.src = url;
       document.head.appendChild(script);
     },
-    chartColors(hue, saturation, light, array){
-      return array.map((x, index) => {
+    chartColors(hue, saturation, light, blameList){
+      return blameList.map((x, index) => {
         return `hsl(${hue}, ${saturation}%, ${light + 10 * index}%)`
       });
     },
@@ -559,6 +601,10 @@ export default {
         { name: 'Déprimé', valueBefore: "0", valueAfter: "0" },
         { name: 'Désespéré', valueBefore: "0", valueAfter: "0" },
       ];
+    },
+    sortedMocup(object){
+      return Object.assign({}, object);
+      //TODO end this
     },
     stringToHTML(string){
       return string.replace(/\n/g, '<br>')
