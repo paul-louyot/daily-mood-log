@@ -152,12 +152,43 @@
               max-rows="6"
               ></b-form-textarea>
           </b-form-group>
-          <b-form-group label="Causes de ce problème">
+          <b-form-group>
+            <b-row>
+              <b-col cols=8>
+                Causes de ce problème
+                </b-form-input>
+              </b-col>
+              <b-col cols=2>
+                Importance
+                (de 1 à 5)
+              </b-col>
+              <b-col cols=2>
+                Vous êtes responsable
+              </b-col>
+            </b-row>
             <template v-for="blame in blameList">
-              <b-form-input
-                v-model="blame.value"
-              >
-              </b-form-input>
+              <b-row>
+                <b-col cols=8>
+                  <b-form-input
+                    v-model="blame.value"
+                    >
+                  </b-form-input>
+                </b-col>
+                <b-col cols=2>
+                  <b-form-select
+                    v-model="blame.strength"
+                    v-bind:options="strengthOptions"
+                    >
+                  </b-form-select>
+                </b-col>
+                <b-col cols=2>
+                  <b-form-checkbox
+                    v-model="blame.isLegit"
+                    value="true"
+                    >
+                  </b-form-checkbox>
+                </b-col>
+              </b-row>
             </template>
           </b-form-group>
           <b-row>
@@ -305,7 +336,11 @@
               <div v-html="stringToHTML(inquiryReport)"></div>
             </template>
             <template v-if="selectedTechnique === 'blame_pie'">
-              <!-- TODO -->
+              <b-row>
+                <b-col>
+                  <PieChart v-bind:data="chartData" v-bind:options="chartOptions" class="p-sm-5"/>
+                </b-col>
+              </b-row>
             </template>
           </div>
         </div>
@@ -329,34 +364,13 @@ export default {
       },
       blameOrigin: '',
       blameList: [
-        { value: '', strength: 1},
-        { value: '', strength: 1},
-        { value: '', strength: 1},
-        { value: '', strength: 1},
-        { value: '', strength: 1},
+        { value: '', strength: 1, isLegit: false },
+        { value: '', strength: 1, isLegit: false },
+        { value: '', strength: 1, isLegit: false },
+        { value: '', strength: 1, isLegit: false },
+        { value: '', strength: 1, isLegit: false },
       ],
-      //chartData: {
-      //  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-      //  datasets: [{
-      //    data: [12, 19, 3, 5, 2, 3],
-      //    backgroundColor: [
-      //      'rgba(255, 99, 132, 0.2)',
-      //      'rgba(54, 162, 235, 0.2)',
-      //      'rgba(255, 206, 86, 0.2)',
-      //      'rgba(75, 192, 192, 0.2)',
-      //      'rgba(153, 102, 255, 0.2)',
-      //      'rgba(255, 159, 64, 0.2)'
-      //    ],
-      //    borderColor: [
-      //      'rgba(255, 99, 132, 1)',
-      //      'rgba(54, 162, 235, 1)',
-      //      'rgba(255, 206, 86, 1)',
-      //      'rgba(75, 192, 192, 1)',
-      //      'rgba(153, 102, 255, 1)',
-      //      'rgba(255, 159, 64, 1)'
-      //    ],
-      //  }]
-      //},
+      strengthOptions: [1, 2, 3, 4, 5],
       chartOptions: {
         animation: {
           duration: 0,
@@ -425,10 +439,10 @@ export default {
   computed: {
     chartData(){
       return {
-        labels: this.blameList.map(blame => blame.value),
+        labels: this.sortedBlames.map(blame => blame.value),
         datasets: [{
-          data: this.blameList.map(blame => blame.strength),
-          backgroundColor: this.chartColors(211, 100, 30, this.blameList),
+          data: this.sortedBlames.map(blame => blame.strength),
+          backgroundColor: this.sortedBlamesColors,
         }]
       }
     },
@@ -454,6 +468,24 @@ export default {
     noEmotionsFilled(){
       return this.emotions.map(emotion => emotion.valueBefore === "0").every(x => x === true);
     },
+    nonLegitBlames(){
+      return this.blameList.filter(blame => blame.isLegit !== "true");
+    },
+    legitBlames(){
+      return this.blameList.filter(blame => blame.isLegit == "true");
+    },
+    sortedBlames(){
+      return this.legitBlames.concat(this.nonLegitBlames);
+    },
+    legitBlamesColors(){
+      return this.chartColors(211, 100, 50, 15, this.legitBlames);
+    },
+    nonLegitBlamesColors(){
+      return this.chartColors(208, 7, 50, 15, this.nonLegitBlames);
+    },
+    sortedBlamesColors(){
+      return this.legitBlamesColors.concat(this.nonLegitBlamesColors);
+    },
   },
   metaInfo: {
     title: 'Accueil'
@@ -468,9 +500,17 @@ export default {
       script.src = url;
       document.head.appendChild(script);
     },
-    chartColors(hue, saturation, light, array){
-      return array.map((x, index) => {
-        return `hsl(${hue}, ${saturation}%, ${light + 10 * index}%)`
+    chartColors(hue, saturation, light, lightRange, blameList){
+      var lightStart, step;
+      if (blameList.length == 1){
+        lightStart = light;
+        step = 0;
+      } else {
+        lightStart = light - lightRange / 2;
+        step = lightRange / (blameList.length - 1);
+      }
+      return blameList.map((x, index) => {
+        return `hsl(${hue}, ${saturation}%, ${lightStart + step * index}%)`
       });
     },
     download(filename, text){
