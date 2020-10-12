@@ -354,12 +354,6 @@ export default {
   },
   data() {
     return {
-      mockupBlames: [
-        {str: 'aaa', bool: true},
-        {str: 'bbb', bool: false},
-        {str: 'aaa', bool: true},
-        {str: 'bbb', bool: false},
-      ],
       automaticThought: {
         value: '',
         credenceBefore: 0,
@@ -462,9 +456,6 @@ export default {
     }
   },
   computed: {
-    sortedMockupBlames(){
-      return this.sortedMocup(this.mockupBlames);
-    },
     chartData(){
       return {
         labels: this.blameList.map(blame => blame.value),
@@ -495,6 +486,12 @@ export default {
     },
     noEmotionsFilled(){
       return this.emotions.map(emotion => emotion.valueBefore === "0").every(x => x === true);
+    },
+    nonLegitBlames(){
+      return this.blameList.filter(blame => blame.isLegit == "false")
+    },
+    legitBlames(){
+      return this.blameList.filter(blame => blame.isLegit == "true")
     },
   },
   metaInfo: {
@@ -601,10 +598,6 @@ export default {
         { name: 'Déprimé', valueBefore: "0", valueAfter: "0" },
         { name: 'Désespéré', valueBefore: "0", valueAfter: "0" },
       ];
-    },
-    sortedMocup(object){
-      return Object.assign({}, object);
-      //TODO end this
     },
     stringToHTML(string){
       return string.replace(/\n/g, '<br>')
