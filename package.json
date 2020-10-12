@@ -6,7 +6,7 @@
     "develop": "gridsome develop",
     "explore": "gridsome explore",
     "predeploy": "yarn run build",
-    "deploy": "gh-pages -b master -d dist"
+    "deploy": "gh-pages --branch master --dist dist"
   },
   "dependencies": {
     "bootstrap": "^4.5.2",
