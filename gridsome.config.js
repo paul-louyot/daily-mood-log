@@ -12,5 +12,12 @@ module.exports = {
     favicon: './src/android-chrome-512x512.png',
     touchicon: './src/apple-touch-icon.png',
   },
+  css: {
+    loaderOptions: {
+      scss: {
+
+      }
+    }
+  },
   plugins: []
 }
