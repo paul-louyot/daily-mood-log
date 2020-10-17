@@ -6,7 +6,7 @@
 
 module.exports = {
   siteName: 'Daily Mood Log',
-  siteUrl: 'https://paul-louyot.github.io',
+  siteUrl: 'https://daily-mood-log.netlify.app/',
   pathPrefix: '/daily-mood-log',
   icon: {
     favicon: './src/android-chrome-512x512.png',
@@ -15,7 +15,6 @@ module.exports = {
   css: {
     loaderOptions: {
       scss: {
-
       }
     }
   },
