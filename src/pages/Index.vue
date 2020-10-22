@@ -53,11 +53,10 @@
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
           id="automatic-thought"
-          label="Pensée automatique"
+          label="Pensée automatique négative"
           >
           <b-form-input
             v-model="automaticThought.value"
-            placeholder="Pensée automatique négative"
             ></b-form-input>
         </b-form-group>
           <b-form-group
@@ -81,6 +80,33 @@
               stacked
               ></b-form-checkbox-group>
           </b-form-group>
+      </div>
+      <div class="p-4 mb-4 bg-light rounded-lg shadow">
+        <b-row class="mb-1">
+          <b-col cols="9">Recadrage positif ?</b-col>
+          <b-col cols="3">
+            <div>
+              <b-form-checkbox v-model="shouldShowPositiveReframing" name="check-button" switch>
+              </b-form-checkbox>
+            </div>
+          </b-col>
+        </b-row>
+        <b-form-group v-if="shouldShowPositiveReframing">
+            <template v-for="emotion in emotions" >
+              <b-row class="my-2" v-if="emotion.valueBefore != 0" :key="emotion.name">
+                <b-col cols="12" class="text-center mb-2">{{ emotion.name }}</b-col>
+                <b-form-input
+                  v-model="emotion.advantage"
+                  placeholder="Avantage"
+                ></b-form-input>
+                <b-form-input
+                  v-model="emotion.coreValue"
+                  placeholder="Valeur fondamentale"
+                ></b-form-input>
+                </b-col>
+              </b-row>
+            </template>
+        </b-form-group>
       </div>
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group label="Technique">
@@ -377,6 +403,7 @@ export default {
         credenceBefore: 0,
         credenceAfter: 0,
       },
+      shouldShowPositiveReframing: false,
       blameOrigin: '',
       blameList: [
         { value: '', strength: 1, isLegit: false },
@@ -429,19 +456,19 @@ export default {
         'Personalisation ou blâme'
       ],
       emotions: [
-        { name: 'Triste', valueBefore: "0", valueAfter: "0" },
-        { name: 'Embarrassé', valueBefore: "0", valueAfter: "0" },
-        { name: 'Frustré', valueBefore: "0", valueAfter: "0" },
-        { name: 'En colère', valueBefore: "0", valueAfter: "0" },
-        { name: 'Coupable', valueBefore: "0", valueAfter: "0" },
-        { name: 'Esseulé', valueBefore: "0", valueAfter: "0" },
-        { name: 'Honteux', valueBefore: "0", valueAfter: "0" },
-        { name: 'Inférieur', valueBefore: "0", valueAfter: "0" },
-        { name: 'Inadéquat', valueBefore: "0", valueAfter: "0" },
-        { name: 'Défectueux', valueBefore: "0", valueAfter: "0" },
-        { name: 'Anxieux', valueBefore: "0", valueAfter: "0" },
-        { name: 'Déprimé', valueBefore: "0", valueAfter: "0" },
-        { name: 'Désespéré', valueBefore: "0", valueAfter: "0" },
+        { name: 'Triste', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+        { name: 'Embarrassé', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+        { name: 'Frustré', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+        { name: 'En colère', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+        { name: 'Coupable', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+        { name: 'Esseulé', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+        { name: 'Honteux', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+        { name: 'Inférieur', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+        { name: 'Inadéquat', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+        { name: 'Défectueux', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+        { name: 'Anxieux', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+        { name: 'Déprimé', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+        { name: 'Désespéré', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
       ],
       techniques: [
         { text: 'Réponse rationnelle', value: 'rational_response' },
