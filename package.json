@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "gridsome build",
-    "dev": "gridsome develop",
+    "start": "gridsome develop",
     "explore": "gridsome explore",
     "predeploy": "yarn run build"
   },
