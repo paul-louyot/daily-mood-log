@@ -91,22 +91,24 @@
             </div>
           </b-col>
         </b-row>
-        <b-form-group v-if="shouldShowPositiveReframing">
-            <template v-for="emotion in emotions" >
-              <b-row class="my-2" v-if="emotion.valueBefore != 0" :key="emotion.name">
-                <b-col cols="12" class="text-center mb-2">{{ emotion.name }}</b-col>
-                <b-form-input
-                  v-model="emotion.advantage"
-                  placeholder="Avantage"
-                ></b-form-input>
-                <b-form-input
-                  v-model="emotion.coreValue"
-                  placeholder="Valeur fondamentale"
-                ></b-form-input>
-                </b-col>
-              </b-row>
-            </template>
-        </b-form-group>
+        <div v-if="shouldShowPositiveReframing">
+          <template v-for="emotion in nonVoidEmotions" >
+            <b-row class="my-2" :key="emotion.name">
+              <b-col>
+                <b-form-group :label="emotion.name">
+                  <b-form-input
+                    v-model="emotion.advantage"
+                    placeholder="Avantage"
+                  ></b-form-input>
+                  <b-form-input
+                    v-model="emotion.coreValue"
+                    placeholder="Valeur fondamentale"
+                  ></b-form-input>
+                </b-form-group>
+              </b-col>
+            </b-row>
+          </template>
+        </div>
       </div>
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group label="Technique">
@@ -323,17 +325,39 @@
             </div>
           </div>
           <div class="mb-3">
-            <div>
-              <b>Évolution des émotions :</b>
-            </div>
-            <template v-for="emotion in emotions">
-              <div v-if="emotion.valueBefore != 0" :key="emotion.name">
-                {{ emotion.name }} : de {{ emotion.valueBefore }}&nbsp;% à {{ emotion.valueAfter }}&nbsp;%
-              </div>
-            </template>
+            <table class="table table-responsive" v-if="someEmotionsFilled">
+              <thead>
+                <tr>
+                  <th>
+                    Émotions
+                  </th>
+                  <th class="text-center">
+                    Avant (%)
+                  </th>
+                  <th class="text-center">
+                    Après (%)
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <template v-for="emotion in nonVoidEmotions">
+                  <tr>
+                    <td>
+                      {{ emotion.name }}
+                    </td>
+                    <td class="text-center">
+                      {{ emotion.valueBefore }}
+                    </td>
+                    <td class="text-center">
+                      {{ emotion.valueAfter }}
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
           </div>
           <div class="mb-3">
-            <b>Pensée automatique :</b>
+            <b>Pensée automatique négative :</b>
             {{ automaticThought.value }}
           </div>
           <div class="mb-3">
@@ -349,6 +373,39 @@
             <div>
               {{ selectedDistorsions.join(', ') }}
             </div>
+          </div>
+          <div class="mb-3">
+            <b>Recadrage positif :</b>
+            <table class="table table-responsive" v-if="someEmotionsFilled">
+              <thead>
+                <tr>
+                  <th>
+                    Émotions
+                  </th>
+                  <th class="text-center">
+                    Avantages
+                  </th>
+                  <th class="text-center">
+                    Valeurs fondamentales
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <template v-for="emotion in nonVoidEmotions">
+                  <tr>
+                    <td>
+                      {{ emotion.name }}
+                    </td>
+                    <td class="text-center">
+                      {{ emotion.advantage }}
+                    </td>
+                    <td class="text-center">
+                      {{ emotion.coreValue }}
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
           </div>
           <div class="mb-3">
             <b>Technique utilisée :</b>
@@ -509,8 +566,14 @@ export default {
         return '';
       }
     },
+    nonVoidEmotions(){
+      return this.emotions.filter(emotion => emotion.valueBefore != 0)
+    },
     noEmotionsFilled(){
       return this.emotions.map(emotion => emotion.valueBefore === "0").every(x => x === true);
+    },
+    someEmotionsFilled(){
+      return this.nonVoidEmotions.length > 0
     },
     nonLegitBlames(){
       return this.blameList.filter(blame => blame.isLegit !== "true");
@@ -572,7 +635,7 @@ export default {
     downloadPDF(text){
       var today = new Date();
       var date = [today.getFullYear(), (today.getMonth() + 1), today.getDate()].join('-');
-      var fileName = "compte-rendu_" + date;
+      var fileName = "compte-rendu-" + date + '.pdf';
 
       var element = this.$refs.report
       var opt = {
