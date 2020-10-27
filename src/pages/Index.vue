@@ -39,13 +39,13 @@
           label="Émotions"
         >
           <b-row class="my-3" v-for="emotionsGroup in emotionsGroups" :key="emotionsGroup.name">
-            <b-col cols="12">
-              {{ emotionsGroup.emotions }}
+            <b-col cols="3">
+              <span v-b-popover.hover.top="emotionsGroup.emotions">{{ emotionsGroup.shortName }}</span>
             </b-col>
-            <b-col cols="2">
+            <b-col cols="1">
               {{ emotionsGroup.levelBefore }}
             </b-col>
-            <b-col cols="10">
+            <b-col cols="8">
               <b-form-input v-model="emotionsGroup.levelBefore" type="range" min="0" max="100" step="10"></b-form-input>
             </b-col>
           </b-row>
@@ -97,10 +97,10 @@
           <template v-for="emotionsGroup in nonVoidEmotionsGroups" >
             <b-row class="my-2" :key="emotionsGroup.name">
               <b-col>
-                <b-form-group :label="emotionsGroup.name">
+                <b-form-group :label="emotionsGroup.shortName">
                   <b-form-input
                     v-model="emotionsGroup.advantages"
-                    placeholder="Avantage"
+                    placeholder="Avantages, valeurs centrales"
                   ></b-form-input>
                 </b-form-group>
               </b-col>
@@ -287,7 +287,7 @@
               <b-row class="my-1" :key="emotionsGroup.name">
                 <b-col cols="8" offset="2" offset-sm="0" sm="4">
                   <div class="d-flex justify-content-between">
-                    <div>{{ emotionsGroup.name }} :</div>
+                    <div>{{ emotionsGroup.shortName }} :</div>
                     <div>{{ emotionsGroup.levelAfter }}</div>
                   </div>
                 </b-col>
@@ -355,22 +355,42 @@
             </table>
           </div>
           <div class="mb-3">
-            <b>Pensée automatique négative :</b>
-            {{ negativeThought.content }}
-          </div>
-          <div class="mb-3">
-            <b>Évolution du degré de croyance&nbsp;:</b>
-            <template v-if="negativeThought.credenceBefore !== 0">
-              de {{ negativeThought.credenceBefore }}&nbsp;% à {{ negativeThought.credenceAfter }}&nbsp;%
-            </template>
-          </div>
-          <div class="mb-3">
-            <div>
-              <b>Distorsions identifiées :</b>
-            </div>
-            <div>
-              {{ selectedDistorsions.join(', ') }}
-            </div>
+            <table class="table table-responsive" v-if="someEmotionsFilled">
+              <thead>
+                <tr>
+                  <th>
+                    Pensées négatives
+                  </th>
+                  <th class="text-center">
+                    Avant (%)
+                  </th>
+                  <th class="text-center">
+                    Après (%)
+                  </th>
+                  <th class="text-center">
+                    Distorsions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <template>
+                  <tr>
+                    <td>
+                      {{ negativeThought.content }}
+                    </td>
+                    <td class="text-center">
+                      {{ negativeThought.credenceBefore }}
+                    </td>
+                    <td class="text-center">
+                      {{ negativeThought.credenceAfter }}
+                    </td>
+                    <td class="text-center">
+                      {{ negativeThought.distorsions.join(', ') }}
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
           </div>
           <div class="mb-3">
             <b>Recadrage positif :</b>
@@ -450,6 +470,7 @@ export default {
       emotionsGroups: [
         {
           name: "sad",
+          shortName: "Triste",
           emotions: "Triste, déprimé, malheureux",
           levelBefore: 0,
           levelAfter: 0,
@@ -457,13 +478,15 @@ export default {
         },
         {
           name: "anxious",
-          emotions: "Anxieu, inquiet, paniqué, nerveux, effrayé",
+          shortName: "Anxieux",
+          emotions: "Anxieux, inquiet, paniqué, nerveux, effrayé",
           levelBefore: 0,
           levelAfter: 0,
           advantages: "",
         },
         {
           name: "guilty",
+          shortName: "Coupable",
           emotions: "Coupable, honteux",
           levelBefore: 0,
           levelAfter: 0,
@@ -471,6 +494,7 @@ export default {
         },
         {
           name: "worthless",
+          shortName: "Défectueux",
           emotions: "Inadéquat, défecteux, incompétent",
           levelBefore: 0,
           levelAfter: 0,
@@ -478,6 +502,7 @@ export default {
         },
         {
           name: "lonely",
+          shortName: "Seul",
           emotions: "Seul, indésirable, rejeté",
           levelBefore: 0,
           levelAfter: 0,
@@ -485,6 +510,7 @@ export default {
         },
         {
           name: "embarrassed",
+          shortName: "Embarassé",
           emotions: "Embarassé, bête, humilié, gêné",
           levelBefore: 0,
           levelAfter: 0,
@@ -492,6 +518,7 @@ export default {
         },
         {
           name: "hopeless",
+          shortName: "Désespéré",
           emotions: "Désespéré, découragé, pessimiste",
           levelBefore: 0,
           levelAfter: 0,
@@ -499,6 +526,7 @@ export default {
         },
         {
           name: "frustrated",
+          shortName: "Frustré",
           emotions: "Frustré, coincé, abattu, démoralisé",
           levelBefore: 0,
           levelAfter: 0,
@@ -506,6 +534,7 @@ export default {
         },
         {
           name: "angry",
+          shortName: "En colère",
           emotions: "En colère, furieux, amer, irrité, contrarié",
           levelBefore: 0,
           levelAfter: 0,
@@ -513,6 +542,7 @@ export default {
         },
         {
           name: "other",
+          shortName: "Autre",
           emotions: "Autre",
           levelBefore: 0,
           levelAfter: 0,
