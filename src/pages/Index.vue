@@ -38,14 +38,14 @@
         <b-form-group
           label="Émotions"
         >
-          <b-row class="my-3" v-for="emotionsGroup in emotionsGroups" :key="emotionsGroup.name">
-            <b-col cols="3">
+          <b-row class="my-2 my-sm-3 justify-content-center" v-for="emotionsGroup in emotionsGroups" :key="emotionsGroup.name">
+            <b-col cols="6" sm="3">
               <span v-b-popover.hover.top="emotionsGroup.emotions">{{ emotionsGroup.shortName }}</span>
             </b-col>
-            <b-col cols="1">
+            <b-col cols="2" sm="1" class="text-right">
               {{ emotionsGroup.levelBefore }}
             </b-col>
-            <b-col cols="8">
+            <b-col cols="8" sm="8" class="mt-2 mt-sm-0">
               <b-form-input v-model="emotionsGroup.levelBefore" type="range" min="0" max="100" step="10"></b-form-input>
             </b-col>
           </b-row>
