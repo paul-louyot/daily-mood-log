@@ -1,24 +1,24 @@
 <template>
   <Layout>
     <b-container>
-      <b-row class="mb-5">
+      <b-row class="mb-3">
         <b-col md="6" class="mb-2">
           <h1>Daily mood log</h1>
         </b-col>
-        <b-col md="6" class="d-flex justify-content-between">
+        <!-- <b-col md="6" class="d-flex justify-content-between">
           <b-button
             variant="primary"
             v-on:click="fillWithMockupData()"
             >
             Simuler
           </b-button>
-            <b-button
-              variant="secondary"
-              v-on:click="resetForm()"
-              >
-              Réinitialiser
-            </b-button>
-        </b-col>
+          <b-button
+            variant="secondary"
+            v-on:click="resetForm()"
+            >
+            Réinitialiser
+          </b-button>
+        </b-col> -->
       </b-row>
 
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
@@ -32,19 +32,21 @@
             max-rows="6"
             ></b-form-textarea>
         </b-form-group>
+      </div>
+
+      <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
-          id="emotions-before"
-          label="Notez vos émotions"
-          >
-          <b-row class="my-1" v-for="emotion in emotions" :key="emotion.name">
-            <b-col cols="8" offset="2" offset-sm="0" sm="4">
-              <div class="d-flex justify-content-between">
-                <div>{{ emotion.name }} :</div>
-                <div>{{ emotion.valueBefore }}</div>
-              </div>
+          label="Émotions"
+        >
+          <b-row class="my-3" v-for="emotionsGroup in emotionsGroups" :key="emotionsGroup.name">
+            <b-col cols="12">
+              {{ emotionsGroup.emotions }}
             </b-col>
-            <b-col cols="8" offset="2" offset-sm="0" sm="8">
-              <b-form-input v-model="emotion.valueBefore" type="range" min="0" max="100" step="10"></b-form-input>
+            <b-col cols="2">
+              {{ emotionsGroup.levelBefore }}
+            </b-col>
+            <b-col cols="10">
+              <b-form-input v-model="emotionsGroup.levelBefore" type="range" min="0" max="100" step="10"></b-form-input>
             </b-col>
           </b-row>
         </b-form-group>
@@ -56,7 +58,7 @@
           label="Pensée automatique négative"
           >
           <b-form-input
-            v-model="automaticThought.value"
+            v-model="negativeThought.content"
             ></b-form-input>
         </b-form-group>
           <b-form-group
@@ -64,10 +66,10 @@
             >
             <b-row class="my-1">
               <b-col cols="8" offset="2" offset-sm="0" sm="4">
-                {{ automaticThought.credenceBefore }} %
+                {{ negativeThought.credenceBefore }} %
               </b-col>
             <b-col cols="8" offset="2" offset-sm="0" sm="8">
-              <b-form-input v-model="automaticThought.credenceBefore" type="range" min="0" max="100" step="10"></b-form-input>
+              <b-form-input v-model="negativeThought.credenceBefore" type="range" min="0" max="100" step="10"></b-form-input>
             </b-col>
             </b-row>
           </b-form-group>
@@ -75,7 +77,7 @@
             label="Identifiez la distorsion"
             >
             <b-form-checkbox-group
-              v-model="selectedDistorsions"
+              v-model="negativeThought.distorsions"
               :options="distorsions"
               stacked
               ></b-form-checkbox-group>
@@ -92,17 +94,13 @@
           </b-col>
         </b-row>
         <div v-if="shouldShowPositiveReframing">
-          <template v-for="emotion in nonVoidEmotions" >
-            <b-row class="my-2" :key="emotion.name">
+          <template v-for="emotionsGroup in nonVoidEmotionsGroups" >
+            <b-row class="my-2" :key="emotionsGroup.name">
               <b-col>
-                <b-form-group :label="emotion.name">
+                <b-form-group :label="emotionsGroup.name">
                   <b-form-input
-                    v-model="emotion.advantage"
+                    v-model="emotionsGroup.advantages"
                     placeholder="Avantage"
-                  ></b-form-input>
-                  <b-form-input
-                    v-model="emotion.coreValue"
-                    placeholder="Valeur fondamentale"
                   ></b-form-input>
                 </b-form-group>
               </b-col>
@@ -135,7 +133,7 @@
         <template v-if="selectedTechnique == 'evidence_technique'">
           <b-row class="mb-2">
             <b-col>
-              Pensée : {{ automaticThought.value }}
+              Pensée : {{ negativeThought.content }}
             </b-col>
           </b-row>
           <b-row>
@@ -257,12 +255,12 @@
           >
           <b-row class="my-1">
             <b-col cols="8" offset="2" offset-sm="0" sm="4">
-              {{ automaticThought.credenceAfter }} %
+              {{ negativeThought.credenceAfter }} %
             </b-col>
           <b-col cols="8" offset="2" offset-sm="0" sm="8">
             <b-form-input
-              v-model="automaticThought.credenceAfter"
-              v-bind:disabled="automaticThought.credenceBefore == 0"
+              v-model="negativeThought.credenceAfter"
+              v-bind:disabled="negativeThought.credenceBefore == 0"
               type="range"
               min="0"
               max="100"
@@ -285,16 +283,16 @@
             </b-row>
           </template>
           <template v-else>
-            <template v-for="emotion in emotions" >
-              <b-row class="my-1" v-if="emotion.valueBefore != 0" :key="emotion.name">
+            <template v-for="emotionsGroup in nonVoidEmotionsGroups" >
+              <b-row class="my-1" :key="emotionsGroup.name">
                 <b-col cols="8" offset="2" offset-sm="0" sm="4">
                   <div class="d-flex justify-content-between">
-                    <div>{{ emotion.name }} :</div>
-                    <div>{{ emotion.valueAfter }}</div>
+                    <div>{{ emotionsGroup.name }} :</div>
+                    <div>{{ emotionsGroup.levelAfter }}</div>
                   </div>
                 </b-col>
                 <b-col cols="8" offset="2" offset-sm="0">
-                  <b-form-input v-model="emotion.valueAfter" type="range" min="0" max="100" step="10"></b-form-input>
+                  <b-form-input v-model="emotionsGroup.levelAfter" type="range" min="0" max="100" step="10"></b-form-input>
                 </b-col>
               </b-row>
             </template>
@@ -340,16 +338,16 @@
                 </tr>
               </thead>
               <tbody>
-                <template v-for="emotion in nonVoidEmotions">
+                <template v-for="emotionsGroup in nonVoidEmotionsGroups">
                   <tr>
                     <td>
-                      {{ emotion.name }}
+                      {{ emotionsGroup.name }}
                     </td>
                     <td class="text-center">
-                      {{ emotion.valueBefore }}
+                      {{ emotionsGroup.levelBefore }}
                     </td>
                     <td class="text-center">
-                      {{ emotion.valueAfter }}
+                      {{ emotionsGroup.levelAfter }}
                     </td>
                   </tr>
                 </template>
@@ -358,12 +356,12 @@
           </div>
           <div class="mb-3">
             <b>Pensée automatique négative :</b>
-            {{ automaticThought.value }}
+            {{ negativeThought.content }}
           </div>
           <div class="mb-3">
             <b>Évolution du degré de croyance&nbsp;:</b>
-            <template v-if="automaticThought.credenceBefore !== 0">
-              de {{ automaticThought.credenceBefore }}&nbsp;% à {{ automaticThought.credenceAfter }}&nbsp;%
+            <template v-if="negativeThought.credenceBefore !== 0">
+              de {{ negativeThought.credenceBefore }}&nbsp;% à {{ negativeThought.credenceAfter }}&nbsp;%
             </template>
           </div>
           <div class="mb-3">
@@ -383,24 +381,18 @@
                     Émotions
                   </th>
                   <th class="text-center">
-                    Avantages
-                  </th>
-                  <th class="text-center">
-                    Valeurs fondamentales
+                    Avantages et valeurs fondamentales
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <template v-for="emotion in nonVoidEmotions">
+                <template v-for="emotionsGroup in nonVoidEmotionsGroups">
                   <tr>
                     <td>
-                      {{ emotion.name }}
+                      {{ emotionsGroup.name }}
                     </td>
                     <td class="text-center">
-                      {{ emotion.advantage }}
-                    </td>
-                    <td class="text-center">
-                      {{ emotion.coreValue }}
+                      {{ emotionsGroup.advantages }}
                     </td>
                   </tr>
                 </template>
@@ -455,10 +447,84 @@ export default {
   },
   data() {
     return {
-      automaticThought: {
-        value: '',
+      emotionsGroups: [
+        {
+          name: "sad",
+          emotions: "Triste, déprimé, malheureux",
+          levelBefore: 0,
+          levelAfter: 0,
+          advantages: "",
+        },
+        {
+          name: "anxious",
+          emotions: "Anxieu, inquiet, paniqué, nerveux, effrayé",
+          levelBefore: 0,
+          levelAfter: 0,
+          advantages: "",
+        },
+        {
+          name: "guilty",
+          emotions: "Coupable, honteux",
+          levelBefore: 0,
+          levelAfter: 0,
+          advantages: "",
+        },
+        {
+          name: "worthless",
+          emotions: "Inadéquat, défecteux, incompétent",
+          levelBefore: 0,
+          levelAfter: 0,
+          advantages: "",
+        },
+        {
+          name: "lonely",
+          emotions: "Seul, indésirable, rejeté",
+          levelBefore: 0,
+          levelAfter: 0,
+          advantages: "",
+        },
+        {
+          name: "embarrassed",
+          emotions: "Embarassé, bête, humilié, gêné",
+          levelBefore: 0,
+          levelAfter: 0,
+          advantages: "",
+        },
+        {
+          name: "hopeless",
+          emotions: "Désespéré, découragé, pessimiste",
+          levelBefore: 0,
+          levelAfter: 0,
+          advantages: "",
+        },
+        {
+          name: "frustrated",
+          emotions: "Frustré, coincé, abattu, démoralisé",
+          levelBefore: 0,
+          levelAfter: 0,
+          advantages: "",
+        },
+        {
+          name: "angry",
+          emotions: "En colère, furieux, amer, irrité, contrarié",
+          levelBefore: 0,
+          levelAfter: 0,
+          advantages: "",
+        },
+        {
+          name: "other",
+          emotions: "Autre",
+          levelBefore: 0,
+          levelAfter: 0,
+          advantages: "",
+        },
+      ],
+      negativeThought: {
         credenceBefore: 0,
         credenceAfter: 0,
+        advantages: "",
+        distorsions: [],
+        content: "",
       },
       shouldShowPositiveReframing: false,
       blameOrigin: '',
@@ -469,7 +535,7 @@ export default {
         { value: '', strength: 1, isLegit: false },
         { value: '', strength: 1, isLegit: false },
       ],
-      strengthOptions: [1, 2, 3, 4, 5],
+      strengthOptions: [0, 1, 2, 3, 4, 5],
       chartOptions: {
         animation: {
           duration: 0,
@@ -479,7 +545,6 @@ export default {
         }
       },
       upsettingEvent: '',
-      report: '',
       voidModel: "0",
       rationalResponse: '',
       inquiryReport: '',
@@ -512,21 +577,21 @@ export default {
         'Erreur d\'étiquetage',
         'Personalisation ou blâme'
       ],
-      emotions: [
-        { name: 'Triste', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-        { name: 'Embarrassé', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-        { name: 'Frustré', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-        { name: 'En colère', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-        { name: 'Coupable', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-        { name: 'Esseulé', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-        { name: 'Honteux', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-        { name: 'Inférieur', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-        { name: 'Inadéquat', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-        { name: 'Défectueux', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-        { name: 'Anxieux', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-        { name: 'Déprimé', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-        { name: 'Désespéré', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-      ],
+      // emotions: [
+      //   { name: 'Triste', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+      //   { name: 'Embarrassé', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+      //   { name: 'Frustré', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+      //   { name: 'En colère', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+      //   { name: 'Coupable', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+      //   { name: 'Esseulé', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+      //   { name: 'Honteux', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+      //   { name: 'Inférieur', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+      //   { name: 'Inadéquat', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+      //   { name: 'Défectueux', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+      //   { name: 'Anxieux', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+      //   { name: 'Déprimé', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+      //   { name: 'Désespéré', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
+      // ],
       techniques: [
         { text: 'Réponse rationnelle', value: 'rational_response' },
         { text: 'Technique de la preuve', value: 'evidence_technique' },
@@ -547,17 +612,6 @@ export default {
         }]
       }
     },
-    fileContent(){
-      return [
-        `Événement contrariant : ${this.upsettingEvent}`,
-        `Émotions :\n${this.formattedEmotions(this.emotions)}`,
-        `Pensée automatique : ${this.automaticThought.value}`,
-        `Évolution du degré de croyance : de ${this.automaticThought.credenceBefore} % à ${this.automaticThought.credenceAfter} %`,
-        `Distorsions identifiées : ${this.selectedDistorsions.join(', ')}`,
-        `Technique utilisée : ${this.selectedTechniqueToString}`,
-        `Réponse : ${(this.rationalResponse)}`
-      ].join('\n\n')
-    },
     selectedTechniqueToString(){
       var technique = this.techniques.find(x => x.value == this.selectedTechnique)
       if (technique){
@@ -566,14 +620,14 @@ export default {
         return '';
       }
     },
-    nonVoidEmotions(){
-      return this.emotions.filter(emotion => emotion.valueBefore != 0)
+    nonVoidEmotionsGroups(){
+      return this.emotionsGroups.filter(emotionsGroup => emotionsGroup.levelBefore != 0)
     },
     noEmotionsFilled(){
-      return this.emotions.map(emotion => emotion.valueBefore === "0").every(x => x === true);
+      return this.nonVoidEmotionsGroups.length == 0
     },
     someEmotionsFilled(){
-      return this.nonVoidEmotions.length > 0
+      return this.nonVoidEmotionsGroups.length > 0
     },
     nonLegitBlames(){
       return this.blameList.filter(blame => blame.isLegit !== "true");
@@ -598,9 +652,9 @@ export default {
     title: 'Accueil'
   },
   methods: {
-    addData(){
-      this.blameList.push({value: 'test', strength: 1});
-    },
+    // addData(){
+    //   this.blameList.push({value: 'test', strength: 1});
+    // },
     addScript(url){
       var script = document.createElement('script');
       script.type = 'application/javascript';
@@ -620,19 +674,19 @@ export default {
         return `hsl(${hue}, ${saturation}%, ${lightStart + step * index}%)`
       });
     },
-    download(filename, text){
-      var element = document.createElement('a');
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-      element.setAttribute('download', filename);
+    // download(filename, text){
+    //   var element = document.createElement('a');
+    //   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    //   element.setAttribute('download', filename);
 
-      element.style.display = 'none';
-      document.body.appendChild(element);
+    //   element.style.display = 'none';
+    //   document.body.appendChild(element);
 
-      element.click();
+    //   element.click();
 
-      document.body.removeChild(element);
-    },
-    downloadPDF(text){
+    //   document.body.removeChild(element);
+    // },
+    downloadPDF(){
       var today = new Date();
       var date = [today.getFullYear(), (today.getMonth() + 1), today.getDate()].join('-');
       var fileName = "compte-rendu-" + date + '.pdf';
@@ -643,70 +697,59 @@ export default {
       };
       html2pdf().set(opt).from(element).save();
     },
-    emailLink(){
-      return `mailto:pa.louyot@gmail.com?body=${this.fileContent}`
-    },
-    formattedEmotions(emotions){
-      return emotions
-        .filter( e => e.valueBefore != 0 )
-        .map( e => this.formattedEmotion(e) ).join('\n')
-    },
-    formattedEmotion(emotion){
-      return `${emotion.name} : de ${emotion.valueBefore} % à ${emotion.valueAfter} %`
-    },
-    fillWithMockupData(){
-      this.automaticThought = {
-        value: 'Je suis nul',
-        credenceBefore: 80,
-        credenceAfter: 0,
-      };
-      this.upsettingEvent = 'Il n\'y a plus de beurre de cacahuète en réserve';
-      this.selectedDistorsions = ['Erreur d\'étiquetage'];
-      this.selectedTechnique = 'rational_response';
-      this.rationalResponse = 'J\'ai le droit d\'oublier des choses';
-      this.emotions = [
-        { name: 'Triste', valueBefore: "0", valueAfter: "0" },
-        { name: 'Embarrassé', valueBefore: "0", valueAfter: "0" },
-        { name: 'Frustré', valueBefore: "0", valueAfter: "0" },
-        { name: 'En colère', valueBefore: "80", valueAfter: "0" },
-        { name: 'Coupable', valueBefore: "0", valueAfter: "0" },
-        { name: 'Esseulé', valueBefore: "0", valueAfter: "0" },
-        { name: 'Honteux', valueBefore: "0", valueAfter: "0" },
-        { name: 'Inférieur', valueBefore: "0", valueAfter: "0" },
-        { name: 'Inadéquat', valueBefore: "0", valueAfter: "0" },
-        { name: 'Défectueux', valueBefore: "0", valueAfter: "0" },
-        { name: 'Anxieux', valueBefore: "0", valueAfter: "0" },
-        { name: 'Déprimé', valueBefore: "80", valueAfter: "0" },
-        { name: 'Désespéré', valueBefore: "60", valueAfter: "0" },
-      ];
-    },
-    resetForm(){
-      this.automaticThought = {
-        value: '',
-        credenceBefore: 0,
-        credenceAfter: 0,
-      };
-      this.upsettingEvent = '';
-      this.selectedDistorsions = [];
-      this.selectedTechnique = '';
-      this.rationalResponse = '';
-      this.inquiryReport = '';
-      this.emotions = [
-        { name: 'Triste', valueBefore: "0", valueAfter: "0" },
-        { name: 'Embarrassé', valueBefore: "0", valueAfter: "0" },
-        { name: 'Frustré', valueBefore: "0", valueAfter: "0" },
-        { name: 'En colère', valueBefore: "0", valueAfter: "0" },
-        { name: 'Coupable', valueBefore: "0", valueAfter: "0" },
-        { name: 'Esseulé', valueBefore: "0", valueAfter: "0" },
-        { name: 'Honteux', valueBefore: "0", valueAfter: "0" },
-        { name: 'Inférieur', valueBefore: "0", valueAfter: "0" },
-        { name: 'Inadéquat', valueBefore: "0", valueAfter: "0" },
-        { name: 'Défectueux', valueBefore: "0", valueAfter: "0" },
-        { name: 'Anxieux', valueBefore: "0", valueAfter: "0" },
-        { name: 'Déprimé', valueBefore: "0", valueAfter: "0" },
-        { name: 'Désespéré', valueBefore: "0", valueAfter: "0" },
-      ];
-    },
+    // fillWithMockupData(){
+    //   this.negativeThought = {
+    //     content: 'Je suis nul',
+    //     credenceBefore: 80,
+    //     credenceAfter: 0,
+    //   };
+    //   this.upsettingEvent = 'Il n\'y a plus de beurre de cacahuète en réserve';
+    //   this.selectedDistorsions = ['Erreur d\'étiquetage'];
+    //   this.selectedTechnique = 'rational_response';
+    //   this.rationalResponse = 'J\'ai le droit d\'oublier des choses';
+    //   this.emotions = [
+    //     { name: 'Triste', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Embarrassé', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Frustré', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'En colère', valueBefore: "80", valueAfter: "0" },
+    //     { name: 'Coupable', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Esseulé', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Honteux', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Inférieur', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Inadéquat', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Défectueux', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Anxieux', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Déprimé', valueBefore: "80", valueAfter: "0" },
+    //     { name: 'Désespéré', valueBefore: "60", valueAfter: "0" },
+    //   ];
+    // },
+    // resetForm(){
+    //   this.negativeThought = {
+    //     content: '',
+    //     credenceBefore: 0,
+    //     credenceAfter: 0,
+    //   };
+    //   this.upsettingEvent = '';
+    //   this.selectedDistorsions = [];
+    //   this.selectedTechnique = '';
+    //   this.rationalResponse = '';
+    //   this.inquiryReport = '';
+    //   this.emotions = [
+    //     { name: 'Triste', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Embarrassé', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Frustré', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'En colère', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Coupable', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Esseulé', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Honteux', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Inférieur', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Inadéquat', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Défectueux', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Anxieux', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Déprimé', valueBefore: "0", valueAfter: "0" },
+    //     { name: 'Désespéré', valueBefore: "0", valueAfter: "0" },
+    //   ];
+    // },
     stringToHTML(string){
       return string.replace(/\n/g, '<br>')
     },
