@@ -5,20 +5,20 @@
         <b-col md="6" class="mb-2">
           <h1>Daily mood log</h1>
         </b-col>
-        <!-- <b-col md="6" class="d-flex justify-content-between">
+        <b-col md="6" class="d-flex justify-content-end">
           <b-button
             variant="primary"
             v-on:click="fillWithMockupData()"
             >
             Simuler
           </b-button>
-          <b-button
+          <!-- <b-button
             variant="secondary"
             v-on:click="resetForm()"
             >
             Réinitialiser
-          </b-button>
-        </b-col> -->
+          </b-button> -->
+        </b-col>
       </b-row>
 
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
@@ -88,21 +88,21 @@
           <b-col cols="9">Recadrage positif ?</b-col>
           <b-col cols="3">
             <div>
-              <b-form-checkbox v-model="shouldShowPositiveReframing" name="check-button" switch>
-              </b-form-checkbox>
+              <b-form-checkbox v-model="shouldShowPositiveReframing" name="check-button" switch></b-form-checkbox>
             </div>
           </b-col>
         </b-row>
         <div v-if="shouldShowPositiveReframing">
           <template v-for="emotionsGroup in nonVoidEmotionsGroups" >
             <b-row class="my-2" :key="emotionsGroup.name">
-              <b-col>
-                <b-form-group :label="emotionsGroup.shortName">
-                  <b-form-input
-                    v-model="emotionsGroup.advantages"
-                    placeholder="Avantages, valeurs centrales"
+              <b-col sm="2" class="d-flex align-items-center">
+                <div>{{ emotionsGroup.shortName }}</div>
+              </b-col>
+              <b-col sm="10">
+                <b-form-input
+                  v-model="emotionsGroup.advantages"
+                  placeholder="Avantages, valeurs centrales"
                   ></b-form-input>
-                </b-form-group>
               </b-col>
             </b-row>
           </template>
@@ -165,9 +165,6 @@
         </template>
 
         <template v-if="selectedTechnique == 'blame_pie'">
-          <div class="d-flex justify-content-center my-4">
-            🔧 Fonctionnalité en cours de développement 🔧
-          </div>
           <b-form-group
             label="Problème"
             >
@@ -178,45 +175,49 @@
               max-rows="6"
               ></b-form-textarea>
           </b-form-group>
-          <b-form-group>
-            <b-row>
-              <b-col cols=8>
-                Causes de ce problème
+          <div class="mb-2 d-sm-none">Décrivez maintenant les causes de ce problème</div>
+          <b-row class="d-none d-sm-flex mb-2">
+            <b-col sm="6" class="d-flex align-items-center">
+              Causes de ce problème
+              </b-form-input>
+            </b-col>
+            <b-col sm="3" class="d-flex align-items-center justify-content-center">
+              Importance
+            </b-col>
+            <b-col sm="2" class="d-flex align-items-center justify-content-center">
+              <div class="text-center">Vous êtes responsable</div>
+            </b-col>
+          </b-row>
+          <template v-for="(blame, index) in blameList">
+            <b-row class="my-4 my-sm-2">
+              <b-col cols="4" class="d-sm-none d-flex align-items-center">
+                Cause&nbsp;:
+              </b-col>
+              <b-col cols="8" sm="6">
+                <b-form-input
+                  v-model="blame.value"
+                  >
                 </b-form-input>
               </b-col>
-              <b-col cols=2>
-                Importance
-                (de 1 à 5)
+              <b-col cols="5" class="d-sm-none d-flex align-items-center mt-2 mt-sm-0">
+                Force : {{ blame.strength }}
               </b-col>
-              <b-col cols=2>
-                Vous êtes responsable
+              <b-col cols="7" sm="3" class="d-flex align-items-center justify-content-center mt-2 mt-sm-0">
+                <b-form-input v-model="blame.strength" type="range" min="0" max="5" step="1"></b-form-input>
+              </b-col>
+              <b-col cols="7" class="d-sm-none d-flex align-items-center mt-2 mt-sm-0">
+                Responsable ?
+              </b-col>
+              <b-col cols="5" sm="2" class="d-flex align-items-center justify-content-end justify-content-sm-center mt-2 mt-sm-0">
+                <b-form-checkbox v-model="blame.isLegit" value="true" switch></b-form-checkbox>
+              </b-col>
+              <b-col cols="5" sm="1" class="d-none d-sm-flex align-items-center justify-content-end justify-content-sm-center mt-2 mt-sm-0">
+                <button type="button" class="close" aria-label="Close" v-on:click="deleteBlame(index)">
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </b-col>
             </b-row>
-            <template v-for="blame in blameList">
-              <b-row>
-                <b-col cols=8>
-                  <b-form-input
-                    v-model="blame.value"
-                    >
-                  </b-form-input>
-                </b-col>
-                <b-col cols=2>
-                  <b-form-select
-                    v-model="blame.strength"
-                    v-bind:options="strengthOptions"
-                    >
-                  </b-form-select>
-                </b-col>
-                <b-col cols=2>
-                  <b-form-checkbox
-                    v-model="blame.isLegit"
-                    value="true"
-                    >
-                  </b-form-checkbox>
-                </b-col>
-              </b-row>
-            </template>
-          </b-form-group>
+          </template>
           <b-row>
             <b-col>
               <PieChart v-bind:data="chartData" v-bind:options="chartOptions" class="p-sm-5"/>
@@ -325,7 +326,7 @@
           <div class="mb-3">
             <table class="table table-responsive" v-if="someEmotionsFilled">
               <thead>
-                <tr>
+                <tr class="table-primary">
                   <th>
                     Émotions
                   </th>
@@ -355,9 +356,9 @@
             </table>
           </div>
           <div class="mb-3">
-            <table class="table table-responsive" v-if="someEmotionsFilled">
+            <table class="table table-responsive table-striped" v-if="someEmotionsFilled">
               <thead>
-                <tr>
+                <tr class="table-primary">
                   <th>
                     Pensées négatives
                   </th>
@@ -394,9 +395,9 @@
           </div>
           <div class="mb-3">
             <b>Recadrage positif :</b>
-            <table class="table table-responsive" v-if="someEmotionsFilled">
+            <table class="table table-responsive table-striped" v-if="someEmotionsFilled">
               <thead>
-                <tr>
+                <tr class="table-primary">
                   <th>
                     Émotions
                   </th>
@@ -704,6 +705,9 @@ export default {
         return `hsl(${hue}, ${saturation}%, ${lightStart + step * index}%)`
       });
     },
+    deleteBlame(index){
+      this.blameList.splice(index, 1);
+    },
     // download(filename, text){
     //   var element = document.createElement('a');
     //   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -727,59 +731,44 @@ export default {
       };
       html2pdf().set(opt).from(element).save();
     },
-    // fillWithMockupData(){
-    //   this.negativeThought = {
-    //     content: 'Je suis nul',
-    //     credenceBefore: 80,
-    //     credenceAfter: 0,
-    //   };
-    //   this.upsettingEvent = 'Il n\'y a plus de beurre de cacahuète en réserve';
-    //   this.selectedDistorsions = ['Erreur d\'étiquetage'];
-    //   this.selectedTechnique = 'rational_response';
-    //   this.rationalResponse = 'J\'ai le droit d\'oublier des choses';
-    //   this.emotions = [
-    //     { name: 'Triste', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Embarrassé', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Frustré', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'En colère', valueBefore: "80", valueAfter: "0" },
-    //     { name: 'Coupable', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Esseulé', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Honteux', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Inférieur', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Inadéquat', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Défectueux', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Anxieux', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Déprimé', valueBefore: "80", valueAfter: "0" },
-    //     { name: 'Désespéré', valueBefore: "60", valueAfter: "0" },
-    //   ];
-    // },
-    // resetForm(){
-    //   this.negativeThought = {
-    //     content: '',
-    //     credenceBefore: 0,
-    //     credenceAfter: 0,
-    //   };
-    //   this.upsettingEvent = '';
-    //   this.selectedDistorsions = [];
-    //   this.selectedTechnique = '';
-    //   this.rationalResponse = '';
-    //   this.inquiryReport = '';
-    //   this.emotions = [
-    //     { name: 'Triste', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Embarrassé', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Frustré', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'En colère', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Coupable', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Esseulé', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Honteux', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Inférieur', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Inadéquat', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Défectueux', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Anxieux', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Déprimé', valueBefore: "0", valueAfter: "0" },
-    //     { name: 'Désespéré', valueBefore: "0", valueAfter: "0" },
-    //   ];
-    // },
+    fillWithMockupData(){
+      this.upsettingEvent = 'Il n\'y a plus de beurre de cacahuète en réserve';
+      this.shouldShowPositiveReframing = true;
+      this.negativeThought = {
+        content: 'Je suis nul',
+        credenceBefore: 80,
+        credenceAfter: 10,
+        distorsions: ['Erreur d\'étiquetage'],
+      };
+      this.selectedTechnique = 'blame_pie';
+      this.rationalResponse = 'J\'ai le droit d\'oublier des choses';
+      this.emotionsGroups = [
+        {
+          name: "sad",
+          shortName: "Triste",
+          emotions: "Triste, déprimé, malheureux",
+          levelBefore: 80,
+          levelAfter: 20,
+          advantages: "C'est approprié d'être triste",
+        },
+        {
+          name: "anxious",
+          shortName: "Anxieux",
+          emotions: "Anxieux, inquiet, paniqué, nerveux, effrayé",
+          levelBefore: 0,
+          levelAfter: 0,
+          advantages: "",
+        },
+        {
+          name: "guilty",
+          shortName: "Coupable",
+          emotions: "Coupable, honteux",
+          levelBefore: 0,
+          levelAfter: 0,
+          advantages: "",
+        },
+      ];
+    },
     stringToHTML(string){
       return string.replace(/\n/g, '<br>')
     },
