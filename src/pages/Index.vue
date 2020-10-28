@@ -93,10 +93,10 @@
           </b-col>
         </b-row>
         <div v-if="shouldShowPositiveReframing">
-          <template v-for="emotionsGroup in nonVoidEmotionsGroups" >
+          <template v-for="emotionsGroup in positivelyReframable" >
             <b-row class="my-2" :key="emotionsGroup.name">
               <b-col sm="2" class="d-flex align-items-center">
-                <div>{{ emotionsGroup.shortName }}</div>
+                <div>{{ emotionsGroup.shortName || `"${emotionsGroup.content}"` }}</div>
               </b-col>
               <b-col sm="10">
                 <b-form-input
@@ -324,7 +324,7 @@
             </div>
           </div>
           <div class="mb-3">
-            <table class="table table-responsive" v-if="someEmotionsFilled">
+            <table class="table table-responsive table-striped" v-if="someEmotionsFilled">
               <thead>
                 <tr class="table-primary">
                   <th>
@@ -566,7 +566,6 @@ export default {
         { value: '', strength: 1, isLegit: false },
         { value: '', strength: 1, isLegit: false },
       ],
-      strengthOptions: [0, 1, 2, 3, 4, 5],
       chartOptions: {
         animation: {
           duration: 0,
@@ -678,6 +677,9 @@ export default {
     sortedBlamesColors(){
       return this.legitBlamesColors.concat(this.nonLegitBlamesColors);
     },
+    positivelyReframable(){
+      return this.nonVoidEmotionsGroups.concat(this.negativeThought)
+    }
   },
   metaInfo: {
     title: 'Accueil'
