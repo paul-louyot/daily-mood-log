@@ -66,47 +66,63 @@
             >
             <b-row class="my-1">
               <b-col cols="8" offset="2" offset-sm="0" sm="4">
-                {{ negativeThought.credenceBefore }} %
+                {{ negativeThought.levelBefore }} %
               </b-col>
             <b-col cols="8" offset="2" offset-sm="0" sm="8">
-              <b-form-input v-model="negativeThought.credenceBefore" type="range" min="0" max="100" step="10"></b-form-input>
+              <b-form-input v-model="negativeThought.levelBefore" type="range" min="0" max="100" step="10"></b-form-input>
             </b-col>
             </b-row>
           </b-form-group>
-          <b-form-group
-            label="Identifiez la distorsion"
-            >
-            <b-form-checkbox-group
-              v-model="negativeThought.distorsions"
-              :options="distorsions"
-              stacked
-              ></b-form-checkbox-group>
-          </b-form-group>
       </div>
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
-        <b-row class="mb-1">
-          <b-col cols="9">Recadrage positif ?</b-col>
-          <b-col cols="3">
-            <div>
-              <b-form-checkbox v-model="shouldShowPositiveReframing" name="check-button" switch></b-form-checkbox>
-            </div>
-          </b-col>
-        </b-row>
-        <div v-if="shouldShowPositiveReframing">
-          <template v-for="emotionsGroup in positivelyReframable" >
-            <b-row class="my-2" :key="emotionsGroup.name">
-              <b-col sm="2" class="d-flex align-items-center">
-                <div>{{ emotionsGroup.shortName || `"${emotionsGroup.content}"` }}</div>
-              </b-col>
-              <b-col sm="10">
-                <b-form-input
-                  v-model="emotionsGroup.advantages"
-                  placeholder="Avantages, valeurs centrales"
-                  ></b-form-input>
-              </b-col>
-            </b-row>
-          </template>
-        </div>
+        <b-form-group
+          label="Recadrage positif"
+        >
+          <div>
+            <template v-for="positivelyReframable in positivelyReframables" >
+              <b-row class="my-2" :key="positivelyReframable.name">
+                <b-col sm="3" class="d-flex align-items-center">
+                  <div>{{ positivelyReframable.shortName || `"${positivelyReframable.content}"` }}</div>
+                </b-col>
+                <b-col sm="9">
+                  <b-form-input
+                    v-model="positivelyReframable.advantages"
+                    placeholder="Avantages, valeurs centrales"
+                    ></b-form-input>
+                </b-col>
+              </b-row>
+            </template>
+          </div>
+        </b-form-group>
+      </div>
+      <div class="p-4 mb-4 bg-light rounded-lg shadow">
+        <b-form-group
+          label="Objectif"
+        >
+          <b-row class="my-2 my-sm-3 justify-content-center" v-for="emotionsGroup in nonVoidEmotionsGroups" :key="emotionsGroup.name">
+            <b-col cols="6" sm="3">
+              <span v-b-popover.hover.top="emotionsGroup.emotions">{{ emotionsGroup.shortName }}</span>
+            </b-col>
+            <b-col cols="2" sm="1" class="text-right">
+              {{ emotionsGroup.levelGoal }}
+            </b-col>
+            <b-col cols="8" sm="8" class="mt-2 mt-sm-0">
+              <b-form-input v-model="emotionsGroup.levelGoal" type="range" min="0" max="100" step="10"></b-form-input>
+            </b-col>
+          </b-row>
+        </b-form-group>
+      </div>
+      <div class="p-4 mb-4 bg-light rounded-lg shadow">
+        <b-form-group
+          label="Identifiez la distorsion"
+          >
+          <b-form-checkbox-group
+            v-if="negativeThoughtIsFilled"
+            v-model="negativeThought.distorsions"
+            :options="distorsions"
+            stacked
+            ></b-form-checkbox-group>
+        </b-form-group>
       </div>
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group label="Technique">
@@ -256,12 +272,12 @@
           >
           <b-row class="my-1">
             <b-col cols="8" offset="2" offset-sm="0" sm="4">
-              {{ negativeThought.credenceAfter }} %
+              {{ negativeThought.levelAfter }} %
             </b-col>
           <b-col cols="8" offset="2" offset-sm="0" sm="8">
             <b-form-input
-              v-model="negativeThought.credenceAfter"
-              v-bind:disabled="negativeThought.credenceBefore == 0"
+              v-model="negativeThought.levelAfter"
+              v-bind:disabled="negativeThought.levelBefore == 0"
               type="range"
               min="0"
               max="100"
@@ -380,10 +396,10 @@
                       {{ negativeThought.content }}
                     </td>
                     <td class="text-center">
-                      {{ negativeThought.credenceBefore }}
+                      {{ negativeThought.levelBefore }}
                     </td>
                     <td class="text-center">
-                      {{ negativeThought.credenceAfter }}
+                      {{ negativeThought.levelAfter }}
                     </td>
                     <td class="text-center">
                       {{ negativeThought.distorsions.join(', ') }}
@@ -474,7 +490,8 @@ export default {
           shortName: "Triste",
           emotions: "Triste, déprimé, malheureux",
           levelBefore: 0,
-          levelAfter: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
           advantages: "",
         },
         {
@@ -482,7 +499,8 @@ export default {
           shortName: "Anxieux",
           emotions: "Anxieux, inquiet, paniqué, nerveux, effrayé",
           levelBefore: 0,
-          levelAfter: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
           advantages: "",
         },
         {
@@ -490,7 +508,8 @@ export default {
           shortName: "Coupable",
           emotions: "Coupable, honteux",
           levelBefore: 0,
-          levelAfter: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
           advantages: "",
         },
         {
@@ -498,7 +517,8 @@ export default {
           shortName: "Défectueux",
           emotions: "Inadéquat, défecteux, incompétent",
           levelBefore: 0,
-          levelAfter: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
           advantages: "",
         },
         {
@@ -506,7 +526,8 @@ export default {
           shortName: "Seul",
           emotions: "Seul, indésirable, rejeté",
           levelBefore: 0,
-          levelAfter: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
           advantages: "",
         },
         {
@@ -514,7 +535,8 @@ export default {
           shortName: "Embarassé",
           emotions: "Embarassé, bête, humilié, gêné",
           levelBefore: 0,
-          levelAfter: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
           advantages: "",
         },
         {
@@ -522,7 +544,8 @@ export default {
           shortName: "Désespéré",
           emotions: "Désespéré, découragé, pessimiste",
           levelBefore: 0,
-          levelAfter: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
           advantages: "",
         },
         {
@@ -530,7 +553,8 @@ export default {
           shortName: "Frustré",
           emotions: "Frustré, coincé, abattu, démoralisé",
           levelBefore: 0,
-          levelAfter: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
           advantages: "",
         },
         {
@@ -538,7 +562,8 @@ export default {
           shortName: "En colère",
           emotions: "En colère, furieux, amer, irrité, contrarié",
           levelBefore: 0,
-          levelAfter: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
           advantages: "",
         },
         {
@@ -546,18 +571,19 @@ export default {
           shortName: "Autre",
           emotions: "Autre",
           levelBefore: 0,
-          levelAfter: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
           advantages: "",
         },
       ],
       negativeThought: {
-        credenceBefore: 0,
-        credenceAfter: 0,
+        levelBefore: 0,
+        levelGoal: 0,
+        levelAfter: 0,
         advantages: "",
         distorsions: [],
         content: "",
       },
-      shouldShowPositiveReframing: false,
       blameOrigin: '',
       blameList: [
         { value: '', strength: 1, isLegit: false },
@@ -650,6 +676,9 @@ export default {
         return '';
       }
     },
+    negativeThoughtIsFilled(){ // is believed instead
+      return this.negativeThought.levelBefore != 0;
+    },
     nonVoidEmotionsGroups(){
       return this.emotionsGroups.filter(emotionsGroup => emotionsGroup.levelBefore != 0)
     },
@@ -677,8 +706,12 @@ export default {
     sortedBlamesColors(){
       return this.legitBlamesColors.concat(this.nonLegitBlamesColors);
     },
-    positivelyReframable(){
-      return this.nonVoidEmotionsGroups.concat(this.negativeThought)
+    positivelyReframables(){
+      if (this.negativeThought.levelBefore == 0){
+        return this.nonVoidEmotionsGroups;
+      } else {
+        return this.nonVoidEmotionsGroups.concat(this.negativeThought);
+      }
     }
   },
   metaInfo: {
@@ -735,11 +768,10 @@ export default {
     },
     fillWithMockupData(){
       this.upsettingEvent = 'Il n\'y a plus de beurre de cacahuète en réserve';
-      this.shouldShowPositiveReframing = true;
       this.negativeThought = {
         content: 'Je suis nul',
-        credenceBefore: 80,
-        credenceAfter: 10,
+        levelBefore: 80,
+        levelAfter: 10,
         distorsions: ['Erreur d\'étiquetage'],
       };
       this.selectedTechnique = 'blame_pie';
@@ -757,7 +789,7 @@ export default {
           name: "anxious",
           shortName: "Anxieux",
           emotions: "Anxieux, inquiet, paniqué, nerveux, effrayé",
-          levelBefore: 0,
+          levelBefore: 50,
           levelAfter: 0,
           advantages: "",
         },
