@@ -34,7 +34,7 @@
         </b-form-group>
       </div>
 
-      <div class="p-4 mb-4 bg-light rounded-lg shadow">
+      <div v-if="upsettingEvent !== ''" class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
           label="Émotions"
         >
@@ -52,7 +52,7 @@
         </b-form-group>
       </div>
 
-      <div class="p-4 mb-4 bg-light rounded-lg shadow">
+      <div v-if="someEmotionsFilled" class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
           id="automatic-thought"
           label="Pensée automatique négative"
@@ -74,7 +74,7 @@
             </b-row>
           </b-form-group>
       </div>
-      <div class="p-4 mb-4 bg-light rounded-lg shadow">
+      <div v-if="someEmotionsFilled" class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
           label="Recadrage positif"
         >
@@ -95,7 +95,7 @@
           </div>
         </b-form-group>
       </div>
-      <div class="p-4 mb-4 bg-light rounded-lg shadow">
+      <div v-if="someEmotionsFilled" class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
           label="Objectif"
         >
@@ -112,7 +112,7 @@
           </b-row>
         </b-form-group>
       </div>
-      <div class="p-4 mb-4 bg-light rounded-lg shadow">
+      <div v-if="someEmotionsFilled" class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
           label="Identifiez la distorsion"
           >
@@ -124,7 +124,7 @@
             ></b-form-checkbox-group>
         </b-form-group>
       </div>
-      <div class="p-4 mb-4 bg-light rounded-lg shadow">
+      <div v-if="someEmotionsFilled" class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group label="Technique">
           <b-form-radio-group
             v-model="selectedTechnique"
@@ -266,7 +266,7 @@
         </b-form-group>
       </div>
 
-      <div class="p-4 mb-4 bg-light rounded-lg shadow">
+      <div v-if="someEmotionsFilled" class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
           label="Re-notez votre degré de croyance dans votre pensée automatique"
           >
@@ -316,7 +316,7 @@
           </template>
         </b-form-group>
       </div>
-      <div class="d-flex align-items-center justify-content-center mt-4 mb-3">
+      <div v-if="someEmotionsFilled" class="d-flex align-items-center justify-content-center mt-4 mb-3">
         <b-button
           variant="primary"
           v-on:click="downloadPDF()"
@@ -324,12 +324,12 @@
           Télécharger le compte-rendu (PDF)
         </b-button>
       </div>
-      <div class="d-flex align-items-center justify-content-between mb-2">
+      <div v-if="someEmotionsFilled" class="d-flex align-items-center justify-content-between mb-2">
         <b>
           Compte-rendu
         </b>
       </div>
-      <div class="border border-primary rounded-lg shadow mb-5">
+      <div v-if="someEmotionsFilled" class="border border-primary rounded-lg shadow mb-5">
         <div class="p-4" ref="report">
           <div class="mb-3">
             <div>
