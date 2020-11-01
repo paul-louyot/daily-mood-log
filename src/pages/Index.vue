@@ -579,8 +579,8 @@ export default {
       ],
       negativeThought: {
         levelBefore: 0,
-        levelGoal: 0,
-        levelAfter: 0,
+        levelGoal: undefined,
+        levelAfter: undefined,
         advantages: "",
         distorsions: [],
         content: "",
