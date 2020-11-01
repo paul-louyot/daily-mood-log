@@ -107,7 +107,7 @@
               {{ emotionsGroup.levelGoal }}
             </b-col>
             <b-col cols="8" sm="8" class="mt-2 mt-sm-0">
-              <b-form-input v-model="emotionsGroup.levelGoal" type="range" min="0" max="100" step="10"></b-form-input>
+              <b-form-input v-model="emotionsGroup.levelGoal" type="range" min="0" max="100" step="5"></b-form-input>
             </b-col>
           </b-row>
         </b-form-group>
@@ -359,7 +359,7 @@
                 <template v-for="emotionsGroup in nonVoidEmotionsGroups">
                   <tr>
                     <td>
-                      {{ emotionsGroup.name }}
+                      {{ emotionsGroup.shortName }}
                     </td>
                     <td class="text-center">
                       {{ emotionsGroup.levelBefore }}
@@ -427,7 +427,7 @@
                 <template v-for="emotionsGroup in nonVoidEmotionsGroups">
                   <tr>
                     <td>
-                      {{ emotionsGroup.name }}
+                      {{ emotionsGroup.shortName }}
                     </td>
                     <td class="text-center">
                       {{ emotionsGroup.advantages }}
