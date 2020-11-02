@@ -5,13 +5,23 @@
         <b-col md="6" class="mb-2">
           <h1>Daily mood log</h1>
         </b-col>
-        <b-col md="6" class="d-flex justify-content-end">
-          <b-button
-            variant="primary"
-            v-on:click="fillWithMockupData()"
-            >
-            Simuler
-          </b-button>
+        <b-col md="6" class="d-flex justify-content-md-end justify-content-between">
+          <span class="my-auto mr-md-3">
+            <b-button
+              variant="secondary"
+              v-on:click="resetForm()"
+              >
+              Réinitialiser
+            </b-button>
+          </span>
+          <span class="my-auto">
+            <b-button
+              variant="primary"
+              v-on:click="fillWithMockupData()"
+              >
+              Simuler
+            </b-button>
+          </span>
           <!-- <b-button
             variant="secondary"
             v-on:click="resetForm()"
@@ -34,7 +44,7 @@
         </b-form-group>
       </div>
 
-      <div v-if="somethingIsUpsetting" class="p-4 mb-4 bg-light rounded-lg shadow">
+      <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
           label="Émotions"
         >
@@ -52,7 +62,7 @@
         </b-form-group>
       </div>
 
-      <div v-if="canFillNegativeThought" class="p-4 mb-4 bg-light rounded-lg shadow">
+      <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
           id="automatic-thought"
           label="Pensée automatique négative"
@@ -74,7 +84,8 @@
             </b-row>
           </b-form-group>
       </div>
-      <div v-if="hasFilledNegativeThought" class="p-4 mb-4 bg-light rounded-lg shadow">
+
+      <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
           label="Recadrage positif"
         >
@@ -95,24 +106,26 @@
           </div>
         </b-form-group>
       </div>
-      <div v-if="hasFilledNegativeThought" class="p-4 mb-4 bg-light rounded-lg shadow">
+
+      <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
           label="Objectif"
         >
-          <b-row class="my-2 my-sm-3 justify-content-center" v-for="emotionsGroup in nonVoidEmotionsGroups" :key="emotionsGroup.name">
+          <b-row class="my-2 my-sm-3 justify-content-center" v-for="positivelyReframable in positivelyReframables" :key="positivelyReframable.name">
             <b-col cols="6" sm="3">
-              <span v-b-popover.hover.top="emotionsGroup.emotions">{{ emotionsGroup.shortName }}</span>
+              <span v-b-popover.hover.top="positivelyReframable.emotions">{{ positivelyReframable.shortName || `"${positivelyReframable.content}"` }}</span>
             </b-col>
             <b-col cols="2" sm="1" class="text-right">
-              {{ emotionsGroup.levelGoal }}
+              {{ positivelyReframable.levelGoal }}
             </b-col>
             <b-col cols="8" sm="8" class="mt-2 mt-sm-0">
-              <b-form-input v-model="emotionsGroup.levelGoal" type="range" min="0" max="100" step="5"></b-form-input>
+              <b-form-input v-model="positivelyReframable.levelGoal" type="range" min="0" max="100" step="5"></b-form-input>
             </b-col>
           </b-row>
         </b-form-group>
       </div>
-      <div v-if="hasFilledNegativeThought" class="p-4 mb-4 bg-light rounded-lg shadow">
+
+      <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
           label="Identifiez la distorsion"
           >
@@ -265,7 +278,7 @@
         </b-form-group>
       </div>
 
-      <div v-if="hasFilledNegativeThought" class="p-4 mb-4 bg-light rounded-lg shadow">
+      <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
           label="Re-notez votre degré de croyance dans votre pensée automatique"
           >
@@ -316,7 +329,7 @@
         </b-form-group>
       </div>
 
-      <div v-if="hasFilledNegativeThought" class="d-flex align-items-center justify-content-center mt-4 mb-3">
+      <div class="d-flex align-items-center justify-content-center mt-4 mb-3">
         <b-button
           variant="primary"
           v-on:click="downloadPDF()"
@@ -325,12 +338,12 @@
         </b-button>
       </div>
 
-      <div v-if="hasFilledNegativeThought" class="d-flex align-items-center justify-content-between mb-2">
+      <div class="d-flex align-items-center justify-content-between mb-2">
         <b>
           Compte-rendu
         </b>
       </div>
-      <div v-if="hasFilledNegativeThought" class="border border-primary rounded-lg shadow mb-5">
+      <div class="border border-primary rounded-lg shadow mb-5">
         <div class="p-4" ref="report">
           <div class="mb-3">
             <div>
@@ -348,10 +361,13 @@
                     Émotions
                   </th>
                   <th class="text-center">
-                    Avant (%)
+                    Avant&nbsp;(%)
                   </th>
                   <th class="text-center">
-                    Après (%)
+                    Objectif&nbsp;(%)
+                  </th>
+                  <th class="text-center">
+                    Après&nbsp;(%)
                   </th>
                 </tr>
               </thead>
@@ -363,6 +379,9 @@
                     </td>
                     <td class="text-center">
                       {{ emotionsGroup.levelBefore }}
+                    </td>
+                    <td class="text-center">
+                      {{ emotionsGroup.levelGoal }}
                     </td>
                     <td class="text-center">
                       {{ emotionsGroup.levelAfter }}
@@ -380,10 +399,13 @@
                     Pensées négatives
                   </th>
                   <th class="text-center">
-                    Avant (%)
+                    Avant&nbsp;(%)
                   </th>
                   <th class="text-center">
-                    Après (%)
+                    Objectif&nbsp;(%)
+                  </th>
+                  <th class="text-center">
+                    Après&nbsp;(%)
                   </th>
                   <th class="text-center">
                     Distorsions
@@ -400,10 +422,17 @@
                       {{ negativeThought.levelBefore }}
                     </td>
                     <td class="text-center">
-                      {{ negativeThought.levelAfter }}
+                      {{ negativeThought.levelGoal }}
                     </td>
                     <td class="text-center">
-                      {{ negativeThought.distorsions.join(', ') }}
+                      {{ negativeThought.levelAfter }}
+                    </td>
+                    <td>
+                      <ul>
+                        <li v-for="distorsion in negativeThought.distorsions">
+                        {{ distorsion }}
+                        </li>
+                      </ul>
                     </td>
                   </tr>
                 </template>
@@ -602,7 +631,7 @@ export default {
         }
       },
       upsettingEvent: '',
-      voidModel: "0",
+      voidModel: undefined,
       rationalResponse: '',
       inquiryReport: '',
       otherTechniqueReport: '',
@@ -714,10 +743,10 @@ export default {
       return this.legitBlamesColors.concat(this.nonLegitBlamesColors);
     },
     positivelyReframables(){
-      if (this.negativeThought.levelBefore == 0){
-        return this.nonVoidEmotionsGroups;
-      } else {
+      if (this.hasFilledNegativeThought){
         return this.nonVoidEmotionsGroups.concat(this.negativeThought);
+      } else {
+        return this.nonVoidEmotionsGroups;
       }
     }
   },
@@ -750,18 +779,6 @@ export default {
     deleteBlame(index){
       this.blameList.splice(index, 1);
     },
-    // download(filename, text){
-    //   var element = document.createElement('a');
-    //   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-    //   element.setAttribute('download', filename);
-
-    //   element.style.display = 'none';
-    //   document.body.appendChild(element);
-
-    //   element.click();
-
-    //   document.body.removeChild(element);
-    // },
     downloadPDF(){
       var today = new Date();
       var date = [today.getFullYear(), (today.getMonth() + 1), today.getDate()].join('-');
@@ -788,16 +805,121 @@ export default {
           name: "sad",
           shortName: "Triste",
           emotions: "Triste, déprimé, malheureux",
-          levelBefore: 80,
-          levelAfter: 20,
-          advantages: "C'est approprié d'être triste",
+          levelBefore: 40,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
         },
         {
           name: "anxious",
           shortName: "Anxieux",
           emotions: "Anxieux, inquiet, paniqué, nerveux, effrayé",
+          levelBefore: 40,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "guilty",
+          shortName: "Coupable",
+          emotions: "Coupable, honteux",
           levelBefore: 50,
-          levelAfter: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "worthless",
+          shortName: "Défectueux",
+          emotions: "Inadéquat, défecteux, incompétent",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "lonely",
+          shortName: "Seul",
+          emotions: "Seul, indésirable, rejeté",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "embarrassed",
+          shortName: "Embarassé",
+          emotions: "Embarassé, bête, humilié, gêné",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "hopeless",
+          shortName: "Désespéré",
+          emotions: "Désespéré, découragé, pessimiste",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "frustrated",
+          shortName: "Frustré",
+          emotions: "Frustré, coincé, abattu, démoralisé",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "angry",
+          shortName: "En colère",
+          emotions: "En colère, furieux, amer, irrité, contrarié",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "other",
+          shortName: "Autre",
+          emotions: "Autre",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+      ];
+    },
+    resetForm(){
+      this.upsettingEvent = '';
+      this.negativeThought = {
+        content: '',
+        levelBefore: 0,
+        levelAfter: undefined,
+        distorsions: [],
+      };
+      this.selectedTechnique = '';
+      this.rationalResponse = '';
+      this.emotionsGroups = [
+        {
+          name: "sad",
+          shortName: "Triste",
+          emotions: "Triste, déprimé, malheureux",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "anxious",
+          shortName: "Anxieux",
+          emotions: "Anxieux, inquiet, paniqué, nerveux, effrayé",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
           advantages: "",
         },
         {
@@ -805,7 +927,71 @@ export default {
           shortName: "Coupable",
           emotions: "Coupable, honteux",
           levelBefore: 0,
-          levelAfter: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "worthless",
+          shortName: "Défectueux",
+          emotions: "Inadéquat, défecteux, incompétent",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "lonely",
+          shortName: "Seul",
+          emotions: "Seul, indésirable, rejeté",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "embarrassed",
+          shortName: "Embarassé",
+          emotions: "Embarassé, bête, humilié, gêné",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "hopeless",
+          shortName: "Désespéré",
+          emotions: "Désespéré, découragé, pessimiste",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "frustrated",
+          shortName: "Frustré",
+          emotions: "Frustré, coincé, abattu, démoralisé",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "angry",
+          shortName: "En colère",
+          emotions: "En colère, furieux, amer, irrité, contrarié",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
+          advantages: "",
+        },
+        {
+          name: "other",
+          shortName: "Autre",
+          emotions: "Autre",
+          levelBefore: 0,
+          levelGoal: undefined,
+          levelAfter: undefined,
           advantages: "",
         },
       ];
