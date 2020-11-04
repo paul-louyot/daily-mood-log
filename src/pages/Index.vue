@@ -50,7 +50,7 @@
         >
           <b-row class="my-2 my-sm-3 justify-content-center" v-for="emotionsGroup in emotionsGroups" :key="emotionsGroup.name">
             <b-col cols="6" sm="3">
-              <span v-b-popover.hover.top="emotionsGroup.emotions">{{ emotionsGroup.shortName }}</span>
+              <span v-b-popover.hover.left="emotionsGroup.emotions">{{ emotionsGroup.shortName }}</span>
             </b-col>
             <b-col cols="2" sm="1" class="text-right">
               {{ emotionsGroup.levelBefore }}
@@ -113,7 +113,7 @@
         >
           <b-row class="my-2 my-sm-3 justify-content-center" v-for="positivelyReframable in positivelyReframables" :key="positivelyReframable.name">
             <b-col cols="6" sm="3">
-              <span v-b-popover.hover.top="positivelyReframable.emotions">{{ positivelyReframable.shortName || `"${positivelyReframable.content}"` }}</span>
+              <span v-b-popover.hover.left="positivelyReframable.emotions">{{ positivelyReframable.shortName || `"${positivelyReframable.content}"` }}</span>
             </b-col>
             <b-col cols="2" sm="1" class="text-right">
               {{ positivelyReframable.levelGoal }}
