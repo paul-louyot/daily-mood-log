@@ -22,12 +22,6 @@
               Simuler
             </b-button>
           </span>
-          <!-- <b-button
-            variant="secondary"
-            v-on:click="resetForm()"
-            >
-            Réinitialiser
-          </b-button> -->
         </b-col>
       </b-row>
 
@@ -38,7 +32,7 @@
           <b-form-textarea
             v-model="upsettingEvent"
             placeholder="Décrivez l'événement qui vous a troublé"
-            rows="3"
+            rows="2"
             max-rows="6"
             ></b-form-textarea>
         </b-form-group>
@@ -129,11 +123,20 @@
         <b-form-group
           label="Identifiez la distorsion"
           >
-          <b-form-checkbox-group
-            v-model="negativeThought.distorsions"
-            :options="distorsions"
-            stacked
-            ></b-form-checkbox-group>
+          <b-form-checkbox-group v-model="negativeThought.distorsions">
+            <template v-for="distorsion in distorsions">
+              <b-row v-bind:key="distorsion.id">
+                <b-col>
+                  <b-form-checkbox
+                    v-bind:value="distorsion.name"
+                    v-b-popover.hover.right="distorsion.definition"
+                  >
+                    {{ distorsion.name }}
+                  </b-form-checkbox>
+                </b-col>
+              </b-row>
+            </template>
+          </b-form-checkbox-group>
         </b-form-group>
       </div>
       <div v-if="hasFilledNegativeThought" class="p-4 mb-4 bg-light rounded-lg shadow">
@@ -640,44 +643,62 @@ export default {
       selectedDistorsions: [],
       selectedTechnique: '',
       distorsions: [
-        //'All-or-nothing thinking',
-        //'Overgeneralization',
-        //'Mental Filter',
-        //'Disqualifying the positive',
-        //'Mind Reading',
-        //'Fortune Telling',
-        //'Magnification or Minimization',
-        //'Emotional Reasoning',
-        //'Should statements',
-        //'Labeling',
-        //'Personalization or Blame',
-        'Pensée en tout ou rien',
-        'Généralisation à outrance',
-        'Filtre mental',
-        'Rejet du positif',
-        'Lecture de pensée',
-        'Erreur de prévision',
-        'Exagération ou minimisation',
-        'Raisonnement émotif',
-        '"Je dois/devrais"',
-        'Erreur d\'étiquetage',
-        'Personalisation ou blâme'
+        {
+          id: "all_or_nothing",
+          name: 'Pensée en tout ou rien',
+          definition: `Votre pensée n'est pas nuancée. Vous classez les choses en deux seules catégories : les bonnes et les mauvaises.`
+        },
+        {
+          id: 'overgeneralization',
+          name: 'Généralisation à outrance',
+          definition: "Un seul événement malheureux vous apparaît comme faisant partie d'un cycle sans fin d'échecs"
+        },
+        {
+          id: 'mental_filter',
+          name: 'Filtre mental',
+          definition: "Vous choisissez un aspect négatif et vous vous attardez à un tel point sur ce petit détail que toute votre vision de la réalité en est faussée"
+        },
+        {
+          id: 'discounting_positive',
+          name: 'Rejet du positif',
+          definition: "Vous rejetez toutes vos expériences positives, en affirmant qu'elles ne comptent pas"
+        },
+        {
+          id: 'mind_reading',
+          name: 'Lecture de pensée',
+          definition: "Vous décidez arbitrairement que quelqu'un a une attitude négative à votre égard"
+        },
+        {
+          id: 'fortune_telling',
+          name: 'Erreur de prévision',
+          definition: "Vous prévoyez le pire, et vous êtes convaincu que votre prédiction est déjà confirmée par les faits"
+        },
+        {
+          id: 'magnification',
+          name: 'Exagération ou minimisation',
+          definition: "Vous amplifiez l'importance de certaines choses (vos erreurs) et vous minimisez l'importance d'autres choses (vos qualités)"
+        },
+        {
+          id: 'emotional_reasoning',
+          name: 'Raisonnement émotif',
+          definition: "Vous présumez que vos sentiments les plus sombres reflètent nécessairement la réalité des choses"
+        },
+        {
+          id: 'should_statements',
+          name: '"Je dois/devrais"',
+          definition: "Vous essayez de vous motiver par des « je dois », « je devrais », comme s'il fallait vous punir pour vous convaincre de faire quelque chose"
+        },
+        {
+          id: 'labeling',
+          name: 'Erreur d\'étiquetage',
+          definition: "Au lieu de décrire votre erreur, vous vous apposez une étiquette négative"
+        },
+        {
+          id: 'blame',
+          name: 'Personalisation ou blâme',
+          definition: "Vous vous considérez responsable d'un événement fâcheux, alors que vous n'êtes pas le principal responsable"
+        },
       ],
-      // emotions: [
-      //   { name: 'Triste', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-      //   { name: 'Embarrassé', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-      //   { name: 'Frustré', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-      //   { name: 'En colère', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-      //   { name: 'Coupable', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-      //   { name: 'Esseulé', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-      //   { name: 'Honteux', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-      //   { name: 'Inférieur', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-      //   { name: 'Inadéquat', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-      //   { name: 'Défectueux', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-      //   { name: 'Anxieux', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-      //   { name: 'Déprimé', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-      //   { name: 'Désespéré', valueBefore: "0", valueAfter: "0", advantage: "", coreValue: "" },
-      // ],
       techniques: [
         { text: 'Réponse rationnelle', value: 'rational_response' },
         { text: 'Technique de la preuve', value: 'evidence_technique' },
