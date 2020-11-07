@@ -283,8 +283,16 @@
 
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
-          label="Re-notez votre degré de croyance dans votre pensée automatique"
-          >
+        label="Re-notez votre degré de croyance dans votre pensée négative"
+        >
+          <b-row class="my-2" v-if="hasFilledNegativeThought">
+            <b-col cols="12">
+              Pensée négative :
+            </b-col>
+            <b-col cols="12">
+              "{{ negativeThought.content }}"
+            </b-col>
+          </b-row>
           <b-row class="my-1">
             <b-col cols="8" offset="2" offset-sm="0" sm="4">
               {{ negativeThought.levelAfter }} %
@@ -332,7 +340,7 @@
         </b-form-group>
       </div>
 
-      <div class="d-flex align-items-center justify-content-center mt-4 mb-3">
+      <div class="d-flex align-items-center justify-content-center mt-4 mb-4">
         <b-button
           variant="primary"
           v-on:click="downloadPDF()"
@@ -341,13 +349,11 @@
         </b-button>
       </div>
 
-      <div class="d-flex align-items-center justify-content-between mb-2">
-        <b>
-          Compte-rendu
-        </b>
-      </div>
       <div class="border border-primary rounded-lg shadow mb-5">
         <div class="p-4" ref="report">
+          <div class="mb-3 text-center">
+            <b>Compte-rendu du {{ frencheDate }}</b>
+          </div>
           <div class="mb-3">
             <div>
               <b>Événement contrariant :</b>
@@ -710,6 +716,16 @@ export default {
     }
   },
   computed: {
+    dateArray(){
+      var today = new Date();
+      return [today.getFullYear(), (today.getMonth() + 1), today.getDate()]
+    },
+    englishDate(){
+      return this.dateArray.join('-')
+    },
+    frencheDate(){
+      return this.dateArray.reverse().join('/')
+    },
     chartData(){
       return {
         labels: this.sortedBlames.map(blame => blame.value),
@@ -801,14 +817,12 @@ export default {
       this.blameList.splice(index, 1);
     },
     downloadPDF(){
-      var today = new Date();
-      var date = [today.getFullYear(), (today.getMonth() + 1), today.getDate()].join('-');
-      var fileName = "compte-rendu-" + date + '.pdf';
-
+      var fileName = "compte-rendu-" + this.englishDate + '.pdf';
       var element = this.$refs.report
       var opt = {
         filename: fileName,
       };
+
       html2pdf().set(opt).from(element).save();
     },
     fillWithMockupData(){
