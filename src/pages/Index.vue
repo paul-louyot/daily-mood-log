@@ -352,7 +352,7 @@
       <div class="border border-primary rounded-lg shadow mb-5">
         <div class="p-4" ref="report">
           <div class="mb-3 text-center">
-            <b>Compte-rendu du {{ frencheDate }}</b>
+            <b>Compte-rendu du {{ frenchDate }}</b>
           </div>
           <div class="mb-3">
             <div>
@@ -723,8 +723,8 @@ export default {
     englishDate(){
       return this.dateArray.join('-')
     },
-    frencheDate(){
-      return this.dateArray.reverse().join('/')
+    frenchDate(){
+      return this.dateArray.slice().reverse().join('/')
     },
     chartData(){
       return {
