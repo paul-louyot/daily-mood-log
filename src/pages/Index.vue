@@ -50,7 +50,7 @@
               {{ emotionsGroup.levelBefore }}
             </b-col>
             <b-col cols="8" sm="8" class="mt-2 mt-sm-0">
-              <b-form-input v-model="emotionsGroup.levelBefore" type="range" min="0" max="100" step="10"></b-form-input>
+              <b-form-input v-model="emotionsGroup.levelBefore" type="range" min="0" max="100" step="5" v-on:click="setFocus()"></b-form-input>
             </b-col>
           </b-row>
         </b-form-group>
@@ -73,7 +73,7 @@
                 {{ negativeThought.levelBefore }} %
               </b-col>
             <b-col cols="8" offset="2" offset-sm="0" sm="8">
-              <b-form-input v-model="negativeThought.levelBefore" type="range" min="0" max="100" step="10"></b-form-input>
+              <b-form-input v-model="negativeThought.levelBefore" type="range" min="0" max="100" step="5" v-on:click="setFocus()"></b-form-input>
             </b-col>
             </b-row>
           </b-form-group>
@@ -113,7 +113,7 @@
               {{ positivelyReframable.levelGoal }}
             </b-col>
             <b-col cols="8" sm="8" class="mt-2 mt-sm-0">
-              <b-form-input v-model="positivelyReframable.levelGoal" type="range" min="0" max="100" step="5"></b-form-input>
+              <b-form-input v-model="positivelyReframable.levelGoal" type="range" min="0" max="100" step="5" v-on:click="setFocus()"></b-form-input>
             </b-col>
           </b-row>
         </b-form-group>
@@ -129,10 +129,15 @@
                 <b-col>
                   <b-form-checkbox
                     v-bind:value="distorsion.name"
-                    v-b-popover.hover.right="distorsion.definition"
                   >
                     {{ distorsion.name }}
                   </b-form-checkbox>
+                  <icon-base
+                    class="d-none d-sm-inline"
+                    icon-name="question-mark"
+                    v-b-popover.hover.right="distorsion.definition">
+                    <question-mark />
+                  </icon-base>
                 </b-col>
               </b-row>
             </template>
@@ -234,7 +239,7 @@
                 Force : {{ blame.strength }}
               </b-col>
               <b-col cols="7" sm="3" class="d-flex align-items-center justify-content-center mt-2 mt-sm-0">
-                <b-form-input v-model="blame.strength" type="range" min="0" max="5" step="1"></b-form-input>
+                <b-form-input v-model="blame.strength" type="range" min="0" max="5" step="1" v-on:click="setFocus()"></b-form-input>
               </b-col>
               <b-col cols="7" class="d-sm-none d-flex align-items-center mt-2 mt-sm-0">
                 Responsable ?
@@ -304,7 +309,8 @@
               type="range"
               min="0"
               max="100"
-              step="10"
+              step="5"
+              v-on:click="setFocus()"
               ></b-form-input>
           </b-col>
           </b-row>
@@ -317,7 +323,7 @@
           <template v-if="noEmotionsFilled">
             <b-row class="my-1">
               <b-col cols="8" offset="2" offset-sm="4">
-                <b-form-input v-model="voidModel" type="range" min="0" max="100" step="10" disabled>
+                <b-form-input v-model="voidModel" type="range" min="0" max="100" step="5" disabled>
                 </b-form-input>
               </b-col>
             </b-row>
@@ -332,7 +338,7 @@
                   </div>
                 </b-col>
                 <b-col cols="8" offset="2" offset-sm="0">
-                  <b-form-input v-model="emotionsGroup.levelAfter" type="range" min="0" max="100" step="10"></b-form-input>
+                  <b-form-input v-model="emotionsGroup.levelAfter" type="range" min="0" max="100" step="5" v-on:click="setFocus()"></b-form-input>
                 </b-col>
               </b-row>
             </template>
@@ -517,9 +523,13 @@
 
 <script>
 import PieChart from '~/components/PieChart.vue'
+import IconBase from '~/components/IconBase.vue'
+import QuestionMark from '~/components/QuestionMark.vue'
 export default {
   components: {
-    PieChart
+    PieChart,
+    IconBase,
+    QuestionMark
   },
   data() {
     return {
@@ -794,6 +804,9 @@ export default {
     // addData(){
     //   this.blameList.push({value: 'test', strength: 1});
     // },
+    setFocus(){
+      this.$el.focus();
+    },
     addScript(url){
       var script = document.createElement('script');
       script.type = 'application/javascript';
@@ -826,21 +839,21 @@ export default {
       html2pdf().set(opt).from(element).save();
     },
     fillWithMockupData(){
-      this.upsettingEvent = 'Il n\'y a plus de beurre de cacahuète en réserve';
+      this.upsettingEvent = 'J\'arrive en retard chez le médecin';
       this.negativeThought = {
-        content: 'Je suis nul',
-        levelBefore: 80,
-        levelAfter: 10,
-        distorsions: ['Erreur d\'étiquetage'],
+        content: 'Le médecin va m\'en vouloir à mort',
+        levelBefore: 100,
+        levelAfter: 20,
+        distorsions: ['Lecture de pensée'],
       };
-      this.selectedTechnique = 'blame_pie';
-      this.rationalResponse = 'J\'ai le droit d\'oublier des choses';
+      this.selectedTechnique = 'rational_response';
+      this.rationalResponse = 'Je peux faire de mon mieux pour être à l\'heure aux rdv, mais cela arrive d\'être en retard';
       this.emotionsGroups = [
         {
           name: "sad",
           shortName: "Triste",
           emotions: "Triste, déprimé, malheureux",
-          levelBefore: 40,
+          levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
           advantages: "",
@@ -849,19 +862,19 @@ export default {
           name: "anxious",
           shortName: "Anxieux",
           emotions: "Anxieux, inquiet, paniqué, nerveux, effrayé",
-          levelBefore: 40,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
+          levelBefore: 50,
+          levelGoal: 5,
+          levelAfter: 10,
+          advantages: "Mon anxiété me protège des dangers et montre que je me soucie de mon bien-être",
         },
         {
           name: "guilty",
           shortName: "Coupable",
           emotions: "Coupable, honteux",
           levelBefore: 50,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
+          levelGoal: 5,
+          levelAfter: 0,
+          advantages: "Je veux être responsable de mes erreurs",
         },
         {
           name: "worthless",
@@ -885,10 +898,10 @@ export default {
           name: "embarrassed",
           shortName: "Embarassé",
           emotions: "Embarassé, bête, humilié, gêné",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
+          levelBefore: 30,
+          levelGoal: 5,
+          levelAfter: 10,
+          advantages: "Je ne me voile pas la face quand un problème arrive ; je me soucie des autres",
         },
         {
           name: "hopeless",
