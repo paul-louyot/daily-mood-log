@@ -50,7 +50,7 @@
               {{ emotionsGroup.levelBefore }}
             </b-col>
             <b-col cols="8" sm="8" class="mt-2 mt-sm-0">
-              <b-form-input v-model="emotionsGroup.levelBefore" type="range" min="0" max="100" step="10"></b-form-input>
+              <b-form-input v-model="emotionsGroup.levelBefore" type="range" min="0" max="100" step="5" v-on:click="setFocus()"></b-form-input>
             </b-col>
           </b-row>
         </b-form-group>
@@ -73,7 +73,7 @@
                 {{ negativeThought.levelBefore }} %
               </b-col>
             <b-col cols="8" offset="2" offset-sm="0" sm="8">
-              <b-form-input v-model="negativeThought.levelBefore" type="range" min="0" max="100" step="10"></b-form-input>
+              <b-form-input v-model="negativeThought.levelBefore" type="range" min="0" max="100" step="5" v-on:click="setFocus()"></b-form-input>
             </b-col>
             </b-row>
           </b-form-group>
@@ -113,7 +113,7 @@
               {{ positivelyReframable.levelGoal }}
             </b-col>
             <b-col cols="8" sm="8" class="mt-2 mt-sm-0">
-              <b-form-input v-model="positivelyReframable.levelGoal" type="range" min="0" max="100" step="5"></b-form-input>
+              <b-form-input v-model="positivelyReframable.levelGoal" type="range" min="0" max="100" step="5" v-on:click="setFocus()"></b-form-input>
             </b-col>
           </b-row>
         </b-form-group>
@@ -234,7 +234,7 @@
                 Force : {{ blame.strength }}
               </b-col>
               <b-col cols="7" sm="3" class="d-flex align-items-center justify-content-center mt-2 mt-sm-0">
-                <b-form-input v-model="blame.strength" type="range" min="0" max="5" step="1"></b-form-input>
+                <b-form-input v-model="blame.strength" type="range" min="0" max="5" step="1" v-on:click="setFocus()"></b-form-input>
               </b-col>
               <b-col cols="7" class="d-sm-none d-flex align-items-center mt-2 mt-sm-0">
                 Responsable ?
@@ -304,7 +304,8 @@
               type="range"
               min="0"
               max="100"
-              step="10"
+              step="5"
+              v-on:click="setFocus()"
               ></b-form-input>
           </b-col>
           </b-row>
@@ -317,7 +318,7 @@
           <template v-if="noEmotionsFilled">
             <b-row class="my-1">
               <b-col cols="8" offset="2" offset-sm="4">
-                <b-form-input v-model="voidModel" type="range" min="0" max="100" step="10" disabled>
+                <b-form-input v-model="voidModel" type="range" min="0" max="100" step="5" disabled>
                 </b-form-input>
               </b-col>
             </b-row>
@@ -332,7 +333,7 @@
                   </div>
                 </b-col>
                 <b-col cols="8" offset="2" offset-sm="0">
-                  <b-form-input v-model="emotionsGroup.levelAfter" type="range" min="0" max="100" step="10"></b-form-input>
+                  <b-form-input v-model="emotionsGroup.levelAfter" type="range" min="0" max="100" step="5" v-on:click="setFocus()"></b-form-input>
                 </b-col>
               </b-row>
             </template>
@@ -794,6 +795,9 @@ export default {
     // addData(){
     //   this.blameList.push({value: 'test', strength: 1});
     // },
+    setFocus(){
+      this.$el.focus();
+    },
     addScript(url){
       var script = document.createElement('script');
       script.type = 'application/javascript';
