@@ -1,13 +1,16 @@
 <template>
   <div class="layout">
     <header class="header">
-      <!-- <strong> -->
-      <!--   <g-link to="/">{{ $static.metadata.siteName }}</g-link> -->
-      <!-- </strong> -->
-      <!-- <nav class="nav"> -->
-      <!--   <g-link class="nav__link" to="/">Home</g-link> -->
-      <!--   <g-link class="nav__link" to="/about/">About</g-link> -->
-      <!-- </nav> -->
+      <b-container>
+        <b-row style="margin-top: 20px" class="mb-3">
+          <b-col cols="12" class="d-flex align-items-center justify-content-between">
+            <g-link to="/">
+              <h1 class="m-0">Daily mood log</h1>
+            </g-link>
+            <g-link class="nav__link" to="/about/">F.A.Q</g-link>
+          </b-col>
+        </b-row>
+      </b-container>
     </header>
     <slot/>
   </div>
@@ -36,15 +39,9 @@ body {
   padding-right: 20px;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  height: 20px;
-}
-
-.nav__link {
-  margin-left: 20px;
+@media (max-width: 575.98px) {
+  h1 {
+    font-size: 18px;
+  }
 }
 </style>
