@@ -129,10 +129,15 @@
                 <b-col>
                   <b-form-checkbox
                     v-bind:value="distorsion.name"
-                    v-b-popover.hover.right="distorsion.definition"
                   >
                     {{ distorsion.name }}
                   </b-form-checkbox>
+                  <icon-base
+                    class="d-none d-sm-inline"
+                    icon-name="question-mark"
+                    v-b-popover.hover.right="distorsion.definition">
+                    <question-mark />
+                  </icon-base>
                 </b-col>
               </b-row>
             </template>
@@ -518,9 +523,13 @@
 
 <script>
 import PieChart from '~/components/PieChart.vue'
+import IconBase from '~/components/IconBase.vue'
+import QuestionMark from '~/components/QuestionMark.vue'
 export default {
   components: {
-    PieChart
+    PieChart,
+    IconBase,
+    QuestionMark
   },
   data() {
     return {
@@ -830,21 +839,21 @@ export default {
       html2pdf().set(opt).from(element).save();
     },
     fillWithMockupData(){
-      this.upsettingEvent = 'Il n\'y a plus de beurre de cacahuète en réserve';
+      this.upsettingEvent = 'J\'arrive en retard chez le médecin';
       this.negativeThought = {
-        content: 'Je suis nul',
-        levelBefore: 80,
-        levelAfter: 10,
-        distorsions: ['Erreur d\'étiquetage'],
+        content: 'Le médecin va m\'en vouloir à mort',
+        levelBefore: 100,
+        levelAfter: 20,
+        distorsions: ['Lecture de pensée'],
       };
-      this.selectedTechnique = 'blame_pie';
-      this.rationalResponse = 'J\'ai le droit d\'oublier des choses';
+      this.selectedTechnique = 'rational_response';
+      this.rationalResponse = 'Je peux faire de mon mieux pour être à l\'heure aux rdv, mais cela arrive d\'être en retard';
       this.emotionsGroups = [
         {
           name: "sad",
           shortName: "Triste",
           emotions: "Triste, déprimé, malheureux",
-          levelBefore: 40,
+          levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
           advantages: "",
@@ -853,19 +862,19 @@ export default {
           name: "anxious",
           shortName: "Anxieux",
           emotions: "Anxieux, inquiet, paniqué, nerveux, effrayé",
-          levelBefore: 40,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
+          levelBefore: 50,
+          levelGoal: 5,
+          levelAfter: 10,
+          advantages: "Mon anxiété me protège des dangers et montre que je me soucie de mon bien-être",
         },
         {
           name: "guilty",
           shortName: "Coupable",
           emotions: "Coupable, honteux",
           levelBefore: 50,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
+          levelGoal: 5,
+          levelAfter: 0,
+          advantages: "Je veux être responsable de mes erreurs",
         },
         {
           name: "worthless",
@@ -889,10 +898,10 @@ export default {
           name: "embarrassed",
           shortName: "Embarassé",
           emotions: "Embarassé, bête, humilié, gêné",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
+          levelBefore: 30,
+          levelGoal: 5,
+          levelAfter: 10,
+          advantages: "Je ne me voile pas la face quand un problème arrive ; je me soucie des autres",
         },
         {
           name: "hopeless",
