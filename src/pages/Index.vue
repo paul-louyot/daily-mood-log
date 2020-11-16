@@ -2,10 +2,7 @@
   <Layout>
     <b-container>
       <b-row class="mb-3">
-        <b-col md="6" class="mb-2">
-          <h1>Daily mood log</h1>
-        </b-col>
-        <b-col md="6" class="d-flex justify-content-md-end justify-content-between">
+        <b-col md="12" class="d-flex justify-content-md-end justify-content-between">
           <span class="my-auto mr-md-3">
             <b-button
               variant="secondary"
