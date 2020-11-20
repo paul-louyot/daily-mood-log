@@ -11,13 +11,16 @@
               Réinitialiser
             </b-button>
           </span>
-          <span class="my-auto">
+          <span class="my-auto mr-md-3">
             <b-button
               variant="primary"
               v-on:click="fillWithMockupData()"
               >
               Simuler
             </b-button>
+          </span>
+          <span class="d-flex justify-content-center align-items-center">
+            <locale-switcher></locale-switcher>
           </span>
         </b-col>
       </b-row>
@@ -41,7 +44,7 @@
         >
           <b-row class="my-2 my-sm-3 justify-content-center" v-for="emotionsGroup in emotionsGroups" :key="emotionsGroup.name">
             <b-col cols="6" sm="3">
-              <span v-b-popover.hover.left="emotionsGroup.emotions">{{ emotionsGroup.shortName | capitalize }}</span>
+              <span v-b-popover.hover.left="emotionsGroup.emotions">{{ $t(emotionsGroup.name) | capitalize }}</span>
             </b-col>
             <b-col cols="2" sm="1" class="text-right">
               {{ emotionsGroup.levelBefore }}
@@ -84,7 +87,7 @@
             <template v-for="positivelyReframable in positivelyReframables" >
               <b-row class="my-2" :key="positivelyReframable.name">
                 <b-col sm="3" class="d-flex align-items-center">
-                  <div>{{ positivelyReframable.shortName || `"${positivelyReframable.content}"` }}</div>
+                  <div>{{ $t(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</div>
                 </b-col>
                 <b-col sm="9">
                   <b-form-input
@@ -104,7 +107,7 @@
         >
           <b-row class="my-2 my-sm-3 justify-content-center" v-for="positivelyReframable in positivelyReframables" :key="positivelyReframable.name">
             <b-col cols="6" sm="3">
-              <span v-b-popover.hover.left="positivelyReframable.emotions">{{ positivelyReframable.shortName || `"${positivelyReframable.content}"` }}</span>
+              <span v-b-popover.hover.left="positivelyReframable.emotions">{{ $t(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</span>
             </b-col>
             <b-col cols="2" sm="1" class="text-right">
               {{ positivelyReframable.levelGoal }}
@@ -330,7 +333,7 @@
               <b-row class="my-1" :key="emotionsGroup.name">
                 <b-col cols="8" offset="2" offset-sm="0" sm="4">
                   <div class="d-flex justify-content-between">
-                    <div>{{ emotionsGroup.shortName }} :</div>
+                    <div>{{ $t(emotionsGroup.name) }} :</div>
                     <div>{{ emotionsGroup.levelAfter }}</div>
                   </div>
                 </b-col>
@@ -385,9 +388,9 @@
               </thead>
               <tbody>
                 <template v-for="emotionsGroup in nonVoidEmotionsGroups">
-                  <tr>
+                  <tr v-bind:key="emotionsGroup.name">
                     <td>
-                      {{ emotionsGroup.shortName }}
+                      {{ $t(emotionsGroup.name) }}
                     </td>
                     <td class="text-center">
                       {{ emotionsGroup.levelBefore }}
@@ -466,9 +469,9 @@
               </thead>
               <tbody>
                 <template v-for="emotionsGroup in nonVoidEmotionsGroups">
-                  <tr>
+                  <tr v-bind:key="emotionsGroup.name">
                     <td>
-                      {{ emotionsGroup.shortName }}
+                      {{ $t(emotionsGroup.name) }}
                     </td>
                     <td class="text-center">
                       {{ emotionsGroup.advantages }}
@@ -522,18 +525,19 @@
 import PieChart from '~/components/PieChart.vue'
 import IconBase from '~/components/IconBase.vue'
 import QuestionMark from '~/components/QuestionMark.vue'
+import LocaleSwitcher from '~/components/LocaleSwitcher.vue'
 export default {
   components: {
     PieChart,
     IconBase,
-    QuestionMark
+    QuestionMark,
+    LocaleSwitcher
   },
   data() {
     return {
       emotionsGroups: [
         {
           name: "sad",
-          shortName: this.$t("sad"),
           emotions: "Triste, déprimé, malheureux",
           levelBefore: 0,
           levelGoal: undefined,
@@ -542,7 +546,6 @@ export default {
         },
         {
           name: "anxious",
-          shortName: this.$t("anxious"),
           emotions: "Anxieux, inquiet, paniqué, nerveux, effrayé",
           levelBefore: 0,
           levelGoal: undefined,
@@ -551,7 +554,6 @@ export default {
         },
         {
           name: "guilty",
-          shortName: this.$t("guilty"),
           emotions: "Coupable, honteux",
           levelBefore: 0,
           levelGoal: undefined,
@@ -560,7 +562,6 @@ export default {
         },
         {
           name: "worthless",
-          shortName: this.$t("worthless"),
           emotions: "Inadéquat, défecteux, incompétent",
           levelBefore: 0,
           levelGoal: undefined,
@@ -569,7 +570,6 @@ export default {
         },
         {
           name: "lonely",
-          shortName: this.$t("lonely"),
           emotions: "Seul, indésirable, rejeté",
           levelBefore: 0,
           levelGoal: undefined,
@@ -578,7 +578,6 @@ export default {
         },
         {
           name: "embarrassed",
-          shortName: this.$t("embarrassed"),
           emotions: "Embarassé, bête, humilié, gêné",
           levelBefore: 0,
           levelGoal: undefined,
@@ -587,7 +586,6 @@ export default {
         },
         {
           name: "hopeless",
-          shortName: this.$t("hopeless"),
           emotions: "Désespéré, découragé, pessimiste",
           levelBefore: 0,
           levelGoal: undefined,
@@ -596,7 +594,6 @@ export default {
         },
         {
           name: "frustrated",
-          shortName: this.$t("frustrated"),
           emotions: "Frustré, coincé, abattu, démoralisé",
           levelBefore: 0,
           levelGoal: undefined,
@@ -605,7 +602,6 @@ export default {
         },
         {
           name: "angry",
-          shortName: this.$t("angry"),
           emotions: "En colère, furieux, amer, irrité, contrarié",
           levelBefore: 0,
           levelGoal: undefined,
@@ -614,7 +610,6 @@ export default {
         },
         {
           name: "other",
-          shortName: this.$t("other"),
           emotions: "Autre",
           levelBefore: 0,
           levelGoal: undefined,
