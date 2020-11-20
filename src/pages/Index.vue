@@ -41,7 +41,7 @@
         >
           <b-row class="my-2 my-sm-3 justify-content-center" v-for="emotionsGroup in emotionsGroups" :key="emotionsGroup.name">
             <b-col cols="6" sm="3">
-              <span v-b-popover.hover.left="emotionsGroup.emotions">{{ emotionsGroup.shortName }}</span>
+              <span v-b-popover.hover.left="emotionsGroup.emotions">{{ emotionsGroup.shortName | capitalize }}</span>
             </b-col>
             <b-col cols="2" sm="1" class="text-right">
               {{ emotionsGroup.levelBefore }}
@@ -533,7 +533,7 @@ export default {
       emotionsGroups: [
         {
           name: "sad",
-          shortName: "Triste",
+          shortName: this.$t("sad"),
           emotions: "Triste, déprimé, malheureux",
           levelBefore: 0,
           levelGoal: undefined,
@@ -542,7 +542,7 @@ export default {
         },
         {
           name: "anxious",
-          shortName: "Anxieux",
+          shortName: this.$t("anxious"),
           emotions: "Anxieux, inquiet, paniqué, nerveux, effrayé",
           levelBefore: 0,
           levelGoal: undefined,
@@ -551,7 +551,7 @@ export default {
         },
         {
           name: "guilty",
-          shortName: "Coupable",
+          shortName: this.$t("guilty"),
           emotions: "Coupable, honteux",
           levelBefore: 0,
           levelGoal: undefined,
@@ -560,7 +560,7 @@ export default {
         },
         {
           name: "worthless",
-          shortName: "Défectueux",
+          shortName: this.$t("worthless"),
           emotions: "Inadéquat, défecteux, incompétent",
           levelBefore: 0,
           levelGoal: undefined,
@@ -569,7 +569,7 @@ export default {
         },
         {
           name: "lonely",
-          shortName: "Seul",
+          shortName: this.$t("lonely"),
           emotions: "Seul, indésirable, rejeté",
           levelBefore: 0,
           levelGoal: undefined,
@@ -578,7 +578,7 @@ export default {
         },
         {
           name: "embarrassed",
-          shortName: "Embarassé",
+          shortName: this.$t("embarrassed"),
           emotions: "Embarassé, bête, humilié, gêné",
           levelBefore: 0,
           levelGoal: undefined,
@@ -587,7 +587,7 @@ export default {
         },
         {
           name: "hopeless",
-          shortName: "Désespéré",
+          shortName: this.$t("hopeless"),
           emotions: "Désespéré, découragé, pessimiste",
           levelBefore: 0,
           levelGoal: undefined,
@@ -596,7 +596,7 @@ export default {
         },
         {
           name: "frustrated",
-          shortName: "Frustré",
+          shortName: this.$t("frustrated"),
           emotions: "Frustré, coincé, abattu, démoralisé",
           levelBefore: 0,
           levelGoal: undefined,
@@ -605,7 +605,7 @@ export default {
         },
         {
           name: "angry",
-          shortName: "En colère",
+          shortName: this.$t("angry"),
           emotions: "En colère, furieux, amer, irrité, contrarié",
           levelBefore: 0,
           levelGoal: undefined,
@@ -614,7 +614,7 @@ export default {
         },
         {
           name: "other",
-          shortName: "Autre",
+          shortName: this.$t("other"),
           emotions: "Autre",
           levelBefore: 0,
           levelGoal: undefined,
@@ -797,6 +797,7 @@ export default {
   metaInfo: {
     title: 'Accueil'
   },
+
   methods: {
     // addData(){
     //   this.blameList.push({value: 'test', strength: 1});
@@ -845,98 +846,11 @@ export default {
       };
       this.selectedTechnique = 'rational_response';
       this.rationalResponse = 'Je peux faire de mon mieux pour être à l\'heure aux rdv, mais cela arrive d\'être en retard';
-      this.emotionsGroups = [
-        {
-          name: "sad",
-          shortName: "Triste",
-          emotions: "Triste, déprimé, malheureux",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "anxious",
-          shortName: "Anxieux",
-          emotions: "Anxieux, inquiet, paniqué, nerveux, effrayé",
-          levelBefore: 50,
-          levelGoal: 5,
-          levelAfter: 10,
-          advantages: "Mon anxiété me protège des dangers et montre que je me soucie de mon bien-être",
-        },
-        {
-          name: "guilty",
-          shortName: "Coupable",
-          emotions: "Coupable, honteux",
-          levelBefore: 50,
-          levelGoal: 5,
-          levelAfter: 0,
-          advantages: "Je veux être responsable de mes erreurs",
-        },
-        {
-          name: "worthless",
-          shortName: "Défectueux",
-          emotions: "Inadéquat, défecteux, incompétent",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "lonely",
-          shortName: "Seul",
-          emotions: "Seul, indésirable, rejeté",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "embarrassed",
-          shortName: "Embarassé",
-          emotions: "Embarassé, bête, humilié, gêné",
-          levelBefore: 30,
-          levelGoal: 5,
-          levelAfter: 10,
-          advantages: "Je ne me voile pas la face quand un problème arrive ; je me soucie des autres",
-        },
-        {
-          name: "hopeless",
-          shortName: "Désespéré",
-          emotions: "Désespéré, découragé, pessimiste",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "frustrated",
-          shortName: "Frustré",
-          emotions: "Frustré, coincé, abattu, démoralisé",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "angry",
-          shortName: "En colère",
-          emotions: "En colère, furieux, amer, irrité, contrarié",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "other",
-          shortName: "Autre",
-          emotions: "Autre",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-      ];
+      this.emotionsGroups.forEach(x => {
+        x.levelBefore = Math.floor(Math.random() * 20) * 5;
+        x.levelGoal = undefined;
+        x.levelAfter = undefined;
+      });
     },
     resetForm(){
       this.upsettingEvent = '';
@@ -948,105 +862,28 @@ export default {
       };
       this.selectedTechnique = '';
       this.rationalResponse = '';
-      this.emotionsGroups = [
-        {
-          name: "sad",
-          shortName: "Triste",
-          emotions: "Triste, déprimé, malheureux",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "anxious",
-          shortName: "Anxieux",
-          emotions: "Anxieux, inquiet, paniqué, nerveux, effrayé",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "guilty",
-          shortName: "Coupable",
-          emotions: "Coupable, honteux",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "worthless",
-          shortName: "Défectueux",
-          emotions: "Inadéquat, défecteux, incompétent",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "lonely",
-          shortName: "Seul",
-          emotions: "Seul, indésirable, rejeté",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "embarrassed",
-          shortName: "Embarassé",
-          emotions: "Embarassé, bête, humilié, gêné",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "hopeless",
-          shortName: "Désespéré",
-          emotions: "Désespéré, découragé, pessimiste",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "frustrated",
-          shortName: "Frustré",
-          emotions: "Frustré, coincé, abattu, démoralisé",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "angry",
-          shortName: "En colère",
-          emotions: "En colère, furieux, amer, irrité, contrarié",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-        {
-          name: "other",
-          shortName: "Autre",
-          emotions: "Autre",
-          levelBefore: 0,
-          levelGoal: undefined,
-          levelAfter: undefined,
-          advantages: "",
-        },
-      ];
+      this.emotionsGroups.forEach(x => {
+        x.levelBefore = 0;
+        x.levelGoal = undefined;
+        x.levelAfter = undefined;
+      });
     },
     stringToHTML(string){
       return string.replace(/\n/g, '<br>')
     },
   },
+
   mounted() {
     this.addScript('https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js');
   },
+
+  filters: {
+    capitalize(value){
+      if (!value) return ''
+      value = value.toString()
+      return value.charAt(0).toUpperCase() + value.slice(1)
+    }
+  }
+
 }
 </script>
