@@ -17,5 +17,24 @@ module.exports = {
       }
     }
   },
-  plugins: []
+  plugins: [
+    {
+      use: "gridsome-plugin-i18n",
+      options: {
+        locales: [ // locales list
+          'fr-fr',
+        ],
+        pathAliases: { // path segment alias for each locales
+          'fr-fr': 'fr',
+        },
+        fallbackLocale: 'fr-fr', // fallback language
+        defaultLocale: 'fr-fr', // default language
+        enablePathRewrite: true, // rewrite path with locale prefix, default: true
+        rewriteDefaultLanguage: false, // rewrite default locale, default: true
+        messages: {
+          'fr-fr': require('./src/locales/fr-fr.json')
+        }
+      }
+    }
+  ]
 }
