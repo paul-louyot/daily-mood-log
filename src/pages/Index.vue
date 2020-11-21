@@ -31,7 +31,7 @@
         >
           <b-form-textarea
             v-model="upsettingEvent"
-            placeholder="Décrivez l'événement qui vous a troublé"
+            placeholder="Décrivez l'événement contrariant"
             rows="2"
             max-rows="6"
             ></b-form-textarea>
@@ -44,7 +44,7 @@
         >
           <b-row class="my-2 my-sm-3 justify-content-center" v-for="emotionsGroup in emotionsGroups" :key="emotionsGroup.name">
             <b-col cols="6" sm="3">
-              <span v-b-popover.hover.left="emotionsGroup.emotions">{{ $t(emotionsGroup.name) | capitalize }}</span>
+              <span v-b-popover.hover.left="safeTranslation(`spread.${emotionsGroup.name}`)">{{ safeTranslation(emotionsGroup.name) | capitalize }}</span>
             </b-col>
             <b-col cols="2" sm="1" class="text-right">
               {{ emotionsGroup.levelBefore }}
@@ -107,7 +107,7 @@
         >
           <b-row class="my-2 my-sm-3 justify-content-center" v-for="positivelyReframable in positivelyReframables" :key="positivelyReframable.name">
             <b-col cols="6" sm="3">
-              <span v-b-popover.hover.left="positivelyReframable.emotions">{{ $t(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</span>
+              <span v-b-popover.hover.left="safeTranslation(`spread.${positivelyReframable.name}`)">{{ safeTranslation(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</span>
             </b-col>
             <b-col cols="2" sm="1" class="text-right">
               {{ positivelyReframable.levelGoal }}
@@ -215,7 +215,6 @@
           <b-row class="d-none d-sm-flex mb-2">
             <b-col sm="6" class="d-flex align-items-center">
               Causes de ce problème
-              </b-form-input>
             </b-col>
             <b-col sm="3" class="d-flex align-items-center justify-content-center">
               Importance
@@ -225,7 +224,7 @@
             </b-col>
           </b-row>
           <template v-for="(blame, index) in blameList">
-            <b-row class="my-4 my-sm-2">
+            <b-row class="my-4 my-sm-2" v-bind:key="`blame-${index}`">
               <b-col cols="4" class="d-sm-none d-flex align-items-center">
                 Cause&nbsp;:
               </b-col>
@@ -444,9 +443,11 @@
                     </td>
                     <td>
                       <ul>
-                        <li v-for="distorsion in negativeThought.distorsions">
-                        {{ distorsion }}
-                        </li>
+                        <template v-for="distorsion in negativeThought.distorsions">
+                          <li v-bind:key="distorsion">
+                          {{ distorsion }}
+                          </li>
+                        </template>
                       </ul>
                     </td>
                   </tr>
@@ -797,6 +798,12 @@ export default {
     // addData(){
     //   this.blameList.push({value: 'test', strength: 1});
     // },
+    safeTranslation(key){
+      if (key){
+        return this.$t(key);
+      }
+      return "";
+    },
     setFocus(){
       this.$el.focus();
     },

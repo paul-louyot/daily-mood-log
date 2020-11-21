@@ -8,5 +8,17 @@
   "hopeless": "désespoir",
   "frustrated": "frustration",
   "angry": "colère",
-  "other": "autre"
+  "other": "autre",
+  "spread": {
+    "sad": "@:sad, déprime, malheur",
+    "anxious": "@:anxious, inquiétude, panique, nervosité, effroi",
+    "guilty": "@:guilty, honte",
+    "worthless": "@:worthless, inadéquation, incompétence",
+    "lonely": "@:lonely, rejet",
+    "embarrassed": "@:embarrassed, humiliation, gêne",
+    "hopeless": "@:hopeless, découragement, pessimisme",
+    "frustrated": "@:frustrated, abattement",
+    "angry": "@:angry, amertume, irritation, fureur",
+    "other": "@:other"
+  }
 }
