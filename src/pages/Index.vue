@@ -215,7 +215,6 @@
           <b-row class="d-none d-sm-flex mb-2">
             <b-col sm="6" class="d-flex align-items-center">
               Causes de ce problème
-              </b-form-input>
             </b-col>
             <b-col sm="3" class="d-flex align-items-center justify-content-center">
               Importance
@@ -225,7 +224,7 @@
             </b-col>
           </b-row>
           <template v-for="(blame, index) in blameList">
-            <b-row class="my-4 my-sm-2">
+            <b-row class="my-4 my-sm-2" v-bind:key="`blame-${index}`">
               <b-col cols="4" class="d-sm-none d-flex align-items-center">
                 Cause&nbsp;:
               </b-col>
@@ -444,9 +443,11 @@
                     </td>
                     <td>
                       <ul>
-                        <li v-for="distorsion in negativeThought.distorsions">
-                        {{ distorsion }}
-                        </li>
+                        <template v-for="distorsion in negativeThought.distorsions">
+                          <li v-bind:key="distorsion">
+                          {{ distorsion }}
+                          </li>
+                        </template>
                       </ul>
                     </td>
                   </tr>
