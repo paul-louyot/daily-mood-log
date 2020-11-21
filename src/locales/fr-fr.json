@@ -20,5 +20,43 @@
     "frustrated": "@:frustrated, abattement",
     "angry": "@:angry, amertume, irritation, fureur",
     "other": "@:other"
+  },
+  "explanation": {
+    "positive_reframing": "Quels sont les avantages à ressentir ces émotions ? Qu'est-ce qu'elles montrent de positif et de génial sur moi ?"
+  },
+  "distortions": {
+    "all_or_nothing": {
+      "definition": "Votre pensée n'est pas nuancée. Vous classez les choses en deux seules catégories : les bonnes et les mauvaises"
+    },
+    "overgeneralization": {
+      "definition": "Un seul événement malheureux vous apparaît comme faisant partie d'un cycle sans fin d'échecs"
+    },
+    "mental_filter": {
+      "definition": "Vous choisissez un aspect négatif et vous vous attardez à un tel point sur ce petit détail que toute votre vision de la réalité en est faussée"
+    },
+    "discounting_positive": {
+      "definition": "Vous rejetez toutes vos expériences positives, en affirmant qu'elles ne comptent pas"
+    },
+    "mind_reading": {
+      "definition": "Vous décidez arbitrairement que quelqu'un a une attitude négative à votre égard"
+    },
+    "fortune_telling": {
+      "definition": "Vous prévoyez le pire, et vous êtes convaincu que votre prédiction est déjà confirmée par les faits"
+    },
+    "magnification": {
+      "definition": "Vous amplifiez l'importance de certaines choses (vos erreurs) et vous minimisez l'importance d'autres choses (vos qualités)"
+    },
+    "emotional_reasoning": {
+      "definition": "Vous présumez que vos sentiments les plus sombres reflètent nécessairement la réalité des choses"
+    },
+    "should_statements": {
+      "definition": "Vous essayez de vous motiver par des « je dois », « je devrais », comme s'il fallait vous punir pour vous convaincre de faire quelque chose"
+    },
+    "labeling": {
+      "definition": "Au lieu de décrire votre erreur, vous vous apposez une étiquette négative"
+    },
+    "blame": {
+      "definition": "Vous vous considérez responsable d'un événement fâcheux, alors que d'autres causes sont aussi à prendre en considérations"
+    }
   }
 }

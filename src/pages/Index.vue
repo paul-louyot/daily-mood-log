@@ -83,6 +83,12 @@
         <b-form-group
           label="Recadrage positif"
         >
+          <icon-base
+            class="d-none d-sm-inline"
+            icon-name="question-mark"
+            v-b-popover.hover.right="$t(`explanation.positive_reframing`)">
+            <question-mark />
+          </icon-base>
           <div>
             <template v-for="positivelyReframable in positivelyReframables" >
               <b-row class="my-2" :key="positivelyReframable.name">
@@ -123,19 +129,19 @@
         <b-form-group
           label="Identifiez la distorsion"
           >
-          <b-form-checkbox-group v-model="negativeThought.distorsions">
-            <template v-for="distorsion in distorsions">
-              <b-row v-bind:key="distorsion.id">
+          <b-form-checkbox-group v-model="negativeThought.distortions">
+            <template v-for="distortion in distortions">
+              <b-row v-bind:key="distortion.id">
                 <b-col>
                   <b-form-checkbox
-                    v-bind:value="distorsion.name"
+                    v-bind:value="distortion.name"
                   >
-                    {{ distorsion.name }}
+                    {{ distortion.name }}
                   </b-form-checkbox>
                   <icon-base
                     class="d-none d-sm-inline"
                     icon-name="question-mark"
-                    v-b-popover.hover.right="distorsion.definition">
+                    v-b-popover.hover.right="$t(`distortions.${distortion.id}.definition`)">
                     <question-mark />
                   </icon-base>
                 </b-col>
@@ -443,9 +449,9 @@
                     </td>
                     <td>
                       <ul>
-                        <template v-for="distorsion in negativeThought.distorsions">
-                          <li v-bind:key="distorsion">
-                          {{ distorsion }}
+                        <template v-for="distortion in negativeThought.distortions">
+                          <li v-bind:key="distortion">
+                          {{ distortion }}
                           </li>
                         </template>
                       </ul>
@@ -623,7 +629,7 @@ export default {
         levelGoal: undefined,
         levelAfter: undefined,
         advantages: "",
-        distorsions: [],
+        distortions: [],
         content: "",
       },
       blameOrigin: '',
@@ -649,63 +655,52 @@ export default {
       otherTechniqueReport: '',
       evidenceAgainst: '',
       evidenceInFavor: '',
-      selectedDistorsions: [],
+      selectedDistortions: [],
       selectedTechnique: '',
-      distorsions: [
+      distortions: [
         {
           id: "all_or_nothing",
           name: 'Pensée en tout ou rien',
-          definition: `Votre pensée n'est pas nuancée. Vous classez les choses en deux seules catégories : les bonnes et les mauvaises.`
         },
         {
           id: 'overgeneralization',
           name: 'Généralisation à outrance',
-          definition: "Un seul événement malheureux vous apparaît comme faisant partie d'un cycle sans fin d'échecs"
         },
         {
           id: 'mental_filter',
           name: 'Filtre mental',
-          definition: "Vous choisissez un aspect négatif et vous vous attardez à un tel point sur ce petit détail que toute votre vision de la réalité en est faussée"
         },
         {
           id: 'discounting_positive',
           name: 'Rejet du positif',
-          definition: "Vous rejetez toutes vos expériences positives, en affirmant qu'elles ne comptent pas"
         },
         {
           id: 'mind_reading',
           name: 'Lecture de pensée',
-          definition: "Vous décidez arbitrairement que quelqu'un a une attitude négative à votre égard"
         },
         {
           id: 'fortune_telling',
           name: 'Erreur de prévision',
-          definition: "Vous prévoyez le pire, et vous êtes convaincu que votre prédiction est déjà confirmée par les faits"
         },
         {
           id: 'magnification',
           name: 'Exagération ou minimisation',
-          definition: "Vous amplifiez l'importance de certaines choses (vos erreurs) et vous minimisez l'importance d'autres choses (vos qualités)"
         },
         {
           id: 'emotional_reasoning',
           name: 'Raisonnement émotif',
-          definition: "Vous présumez que vos sentiments les plus sombres reflètent nécessairement la réalité des choses"
         },
         {
           id: 'should_statements',
           name: '"Je dois/devrais"',
-          definition: "Vous essayez de vous motiver par des « je dois », « je devrais », comme s'il fallait vous punir pour vous convaincre de faire quelque chose"
         },
         {
           id: 'labeling',
           name: 'Erreur d\'étiquetage',
-          definition: "Au lieu de décrire votre erreur, vous vous apposez une étiquette négative"
         },
         {
           id: 'blame',
-          name: 'Personalisation ou blâme',
-          definition: "Vous vous considérez responsable d'un événement fâcheux, alors que vous n'êtes pas le principal responsable"
+          name: 'Personnalisation ou blâme',
         },
       ],
       techniques: [
@@ -844,7 +839,7 @@ export default {
         content: 'Le médecin va m\'en vouloir à mort',
         levelBefore: 100,
         levelAfter: 20,
-        distorsions: ['Lecture de pensée'],
+        distortions: ['Lecture de pensée'],
       };
       this.selectedTechnique = 'rational_response';
       this.rationalResponse = 'Je peux faire de mon mieux pour être à l\'heure aux rdv, mais cela arrive d\'être en retard';
@@ -860,7 +855,7 @@ export default {
         content: '',
         levelBefore: 0,
         levelAfter: undefined,
-        distorsions: [],
+        distortions: [],
       };
       this.selectedTechnique = '';
       this.rationalResponse = '';
