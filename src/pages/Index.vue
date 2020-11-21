@@ -44,7 +44,7 @@
         >
           <b-row class="my-2 my-sm-3 justify-content-center" v-for="emotionsGroup in emotionsGroups" :key="emotionsGroup.name">
             <b-col cols="6" sm="3">
-              <span v-b-popover.hover.left="safeTranslation(`spread.${emotionsGroup.name}`)">{{ $t(emotionsGroup.name) | capitalize }}</span>
+              <span v-b-popover.hover.left="safeTranslation(`spread.${emotionsGroup.name}`)">{{ safeTranslation(emotionsGroup.name) | capitalize }}</span>
             </b-col>
             <b-col cols="2" sm="1" class="text-right">
               {{ emotionsGroup.levelBefore }}
@@ -107,7 +107,7 @@
         >
           <b-row class="my-2 my-sm-3 justify-content-center" v-for="positivelyReframable in positivelyReframables" :key="positivelyReframable.name">
             <b-col cols="6" sm="3">
-              <span v-b-popover.hover.left="safeTranslation(`spread.${emotionsGroup.name}`)">{{ $t(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</span>
+              <span v-b-popover.hover.left="safeTranslation(`spread.${positivelyReframable.name}`)">{{ safeTranslation(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</span>
             </b-col>
             <b-col cols="2" sm="1" class="text-right">
               {{ positivelyReframable.levelGoal }}
