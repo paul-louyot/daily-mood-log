@@ -65,32 +65,44 @@
             v-model="negativeThought.content"
             ></b-form-input>
         </b-form-group>
-          <b-form-group
-            label="Estimez votre degré de croyance dans cette pensée"
-            >
-            <b-row class="my-1">
-              <b-col cols="8" offset="2" offset-sm="0" sm="4">
-                {{ negativeThought.levelBefore }} %
-              </b-col>
-            <b-col cols="8" offset="2" offset-sm="0" sm="8">
-              <b-form-input v-model="negativeThought.levelBefore" type="range" min="0" max="100" step="5" v-on:click="setFocus()"></b-form-input>
+        <b-form-group
+          label="Estimez votre degré de croyance dans cette pensée"
+          >
+          <b-row class="my-1">
+            <b-col cols="8" offset="2" offset-sm="0" sm="4">
+              {{ negativeThought.levelBefore }} %
             </b-col>
-            </b-row>
-          </b-form-group>
+          <b-col cols="8" offset="2" offset-sm="0" sm="8">
+            <b-form-input v-model="negativeThought.levelBefore" type="range" min="0" max="100" step="5" v-on:click="setFocus()"></b-form-input>
+          </b-col>
+          </b-row>
+        </b-form-group>
       </div>
 
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
-        <b-form-group
-          label="Recadrage positif"
-        >
+        <h6>
+          <span>Recadrage positif</span>
           <icon-base
-            class="d-none d-sm-inline"
+            class="d-none d-sm-inline ml-2"
             icon-name="question-mark"
             v-b-popover.hover.right="$t(`explanation.positive_reframing`)">
             <question-mark />
           </icon-base>
+        </h6>
+        <b-form-group>
+          <p v-html="$t('miracleCure.wouldYouPress')" class="mt-3"></p>
+          <div class="d-flex justify-content-around">
+            {{ $t(`${wouldPressButton}`)}}
+            <b-form-checkbox class="ml-2" v-model="wouldPressButton" value="true" switch></b-form-checkbox>
+          </div>
+          <p v-html="$t('miracleCure.warning')" class="mt-3"></p>
           <div>
-            <template v-for="positivelyReframable in positivelyReframables" >
+            <b-row v-if="noEmotionsFilled" class="d-flex justify-content-center">
+              <b-col sm="9">
+                <b-form-input v-model="undefined" disabled/>
+              </b-col>
+            </b-row>
+            <template v-for="positivelyReframable in positivelyReframables">
               <b-row class="my-2" :key="positivelyReframable.name">
                 <b-col sm="3" class="d-flex align-items-center">
                   <div>{{ $t(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</div>
@@ -105,12 +117,13 @@
             </template>
           </div>
         </b-form-group>
-      </div>
-
-      <div class="p-4 mb-4 bg-light rounded-lg shadow">
-        <b-form-group
-          label="Objectif"
-        >
+        <p v-html="$t('miracleCure.objective')" class="mt-3"></p>
+        <b-form-group>
+          <b-row v-if="noEmotionsFilled" class="d-flex justify-content-center">
+            <b-col cols="9">
+              <b-form-input v-model="undefined" type="range" disabled/>
+            </b-col>
+          </b-row>
           <b-row class="my-2 my-sm-3 justify-content-center" v-for="positivelyReframable in positivelyReframables" :key="positivelyReframable.name">
             <b-col cols="6" sm="3">
               <span v-b-popover.hover.left="safeTranslation(`spread.${positivelyReframable.name}`)">{{ safeTranslation(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</span>
@@ -328,7 +341,7 @@
           <template v-if="noEmotionsFilled">
             <b-row class="my-1">
               <b-col cols="8" offset="2" offset-sm="4">
-                <b-form-input v-model="voidModel" type="range" min="0" max="100" step="5" disabled>
+                <b-form-input v-model="undefined" type="range" disabled>
                 </b-form-input>
               </b-col>
             </b-row>
@@ -545,7 +558,6 @@ export default {
       emotionsGroups: [
         {
           name: "sad",
-          emotions: "Triste, déprimé, malheureux",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -553,7 +565,6 @@ export default {
         },
         {
           name: "anxious",
-          emotions: "Anxieux, inquiet, paniqué, nerveux, effrayé",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -561,7 +572,6 @@ export default {
         },
         {
           name: "guilty",
-          emotions: "Coupable, honteux",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -569,7 +579,6 @@ export default {
         },
         {
           name: "worthless",
-          emotions: "Inadéquat, défecteux, incompétent",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -577,7 +586,6 @@ export default {
         },
         {
           name: "lonely",
-          emotions: "Seul, indésirable, rejeté",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -585,7 +593,6 @@ export default {
         },
         {
           name: "embarrassed",
-          emotions: "Embarassé, bête, humilié, gêné",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -593,7 +600,6 @@ export default {
         },
         {
           name: "hopeless",
-          emotions: "Désespéré, découragé, pessimiste",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -601,7 +607,6 @@ export default {
         },
         {
           name: "frustrated",
-          emotions: "Frustré, coincé, abattu, démoralisé",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -609,7 +614,6 @@ export default {
         },
         {
           name: "angry",
-          emotions: "En colère, furieux, amer, irrité, contrarié",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -617,7 +621,6 @@ export default {
         },
         {
           name: "other",
-          emotions: "Autre",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -649,7 +652,6 @@ export default {
         }
       },
       upsettingEvent: '',
-      voidModel: undefined,
       rationalResponse: '',
       inquiryReport: '',
       otherTechniqueReport: '',
@@ -657,6 +659,7 @@ export default {
       evidenceInFavor: '',
       selectedDistortions: [],
       selectedTechnique: '',
+      wouldPressButton: false,
       distortions: [
         {
           id: "all_or_nothing",

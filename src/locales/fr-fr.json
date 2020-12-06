@@ -1,4 +1,6 @@
 {
+  "true": "oui",
+  "false": "non",
   "sad": "tristesse",
   "anxious": "anxiété",
   "guilty": "culpabilité",
@@ -20,6 +22,11 @@
     "frustrated": "@:frustrated, abattement",
     "angry": "@:angry, amertume, irritation, fureur",
     "other": "@:other"
+  },
+  "miracleCure": {
+    "wouldYouPress": "Imaginons qu'il y ait un bouton magique juste devant vous. Si vous appuyez dessus, tous vos sentiments et pensées négatifs disparaîtraient soudainement, sans le moindre effort, et vous seriez inondé de joie et d'estime de vous-même. Appuieriez-vous sur ce bouton&nbsp;?",
+    "warning": "Bien que ce bouton n'existe pas, de nombreuses techniques permettent de remettre en question la façon dont nous pensons et nous nous sentons. Mais prenons un peu de recul : l'utilisation de ces techniques ne serait pas forcément souhaitable. Il n'est pas impossible que vos pensées et émotions négatives reflètent des choses très positives sur vous, et qu'elles vous apportent de nombreux bénéfices et avantages. Listez-les ci-dessous.",
+    "objective": "Notez ci-dessous l'intensité idéale de chaque émotion et pensée négative."
   },
   "explanation": {
     "positive_reframing": "Quels sont les avantages à ressentir ces émotions ? Qu'est-ce qu'elles montrent de positif et de génial sur moi ?"
