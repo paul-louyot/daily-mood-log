@@ -99,7 +99,9 @@
           <div>
             <b-row v-if="noEmotionsFilled" class="d-flex justify-content-center">
               <b-col sm="9">
-                <b-form-input v-model="undefined" disabled/>
+                <span v-b-popover.hover.top="$t('help.fillEmotions')">
+                  <b-form-input v-model="undefined" disabled/>
+                </span>
               </b-col>
             </b-row>
             <template v-for="positivelyReframable in positivelyReframables">
