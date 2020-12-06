@@ -8,8 +8,7 @@ module.exports = {
   siteName: 'Daily Mood Log',
   siteUrl: 'https://daily-mood-log.netlify.app/',
   icon: {
-    favicon: './src/android-chrome-512x512.png',
-    touchicon: './src/apple-touch-icon.png',
+    favicon: './src/favicon.png',
   },
   css: {
     loaderOptions: {
