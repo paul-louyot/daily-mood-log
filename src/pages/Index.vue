@@ -42,7 +42,9 @@
         <b-form-group>
           <b-row class="my-2 my-sm-3 justify-content-center" v-for="emotionsGroup in emotionsGroups" :key="emotionsGroup.name">
             <b-col cols="6" sm="3">
-              <span v-b-popover.hover.left="safeTranslation(`spread.${emotionsGroup.name}`)">{{ safeTranslation(emotionsGroup.name) | capitalize }}</span>
+              <span v-b-popover.hover.left="safeArrayTranslation(['spread', emotionsGroup.name])">
+                {{ safeTranslation(emotionsGroup.name) | capitalize }}
+              </span>
             </b-col>
             <b-col cols="2" sm="1" class="text-right">
               {{ emotionsGroup.levelBefore }}
@@ -131,7 +133,9 @@
           </b-row>
           <b-row class="my-2 my-sm-3 justify-content-center" v-for="positivelyReframable in positivelyReframables" :key="positivelyReframable.name">
             <b-col cols="6" sm="3">
-              <span v-b-popover.hover.left="safeTranslation(`spread.${positivelyReframable.name}`)">{{ safeTranslation(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</span>
+              <span v-b-popover.hover.left="safeArrayTranslation(['spread', positivelyReframable.name])">
+                {{ safeTranslation(positivelyReframable.name) || `"${positivelyReframable.content}"` }}
+              </span>
             </b-col>
             <b-col cols="2" sm="1" class="text-right">
               {{ positivelyReframable.levelGoal }}
@@ -807,6 +811,15 @@ export default {
       }
       return "";
     },
+    safeArrayTranslation(array){
+      if (array.every(this.isNonEmptyString)){
+        return this.$t(array.join('.'))
+      }
+      return ""
+    },
+    isNonEmptyString(x){
+      return !!x
+    },
     setFocus(){
       this.$el.focus();
     },
@@ -853,7 +866,7 @@ export default {
         distortions: ['Lecture de pensée'],
       };
       this.selectedTechnique = 'rational_response';
-      this.rationalResponse = 'Je peux faire de mon mieux pour être à l\'heure aux rdv, mais cela arrive d\'être en retard';
+      this.rationalResponse = 'Je peux faire de mon mieux pour être à l\'heure aux rendez-vous, mais cela arrive d\'être en retard';
       this.resetEmotionsGroups();
       this.randomEmotionsGroup().levelBefore = Math.floor(Math.random() * 20) * 5;
       this.randomEmotionsGroup().levelBefore = Math.floor(Math.random() * 20) * 5;
