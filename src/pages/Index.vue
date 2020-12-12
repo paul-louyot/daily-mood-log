@@ -26,9 +26,8 @@
       </b-row>
 
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
-        <b-form-group
-          label="Événement contrariant"
-        >
+        <h6>Événement contrariant</h6>
+        <b-form-group>
           <b-form-textarea
             v-model="upsettingEvent"
             placeholder="Décrivez l'événement contrariant"
@@ -39,12 +38,13 @@
       </div>
 
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
-        <b-form-group
-          label="Émotions"
-        >
+        <h6>Émotions négatives</h6>
+        <b-form-group>
           <b-row class="my-2 my-sm-3 justify-content-center" v-for="emotionsGroup in emotionsGroups" :key="emotionsGroup.name">
             <b-col cols="6" sm="3">
-              <span v-b-popover.hover.left="safeTranslation(`spread.${emotionsGroup.name}`)">{{ safeTranslation(emotionsGroup.name) | capitalize }}</span>
+              <span v-b-popover.hover.left="safeArrayTranslation(['spread', emotionsGroup.name])">
+                {{ safeTranslation(emotionsGroup.name) | capitalize }}
+              </span>
             </b-col>
             <b-col cols="2" sm="1" class="text-right">
               {{ emotionsGroup.levelBefore }}
@@ -57,63 +57,85 @@
       </div>
 
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
-        <b-form-group
-          id="automatic-thought"
-          label="Pensée automatique négative"
-          >
+        <h6>Pensée automatique négative</h6>
+        <b-form-group id="automatic-thought">
           <b-form-input
             v-model="negativeThought.content"
             ></b-form-input>
         </b-form-group>
-          <b-form-group
-            label="Estimez votre degré de croyance dans cette pensée"
-            >
-            <b-row class="my-1">
-              <b-col cols="8" offset="2" offset-sm="0" sm="4">
-                {{ negativeThought.levelBefore }} %
-              </b-col>
-            <b-col cols="8" offset="2" offset-sm="0" sm="8">
-              <b-form-input v-model="negativeThought.levelBefore" type="range" min="0" max="100" step="5" v-on:click="setFocus()"></b-form-input>
-            </b-col>
-            </b-row>
-          </b-form-group>
-      </div>
-
-      <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <b-form-group
-          label="Recadrage positif"
-        >
-          <icon-base
-            class="d-none d-sm-inline"
-            icon-name="question-mark"
-            v-b-popover.hover.right="$t(`explanation.positive_reframing`)">
-            <question-mark />
-          </icon-base>
-          <div>
-            <template v-for="positivelyReframable in positivelyReframables" >
-              <b-row class="my-2" :key="positivelyReframable.name">
-                <b-col sm="3" class="d-flex align-items-center">
-                  <div>{{ $t(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</div>
-                </b-col>
-                <b-col sm="9">
-                  <b-form-input
-                    v-model="positivelyReframable.advantages"
-                    placeholder="Avantages, valeurs centrales"
-                    ></b-form-input>
-                </b-col>
-              </b-row>
-            </template>
-          </div>
+          label="Estimez votre degré de croyance dans cette pensée"
+          >
+          <b-row class="my-1">
+            <b-col cols="8" offset="2" offset-sm="0" sm="4">
+              {{ negativeThought.levelBefore }} %
+            </b-col>
+          <b-col cols="8" offset="2" offset-sm="0" sm="8">
+            <b-form-input v-model="negativeThought.levelBefore" type="range" min="0" max="100" step="5" v-on:click="setFocus()"></b-form-input>
+          </b-col>
+          </b-row>
         </b-form-group>
       </div>
 
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
-        <b-form-group
-          label="Objectif"
-        >
+        <h6>Recadrage positif</h6>
+        <b-form-group>
+          <p v-html="$t('miracleCure.wouldYouPress')" class="mt-3"></p>
+          <div class="d-flex justify-content-around">
+            {{ $t(`${wouldPressButton}`)}}
+            <b-form-checkbox class="ml-2" v-model="wouldPressButton" value="true" switch></b-form-checkbox>
+          </div>
+          <p v-html="$t('miracleCure.warning')" class="mt-3"></p>
+          <p>
+            Listez ci-dessous les avantages et bénéfices de vos pensées négatives.
+            <span>
+              <icon-base
+                class="d-none d-sm-inline ml-2"
+                icon-name="question-mark"
+                v-b-popover.hover.right="$t(`explanation.positive_reframing`)">
+                <question-mark />
+              </icon-base>
+            </span>
+          </p>
+          <div>
+            <template v-if="noEmotionsFilled">
+              <b-row class="d-flex justify-content-center">
+                <b-col sm="9">
+                  <div v-b-popover.hover.right="$t('help.fillEmotions')">
+                    <b-form-input v-model="undefined" disabled/>
+                  </div>
+                </b-col>
+              </b-row>
+            </template>
+            <template v-else>
+              <template v-for="positivelyReframable in positivelyReframables">
+                <b-row class="my-2" :key="positivelyReframable.name">
+                  <b-col sm="3" class="d-flex align-items-center">
+                    <div>{{ $t(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</div>
+                  </b-col>
+                  <b-col sm="9">
+                    <b-form-input
+                      v-model="positivelyReframable.advantages"
+                      placeholder="Avantages, valeurs centrales"
+                      ></b-form-input>
+                  </b-col>
+                </b-row>
+              </template>
+            </template>
+          </div>
+        </b-form-group>
+        <p v-html="$t('miracleCure.objective')" class="mt-3"></p>
+        <b-form-group>
+          <b-row v-if="noEmotionsFilled" class="d-flex justify-content-center">
+            <b-col cols="9">
+              <b-form-input v-model="undefined" type="range" disabled/>
+            </b-col>
+          </b-row>
           <b-row class="my-2 my-sm-3 justify-content-center" v-for="positivelyReframable in positivelyReframables" :key="positivelyReframable.name">
             <b-col cols="6" sm="3">
-              <span v-b-popover.hover.left="safeTranslation(`spread.${positivelyReframable.name}`)">{{ safeTranslation(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</span>
+              <span v-b-popover.hover.left="safeArrayTranslation(['spread', positivelyReframable.name])">
+                {{ safeTranslation(positivelyReframable.name) || `"${positivelyReframable.content}"` }}
+              </span>
             </b-col>
             <b-col cols="2" sm="1" class="text-right">
               {{ positivelyReframable.levelGoal }}
@@ -126,9 +148,8 @@
       </div>
 
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
-        <b-form-group
-          label="Identifiez la distorsion"
-          >
+        <h6>Identifiez la distorsion</h6>
+        <b-form-group>
           <b-form-checkbox-group v-model="negativeThought.distortions">
             <template v-for="distortion in distortions">
               <b-row v-bind:key="distortion.id">
@@ -151,7 +172,8 @@
         </b-form-group>
       </div>
       <div v-if="hasFilledNegativeThought" class="p-4 mb-4 bg-light rounded-lg shadow">
-        <b-form-group label="Technique">
+        <h6>Technique</h6>
+        <b-form-group>
           <b-form-radio-group
             v-model="selectedTechnique"
             :options="techniques"
@@ -292,9 +314,9 @@
       </div>
 
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
-        <b-form-group
-        label="Re-notez votre degré de croyance dans votre pensée négative"
-        >
+        <h6>Deuxième évaluation</h6>
+        <p>Estimez à nouveau votre degré de croyance dans votre pensée négative.</p>
+        <b-form-group>
           <b-row class="my-2" v-if="hasFilledNegativeThought">
             <b-col cols="12">
               Pensée négative :
@@ -323,12 +345,12 @@
 
         <b-form-group
           id="upsetting-event"
-          label="Re-notez vos émotions"
+          label="Notez à nouveau l'intensité de vos émotions négatives."
           >
           <template v-if="noEmotionsFilled">
             <b-row class="my-1">
               <b-col cols="8" offset="2" offset-sm="4">
-                <b-form-input v-model="voidModel" type="range" min="0" max="100" step="5" disabled>
+                <b-form-input v-model="undefined" type="range" disabled>
                 </b-form-input>
               </b-col>
             </b-row>
@@ -545,7 +567,6 @@ export default {
       emotionsGroups: [
         {
           name: "sad",
-          emotions: "Triste, déprimé, malheureux",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -553,7 +574,6 @@ export default {
         },
         {
           name: "anxious",
-          emotions: "Anxieux, inquiet, paniqué, nerveux, effrayé",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -561,7 +581,6 @@ export default {
         },
         {
           name: "guilty",
-          emotions: "Coupable, honteux",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -569,7 +588,6 @@ export default {
         },
         {
           name: "worthless",
-          emotions: "Inadéquat, défecteux, incompétent",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -577,7 +595,6 @@ export default {
         },
         {
           name: "lonely",
-          emotions: "Seul, indésirable, rejeté",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -585,7 +602,6 @@ export default {
         },
         {
           name: "embarrassed",
-          emotions: "Embarassé, bête, humilié, gêné",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -593,7 +609,6 @@ export default {
         },
         {
           name: "hopeless",
-          emotions: "Désespéré, découragé, pessimiste",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -601,7 +616,6 @@ export default {
         },
         {
           name: "frustrated",
-          emotions: "Frustré, coincé, abattu, démoralisé",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -609,7 +623,6 @@ export default {
         },
         {
           name: "angry",
-          emotions: "En colère, furieux, amer, irrité, contrarié",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -617,7 +630,6 @@ export default {
         },
         {
           name: "other",
-          emotions: "Autre",
           levelBefore: 0,
           levelGoal: undefined,
           levelAfter: undefined,
@@ -649,7 +661,6 @@ export default {
         }
       },
       upsettingEvent: '',
-      voidModel: undefined,
       rationalResponse: '',
       inquiryReport: '',
       otherTechniqueReport: '',
@@ -657,6 +668,7 @@ export default {
       evidenceInFavor: '',
       selectedDistortions: [],
       selectedTechnique: '',
+      wouldPressButton: false,
       distortions: [
         {
           id: "all_or_nothing",
@@ -783,7 +795,7 @@ export default {
       } else {
         return this.nonVoidEmotionsGroups;
       }
-    }
+    },
   },
   metaInfo: {
     title: 'Accueil'
@@ -798,6 +810,15 @@ export default {
         return this.$t(key);
       }
       return "";
+    },
+    safeArrayTranslation(array){
+      if (array.every(this.isNonEmptyString)){
+        return this.$t(array.join('.'))
+      }
+      return ""
+    },
+    isNonEmptyString(x){
+      return !!x
     },
     setFocus(){
       this.$el.focus();
@@ -833,6 +854,9 @@ export default {
 
       html2pdf().set(opt).from(element).save();
     },
+    randomEmotionsGroup(){
+      return this.emotionsGroups[Math.floor(Math.random() * this.emotionsGroups.length)];
+    },
     fillWithMockupData(){
       this.upsettingEvent = 'J\'arrive en retard chez le médecin';
       this.negativeThought = {
@@ -842,9 +866,14 @@ export default {
         distortions: ['Lecture de pensée'],
       };
       this.selectedTechnique = 'rational_response';
-      this.rationalResponse = 'Je peux faire de mon mieux pour être à l\'heure aux rdv, mais cela arrive d\'être en retard';
+      this.rationalResponse = 'Je peux faire de mon mieux pour être à l\'heure aux rendez-vous, mais cela arrive d\'être en retard';
+      this.resetEmotionsGroups();
+      this.randomEmotionsGroup().levelBefore = Math.floor(Math.random() * 20) * 5;
+      this.randomEmotionsGroup().levelBefore = Math.floor(Math.random() * 20) * 5;
+    },
+    resetEmotionsGroups(){
       this.emotionsGroups.forEach(x => {
-        x.levelBefore = Math.floor(Math.random() * 20) * 5;
+        x.levelBefore = 0;
         x.levelGoal = undefined;
         x.levelAfter = undefined;
       });
@@ -859,11 +888,7 @@ export default {
       };
       this.selectedTechnique = '';
       this.rationalResponse = '';
-      this.emotionsGroups.forEach(x => {
-        x.levelBefore = 0;
-        x.levelGoal = undefined;
-        x.levelAfter = undefined;
-      });
+      this.resetEmotionsGroups();
     },
     stringToHTML(string){
       return string.replace(/\n/g, '<br>')
