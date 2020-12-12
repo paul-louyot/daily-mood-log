@@ -87,7 +87,7 @@
           </div>
           <p v-html="$t('miracleCure.warning')" class="mt-3"></p>
           <p>
-            Listez ci-dessous les avantages et bénéfices de vos pensées négatives.
+            Listez ci-dessous les avantages et bénéfices de vos émotions et pensées négatives.
             <span>
               <icon-base
                 class="d-none d-sm-inline ml-2"
@@ -149,6 +149,7 @@
 
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <h6>Identifiez la distorsion</h6>
+        <p>Pensée négative : "{{ negativeThought.content }}"</p>
         <b-form-group>
           <b-form-checkbox-group v-model="negativeThought.distortions">
             <template v-for="distortion in distortions">
