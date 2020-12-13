@@ -4,7 +4,7 @@
       <div class="p-4 mb-4 bg-light rounded-lg shadow">
         <p>
           <strong>
-            Mon activité sur ce site est-celle enregistrée ?
+            Mon activité sur ce site est-elle enregistrée ?
           </strong>
         </p>
         <p>
