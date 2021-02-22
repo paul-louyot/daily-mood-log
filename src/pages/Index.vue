@@ -125,7 +125,7 @@
                     sm="1"
                     >
                     <icon-base
-                      class="d-none d-sm-inline pointer"
+                      class="d-none d-sm-inline pointer no-select"
                       icon-name="question-mark"
                       v-b-popover.hover.right="$t(`positiveReframing.help.${positivelyReframable.name}`)"
                     >
@@ -927,5 +927,12 @@ export default {
 <style scoped>
 .pointer {
   cursor: pointer;
+}
+
+.no-select {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 </style>
