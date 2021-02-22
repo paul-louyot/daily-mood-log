@@ -28,6 +28,19 @@
     "warning": "Bien que ce bouton n'existe pas, de nombreuses techniques permettent de remettre en question nos pensées négatives. Mais prenons un peu de recul : l'utilisation de ces techniques ne serait pas forcément souhaitable. Il n'est pas impossible que vos pensées et émotions négatives reflètent des choses très positives sur vous, et qu'elles vous apportent de nombreux bénéfices et avantages.",
     "objective": "Notez ci-dessous l'intensité idéale de chaque émotion et pensée négative."
   },
+  "positiveReframing": {
+    "help": {
+      "anxious": "L'anxiété peut vous garder vigilant et vous protéger du danger",
+      "sad": "La tristesse peut vous faire savoir que quelque chose ne va pas",
+      "guilty": "La culpabilité peut vous rappeler que vous n'avez peut-être pas été à la hauteur de vos valeurs fondamentales",
+      "worthless": "Ce sentiment peut vous motiver à améliorer ou à modifier votre comportement",
+      "lonely": "Ces sentiments peuvent montrer que vous vous souciez des autres et que vous appréciez les relations aimantes avec les personnes qui sont importantes pour vous",
+      "embarrassed": "Ces sentiments montrent que vous appréciez les opinions des autres et que vous voulez qu'elles soient respectées",
+      "hopeless": "Le sentiment de désespoir peut vous empêcher d'espérer et de risquer d'être déçu",
+      "frustrated": "Ces sentiments peuvent montrer que vous êtes conscient du côté sombre de la nature humaine",
+      "angry": "Parfois, la colère contre soi-même ou contre les autres peut vous alerter que quelque chose ne va pas ou que l'on profite de vous"
+    }
+  },
   "help": {
     "fillEmotions": "Commencez par noter vos émotions"
   },

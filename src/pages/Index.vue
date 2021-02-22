@@ -113,11 +113,24 @@
                   <b-col sm="3" class="d-flex align-items-center">
                     <div>{{ $t(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</div>
                   </b-col>
-                  <b-col sm="9">
+                  <b-col sm="8">
                     <b-form-input
                       v-model="positivelyReframable.advantages"
                       placeholder="Avantages, valeurs centrales"
                       ></b-form-input>
+                  </b-col>
+                  <b-col
+                    v-if="shouldShowTranslation(`positiveReframing.help.${positivelyReframable.name}`)"
+                    class="d-flex justify-content-center align-items-center"
+                    sm="1"
+                    >
+                    <icon-base
+                      class="d-none d-sm-inline pointer"
+                      icon-name="question-mark"
+                      v-b-popover.hover.right="$t(`positiveReframing.help.${positivelyReframable.name}`)"
+                    >
+                      <question-mark />
+                    </icon-base>
                   </b-col>
                 </b-row>
               </template>
@@ -803,9 +816,6 @@ export default {
   },
 
   methods: {
-    // addData(){
-    //   this.blameList.push({value: 'test', strength: 1});
-    // },
     safeTranslation(key){
       if (key){
         return this.$t(key);
@@ -817,6 +827,9 @@ export default {
         return this.$t(array.join('.'))
       }
       return ""
+    },
+    shouldShowTranslation(string){
+      return (this.$t(string) !== string)
     },
     isNonEmptyString(x){
       return !!x
@@ -910,3 +923,9 @@ export default {
 
 }
 </script>
+
+<style scoped>
+.pointer {
+  cursor: pointer;
+}
+</style>
