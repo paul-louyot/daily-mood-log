@@ -109,30 +109,14 @@
             </template>
             <template v-else>
               <template v-for="positivelyReframable in positivelyReframables">
-                <b-row class="my-2" :key="positivelyReframable.name">
-                  <b-col sm="3" class="d-flex align-items-center">
-                    <div>{{ $t(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</div>
-                  </b-col>
-                  <b-col sm="8">
-                    <b-form-input
-                      v-model="positivelyReframable.advantages"
-                      placeholder="Avantages, valeurs centrales"
-                      ></b-form-input>
-                  </b-col>
-                  <b-col
-                    v-if="shouldShowTranslation(`positiveReframing.help.${positivelyReframable.name}`)"
-                    class="d-flex justify-content-center align-items-center"
-                    sm="1"
-                    >
-                    <icon-base
-                      class="d-none d-sm-inline pointer no-select"
-                      icon-name="question-mark"
-                      v-b-popover.hover.right="$t(`positiveReframing.help.${positivelyReframable.name}`)"
-                    >
-                      <question-mark />
-                    </icon-base>
-                  </b-col>
-                </b-row>
+                <positive-reframing-input
+                  v-bind:key="positivelyReframable.name"
+                  v-bind:category="positivelyReframable.name"
+                  v-bind:advantages.sync="positivelyReframable.advantages"
+                  v-bind:hint="$t(`positiveReframing.hint.${positivelyReframable.name}`)"
+                  v-bind:detail="$t(`positiveReframing.detail.${positivelyReframable.name}`)"
+                />
+                <!-- improve v-model here -->
               </template>
             </template>
           </div>
@@ -569,12 +553,14 @@ import PieChart from '~/components/PieChart.vue'
 import IconBase from '~/components/IconBase.vue'
 import QuestionMark from '~/components/QuestionMark.vue'
 import LocaleSwitcher from '~/components/LocaleSwitcher.vue'
+import PositiveReframingInput from '~/components/PositiveReframingInput.vue'
 export default {
   components: {
     PieChart,
     IconBase,
     QuestionMark,
-    LocaleSwitcher
+    LocaleSwitcher,
+    PositiveReframingInput
   },
   data() {
     return {
