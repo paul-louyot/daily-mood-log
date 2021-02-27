@@ -108,19 +108,17 @@
               </b-row>
             </template>
             <template v-else>
-              <template v-for="positivelyReframable in positivelyReframables">
-                <b-row class="my-2" :key="positivelyReframable.name">
-                  <b-col sm="3" class="d-flex align-items-center">
-                    <div>{{ $t(positivelyReframable.name) || `"${positivelyReframable.content}"` }}</div>
-                  </b-col>
-                  <b-col sm="9">
-                    <b-form-input
-                      v-model="positivelyReframable.advantages"
-                      placeholder="Avantages, valeurs centrales"
-                      ></b-form-input>
-                  </b-col>
-                </b-row>
+              <template v-for="emotion in nonVoidEmotionsGroups">
+                <positive-reframing-input
+                  v-bind:key="emotion.name"
+                  v-bind:category="emotion.name"
+                  v-bind:advantages.sync="emotion.advantages"
+                  v-bind:hint="safeT(`positiveReframing.hint.${emotion.name}`)"
+                  v-bind:detail="safeT(`positiveReframing.detail.${emotion.name}`)"
+                />
+                <!-- improve v-model here -->
               </template>
+              <!-- add inputs for negative thoughts -->
             </template>
           </div>
         </b-form-group>
@@ -556,12 +554,14 @@ import PieChart from '~/components/PieChart.vue'
 import IconBase from '~/components/IconBase.vue'
 import QuestionMark from '~/components/QuestionMark.vue'
 import LocaleSwitcher from '~/components/LocaleSwitcher.vue'
+import PositiveReframingInput from '~/components/PositiveReframingInput.vue'
 export default {
   components: {
     PieChart,
     IconBase,
     QuestionMark,
-    LocaleSwitcher
+    LocaleSwitcher,
+    PositiveReframingInput
   },
   data() {
     return {
@@ -803,9 +803,6 @@ export default {
   },
 
   methods: {
-    // addData(){
-    //   this.blameList.push({value: 'test', strength: 1});
-    // },
     safeTranslation(key){
       if (key){
         return this.$t(key);
@@ -817,6 +814,13 @@ export default {
         return this.$t(array.join('.'))
       }
       return ""
+    },
+    safeT(key){
+      if (this.shouldShowTranslation(key)){ return this.$t(key)}
+      return ''
+    },
+    shouldShowTranslation(string){
+      return (this.$t(string) !== string)
     },
     isNonEmptyString(x){
       return !!x
@@ -910,3 +914,16 @@ export default {
 
 }
 </script>
+
+<style scoped>
+.pointer {
+  cursor: pointer;
+}
+
+.no-select {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+</style>
