@@ -1,27 +1,39 @@
 <template>
   <b-row class="my-2" :key="category">
-    <b-col sm="3" class="d-flex align-items-center">
-      <div>{{ $t(category) }}</div>
+    <b-col cols="12" sm="3" class="d-flex align-items-center">
+      <div class="mb-2 mb-sm-0">
+        {{ $t(category) }}
+      </div>
     </b-col>
-    <b-col sm="8">
+    <b-col cols="11" sm="8">
       <b-form-input
         v-model="value"
         placeholder="Avantages, valeurs centrales"
         ></b-form-input>
     </b-col>
     <b-col
-      class="d-flex justify-content-center align-items-center"
+      cols="1"
+      class="d-flex justify-content-center align-items-center p-0"
       v-on:click="toggleDetail"
       style="cursor: pointer"
-      sm="1"
-      >
+    >
       <icon-base
-        class="d-none d-sm-inline pointer no-select"
+        class="d-inline pointer no-select"
         icon-name="question-mark"
-        v-b-popover.hover.right="hint"
+        v-bind:id="`icon-${category}`"
       >
         <question-mark />
       </icon-base>
+      <b-popover
+        class="d-none d-sm-inline"
+        :target="`icon-${category}`"
+        :placement="right"
+        triggers="hover"
+      >
+        <span class="d-none d-sm-inline">
+          {{ hint }}
+        </span>
+      </b-popover>
     </b-col>
     <b-col cols="12" v-if="showDetail">
       <template v-for="(item, i) in detail">
