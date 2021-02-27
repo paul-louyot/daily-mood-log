@@ -375,13 +375,23 @@
       <div class="d-flex align-items-center justify-content-center mt-4 mb-4">
         <b-button
           variant="primary"
-          v-on:click="downloadPDF()"
+          v-if="reportIsHidden"
+          v-on:click="generateReport()"
         >
-          Télécharger le compte-rendu (PDF)
+          {{ $t('report.generate') }}
+        </b-button>
+        <b-button
+          variant="primary"
+          id="download-button"
+          v-on:click="downloadPDF()"
+          ref="downloadButton"
+          v-if="!reportIsHidden"
+        >
+          {{ $t('report.download') }}
         </b-button>
       </div>
 
-      <div class="border border-primary rounded-lg shadow mb-5">
+      <div class="border border-primary rounded-lg shadow mb-5" v-if="!reportIsHidden">
         <div class="p-4" ref="report">
           <div class="mb-3 text-center">
             <b>Compte-rendu du {{ frenchDate }}</b>
@@ -565,6 +575,7 @@ export default {
   },
   data() {
     return {
+      reportIsHidden: true,
       emotionsGroups: [
         {
           name: "sad",
@@ -850,6 +861,11 @@ export default {
     deleteBlame(index){
       this.blameList.splice(index, 1);
     },
+    async generateReport(){
+      await this.addScript('https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js');
+      this.reportIsHidden = false;
+      this.$nextTick(() => this.$refs.downloadButton.scrollIntoView({ behavior: 'smooth' }));
+    },
     downloadPDF(){
       var fileName = "compte-rendu-" + this.englishDate + '.pdf';
       var element = this.$refs.report
@@ -898,10 +914,6 @@ export default {
     stringToHTML(string){
       return string.replace(/\n/g, '<br>')
     },
-  },
-
-  mounted() {
-    this.addScript('https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js');
   },
 
   filters: {

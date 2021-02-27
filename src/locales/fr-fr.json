@@ -30,15 +30,15 @@
   },
   "positiveReframing": {
     "hint": {
-      "anxious": "L'anxiété peut vous garder vigilant et vous protéger du danger",
-      "sad": "La tristesse peut vous faire savoir que quelque chose ne va pas",
-      "guilty": "La culpabilité peut vous rappeler que vous n'avez peut-être pas été à la hauteur de vos valeurs fondamentales",
-      "worthless": "Ce sentiment peut vous motiver à améliorer ou à modifier votre comportement",
-      "lonely": "Ces sentiments peuvent montrer que vous vous souciez des autres et que vous appréciez les relations aimantes avec les personnes qui sont importantes pour vous",
-      "embarrassed": "Ces sentiments montrent que vous appréciez les opinions des autres et que vous voulez qu'elles soient respectées",
-      "hopeless": "Le sentiment de désespoir peut vous empêcher d'espérer et de risquer d'être déçu",
-      "frustrated": "Ces sentiments peuvent montrer que vous êtes conscient du côté sombre de la nature humaine",
-      "angry": "Parfois, la colère contre soi-même ou contre les autres peut vous alerter que quelque chose ne va pas ou que l'on profite de vous",
+      "anxious": "peut vous garder vigilant et vous protéger du danger",
+      "sad": "peut vous faire savoir que quelque chose ne va pas",
+      "guilty": "peut vous rappeler que vous n'avez peut-être pas été à la hauteur de vos valeurs fondamentales",
+      "worthless": "peut vous motiver à améliorer ou à modifier votre comportement",
+      "lonely": "peut montrer que vous vous souciez des autres et que vous appréciez les relations aimantes avec les personnes qui sont importantes pour vous",
+      "embarrassed": "peut montrer que vous appréciez les opinions des autres et que vous voulez qu'elles soient respectées",
+      "hopeless": "peut vous protéger d'avoir de faux espoirs",
+      "frustrated": "peut montrer que vous êtes conscient du côté sombre de la nature humaine",
+      "angry": "peut vous alerter que quelque chose ne va pas ou que l'on profite de vous",
       "other": ""
     },
     "detail": {
@@ -49,7 +49,7 @@
             "vous faire savoir que quelque chose ne va pas.",
             "montrer que vous envisagez avec réalisme un problème ou une perte qui a été difficile et douloureux pour vous.",
             "vous rendre plus compatissant et plus compréhensif à l'égard des autres qui souffrent.",
-            "être une célébration de la vie. Si nous pouvons pleurer la perte d'un être cher ou la perte de quelque chose qui nous tient à cœur, cela signifie que nous sommes en vie et que nous avons la capacité de nous occuper"
+            "être une célébration de la vie. Si nous pouvons pleurer la perte d'un être cher ou la perte de quelque chose qui nous tient à cœur, cela signifie que nous sommes en vie et que nous avons la capacité de prendre soin des autres et de nous-même."
           ]
         },
         {
@@ -58,7 +58,7 @@
             "être appropriés si vous avez vécu une perte, un rejet, un traumatisme ou un échec, ou si les choses ne vont pas très bien pour vous.",
             "refléter votre passion pour la vie et pour la chose ou la personne que vous avez perdue.",
             "montrer que vous êtes prêt à lutter contre la douleur plutôt que de la fuir et de vivre dans un état de déni.",
-            "montrez que vous avez des normes élevées."
+            "montrer que vous avez des standards élevés."
           ]
         }
       ],
@@ -95,12 +95,12 @@
         {
           "title": "La culpabilité et la honte peuvent vous montrer que :",
           "content": [
-            "vous avez des normes élevées et un code moral solide.",
+            "vous avez des standards élevés et un code moral solide.",
             "vous responsabiliser au lieu de blâmer les autres pour vos problèmes.",
-            "êtes prêt à faire face à vos défauts au lieu de les nier.",
+            "vous êtes prêt à faire face à vos défauts au lieu de les nier.",
             "vous vous souciez de l'impact de votre comportement sur les autres.",
-            "ne voulez pas laisser tomber les autres ou vous laisser tomber vous-même.",
-            "avez des valeurs morales fortes.",
+            "vous ne voulez pas laisser tomber les autres, ou vous laisser tomber vous-même.",
+            "vous avez des valeurs morales fortes.",
             "vous voulez que les autres vous aiment et vous respectent."
           ]
         }
@@ -117,7 +117,7 @@
           "title": "Ces sentiments peuvent montrer que vous êtes :",
           "content": [
             "courageusement honnête et réaliste, car vous avez en fait de nombreux défauts et lacunes.",
-            "humble et pas arrogant ou trop élevé dans votre estime de soi.",
+            "humble et modeste, ou que vous ne surestimez pas votre estime de vous-même.",
             "intègre et prêt à admettre lorsque vous êtes en difficulté."
           ]
         }
@@ -127,7 +127,7 @@
           "title": "Ces sentiments peuvent vous motiver à :",
           "content": [
             "tendre la main aux autres plutôt que d'abandonner les gens ou de sombrer dans l'isolement, l'amertume ou le cynisme.",
-            "apporter des changements personnels qui vous rendraient plus attrayant aux yeux des autres. Par exemple, vous pourriez décider de perdre du poids."
+            "apporter des changements personnels qui vous rendraient plus attrayant aux yeux des autres. Par exemple, vous pourriez décider de perdre du poids, ou d'améliorer vos compétences en flirt / communication."
           ]
         },
         {
@@ -158,7 +158,7 @@
         {
           "title": "Les sentiments de désespoir peuvent :",
           "content": [
-            "vous protéger d'espérer puis d'être déçu.",
+            "vous protéger d'avoir de faux espoirs.",
             "vous faire savoir quand il est temps de capituler et d'accepter la défaite avec grâce, afin que vous puissiez conserver votre énergie pour quelque chose ou quelqu'un de plus prometteur"
           ]
         },
@@ -180,7 +180,7 @@
             "motiver à agir et à vous défendre plutôt que de céder à quelqu'un d'hostile, d'injuste ou d'exploiteur.",
             "vous responsabiliser lorsque d'autres enfreignent les règles ou tentent de vous faire du mal ou de faire du mal à quelqu'un que vous aimez.",
             "être plus efficace que rester calme. Par exemple, si votre enfant court dans la rue pour courir après un ballon, une réprimande en colère peut être plus efficace qu'une discussion rationnelle sur les dangers de la circulation.",
-            "montrez que vous êtes sérieux !"
+            "montrer que vous êtes sérieux !"
           ]
         },
         {
@@ -188,7 +188,7 @@
           "content": [
             "êtes conscient du côté sombre de la nature humaine. ",
             "n'êtes pas dans un état de déni de la mesquinerie des autres ou de leurs actions.",
-            "avez des normes élevées quant à la façon dont les autres vous traitent ou traitent les personnes qui vous sont chères. Vous pouvez être fier de vos normes élevées !",
+            "avez des normes élevées quant à la façon dont les autres vous traitent ou traitent les personnes qui vous sont chères. Vous pouvez être fier de vos standards élevés !",
             "vous valorisez l'équité, la gentillesse, l'honnêteté et l'intégrité.",
             "faites preuve d'une grande attention et n'êtes pas indifférent à la façon dont les autres se comportent ou vous traitent.",
             "ne vous laissez pas influencer et ne laissez pas les autres vous utiliser ou vous marcher dessus !"
@@ -238,5 +238,9 @@
     "blame": {
       "definition": "Vous vous considérez responsable d'un événement fâcheux, alors que d'autres causes sont aussi à prendre en considérations"
     }
+  },
+  "report": {
+    "generate": "Générer le compte-rendu",
+    "download": "Télécharger le compte-rendu (PDF)"
   }
 }
