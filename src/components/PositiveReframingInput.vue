@@ -15,7 +15,7 @@
     </b-col>
     <b-col
       cols="1"
-      class="d-flex justify-content-center align-items-center p-0"
+      class="d-flex justify-content-center align-items-center p-0 hoverable"
       v-on:click="toggleDetail"
       style="cursor: pointer"
       v-if="hint"
@@ -85,6 +85,10 @@ export default {
   .b-popover {
     display: none!important;
   }
+}
+
+.hoverable:hover {
+  background-color: #EAEAEA;
 }
 
 </style>
