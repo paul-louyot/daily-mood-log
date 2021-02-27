@@ -23,7 +23,16 @@
         <question-mark />
       </icon-base>
     </b-col>
-    <b-col cols="12" v-if="showDetail" v-html="detail"/>
+    <b-col cols="12" v-if="showDetail">
+      <template v-for="(item, i) in detail">
+        <div v-bind:key="`title-${i}`" class="mt-2">{{ item.title }}</div>
+        <template v-for="(content, j) in item.content">
+          <div v-bind:key="`content-${i}-${j}`">
+            • {{ content }}
+          </div>
+        </template>
+      </template>
+    </b-col>
   </b-row>
 </template>
 
