@@ -6,16 +6,19 @@
       </div>
     </b-col>
     <b-col cols="11" sm="8">
-      <b-form-input
+      <input
+        type="text"
+        class="form-control"
         v-model="value"
         placeholder="Avantages, valeurs centrales"
-        ></b-form-input>
+      ></input>
     </b-col>
     <b-col
       cols="1"
       class="d-flex justify-content-center align-items-center p-0"
       v-on:click="toggleDetail"
       style="cursor: pointer"
+      v-if="hint"
     >
       <icon-base
         class="d-inline pointer no-select"
@@ -27,7 +30,7 @@
       <b-popover
         class="d-none d-sm-inline"
         :target="`icon-${category}`"
-        :placement="right"
+        placement="right"
         triggers="hover"
       >
         <span class="d-none d-sm-inline">
@@ -76,3 +79,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+@media (max-width: 575.98px) {
+  .b-popover {
+    display: none!important;
+  }
+}
+
+</style>

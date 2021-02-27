@@ -108,16 +108,17 @@
               </b-row>
             </template>
             <template v-else>
-              <template v-for="positivelyReframable in positivelyReframables">
+              <template v-for="emotion in nonVoidEmotionsGroups">
                 <positive-reframing-input
-                  v-bind:key="positivelyReframable.name"
-                  v-bind:category="positivelyReframable.name"
-                  v-bind:advantages.sync="positivelyReframable.advantages"
-                  v-bind:hint="$t(`positiveReframing.hint.${positivelyReframable.name}`)"
-                  v-bind:detail="$t(`positiveReframing.detail.${positivelyReframable.name}`)"
+                  v-bind:key="emotion.name"
+                  v-bind:category="emotion.name"
+                  v-bind:advantages.sync="emotion.advantages"
+                  v-bind:hint="safeT(`positiveReframing.hint.${emotion.name}`)"
+                  v-bind:detail="safeT(`positiveReframing.detail.${emotion.name}`)"
                 />
                 <!-- improve v-model here -->
               </template>
+              <!-- add inputs for negative thoughts -->
             </template>
           </div>
         </b-form-group>
@@ -813,6 +814,10 @@ export default {
         return this.$t(array.join('.'))
       }
       return ""
+    },
+    safeT(key){
+      if (this.shouldShowTranslation(key)){ return this.$t(key)}
+      return ''
     },
     shouldShowTranslation(string){
       return (this.$t(string) !== string)
