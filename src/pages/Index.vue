@@ -50,7 +50,14 @@
               {{ emotionsGroup.levelBefore }}
             </b-col>
             <b-col cols="8" sm="8" class="mt-2 mt-sm-0">
-              <b-form-input v-model="emotionsGroup.levelBefore" type="range" min="0" max="100" step="5" v-on:click="setFocus()"></b-form-input>
+              <b-form-input
+                v-model="emotionsGroup.levelBefore"
+                type="range"
+                min="0"
+                max="100"
+                step="5"
+                v-on:click="setFocus()">
+              </b-form-input>
             </b-col>
           </b-row>
         </b-form-group>
@@ -914,8 +921,18 @@ export default {
     stringToHTML(string){
       return string.replace(/\n/g, '<br>')
     },
+    setFocusableInputs(){
+      let inputs = document.querySelectorAll("input[type='range']");
+      inputs.forEach((input) => {
+        input.addEventListener('touchstart', () => {
+          input.focus();
+        });
+      });
+    }
   },
-
+  mounted(){
+    this.setFocusableInputs();
+  },
   filters: {
     capitalize(value){
       if (!value) return ''
